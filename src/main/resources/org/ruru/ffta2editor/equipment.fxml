@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Copyright (c) 2015, 2019, Gluon and/or its affiliates.
+  All rights reserved. Use is subject to license terms.
+
+  This file is available and licensed under the following license:
+
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions
+  are met:
+
+  - Redistributions of source code must retain the above copyright
+    notice, this list of conditions and the following disclaimer.
+  - Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in
+    the documentation and/or other materials provided with the distribution.
+  - Neither the name of Oracle Corporation nor the names of its
+    contributors may be used to endorse or promote products derived
+    from this software without specific prior written permission.
+
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.ruru.ffta2editor.EquipmentController">
+   <children>
+      <SplitPane dividerPositions="0.2" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <items>
+            <VBox spacing="20.0" SplitPane.resizableWithParent="false">
+               <children>
+                  <ScrollPane fx:id="abilityScrollPane" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" VBox.vgrow="ALWAYS">
+                     <content>
+                        <ListView fx:id="equipmentList" />
+                     </content>
+                  </ScrollPane>
+               </children>
+            </VBox>
+            <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
+              <tabs>
+                <Tab text="Main">
+                     <content>
+                        <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <HBox alignment="TOP_CENTER" spacing="20.0">
+                                 <children>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="Name" />
+                                          <TextField fx:id="equipmentName" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="Type" />
+                                          <ComboBox fx:id="equipmentType" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="Equipment Location" />
+                                          <ComboBox fx:id="equipmentLocation" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="Element" />
+                                          <ComboBox fx:id="element" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER" prefWidth="1019.0" spacing="100.0">
+                                 <children>
+                                    <GridPane alignment="CENTER">
+                                      <columnConstraints>
+                                        <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="SOMETIMES" maxWidth="100.0" />
+                                        <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="SOMETIMES" maxWidth="100.0" />
+                                      </columnConstraints>
+                                      <rowConstraints>
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                      </rowConstraints>
+                                       <children>
+                                          <Label text="Speed" GridPane.rowIndex="5" />
+                                          <Label text="Attack" GridPane.rowIndex="1" />
+                                          <Label text="Defense" GridPane.rowIndex="2" />
+                                          <Label text="Magick" GridPane.rowIndex="3" />
+                                          <Label text="Resistance" GridPane.rowIndex="4" />
+                                          <TextField fx:id="speed" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                          <TextField fx:id="attack" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                          <TextField fx:id="defense" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                          <TextField fx:id="magick" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                          <TextField fx:id="resistance" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                          <Label text="Evasion" GridPane.rowIndex="6" />
+                                          <TextField fx:id="evasion" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                                          <Label text="Move" GridPane.rowIndex="7" />
+                                          <TextField fx:id="move" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                                          <Label text="Jump" GridPane.rowIndex="8" />
+                                          <TextField fx:id="jump" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                                       </children>
+                                    </GridPane>
+                                    <GridPane alignment="CENTER">
+                                       <columnConstraints>
+                                          <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="SOMETIMES" maxWidth="100.0" />
+                                          <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="SOMETIMES" maxWidth="200.0" />
+                                       </columnConstraints>
+                                       <rowConstraints>
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                       </rowConstraints>
+                                       <children>
+                                          <Label text="Buy" GridPane.rowIndex="1" />
+                                          <Label text="Sell" GridPane.rowIndex="2" />
+                                          <Label text="Range" GridPane.rowIndex="3" />
+                                          <Label layoutX="14.0" layoutY="77.0" text="Bonus Effect" GridPane.rowIndex="4" />
+                                          <Label text="Visual/Sound effects" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                          <Label text="Attack Effect" GridPane.rowIndex="6" />
+                                          <Label text="Hit Effect" GridPane.rowIndex="7" />
+                                          <Label text="Hit Sound" GridPane.rowIndex="8" />
+                                          <Label text="Unused?" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                                          <Label text="0x02" GridPane.rowIndex="10" />
+                                          <TextField fx:id="buy" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                          <TextField fx:id="sell" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                          <TextField fx:id="range" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                          <ComboBox fx:id="bonusEffect" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                          <TextField fx:id="attackEffect" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                                          <TextField fx:id="hitEffect" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                                          <TextField fx:id="hitSound" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                                          <TextField fx:id="notName" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+                                       </children>
+                                    </GridPane>
+                                    <GridPane alignment="CENTER">
+                                       <columnConstraints>
+                                          <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="SOMETIMES" maxWidth="100.0" />
+                                          <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="SOMETIMES" maxWidth="200.0" />
+                                       </columnConstraints>
+                                       <rowConstraints>
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                       </rowConstraints>
+                                       <children>
+                                          <Label text="Ability" GridPane.rowIndex="1" />
+                                          <Label layoutX="14.0" layoutY="77.0" text="Job Group" GridPane.rowIndex="2" />
+                                          <Label text="Ability" GridPane.rowIndex="4" />
+                                          <Label text="Job Group" GridPane.rowIndex="5" />
+                                          <Label text="Ability" GridPane.rowIndex="7" />
+                                          <Label text="Job Group" GridPane.rowIndex="8" />
+                                          <ComboBox fx:id="ability1" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                          <ComboBox fx:id="jobGroup1" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                          <ComboBox fx:id="ability2" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                          <ComboBox fx:id="jobGroup2" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                          <ComboBox fx:id="ability3" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                                          <ComboBox fx:id="jobGroup3" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                                       </children>
+                                    </GridPane>
+                                 </children>
+                              </HBox>
+                              <HBox prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+                                 <children>
+                                    <VBox spacing="20.0">
+                                       <children>
+                                          <CheckBox fx:id="isTwoHanded" mnemonicParsing="false" text="Is Two-handed" />
+                                          <CheckBox fx:id="isDualWieldable" mnemonicParsing="false" text="Is Dual Wieldable" />
+                                          <CheckBox fx:id="isMeleeOneHanded" mnemonicParsing="false" text="Is Melee and One-handed" />
+                                          <CheckBox fx:id="isMeleeTwoHanded" mnemonicParsing="false" text="Is Melee and Two-handed" />
+                                          <CheckBox fx:id="isSellable" mnemonicParsing="false" text="Is Sellable" />
+                                          <CheckBox fx:id="isLimitedStock" mnemonicParsing="false" text="Is Limited Stock" />
+                                          <CheckBox fx:id="startsInShop" mnemonicParsing="false" text="Starts in shop" />
+                                          <CheckBox fx:id="isBow" mnemonicParsing="false" text="Is Bow" />
+                                       </children>
+                                    </VBox>
+                                    <VBox spacing="20.0">
+                                       <children>
+                                          <CheckBox fx:id="isBladed" mnemonicParsing="false" text="Is Bladed" />
+                                          <CheckBox fx:id="isPiercing" mnemonicParsing="false" text="Is Piercing" />
+                                          <CheckBox fx:id="isBlunt" mnemonicParsing="false" text="Is Blunt" />
+                                          <CheckBox fx:id="isRanged" mnemonicParsing="false" text="Is Ranged" />
+                                          <CheckBox fx:id="isInstrument_Book" mnemonicParsing="false" text="Is Instrument/Book" />
+                                          <CheckBox fx:id="isFemaleOnly" mnemonicParsing="false" text="Is Female Only" />
+                                          <CheckBox fx:id="propertyBit14" mnemonicParsing="false" text="Bit 14 (Unused)" />
+                                          <CheckBox fx:id="propertyBit15" mnemonicParsing="false" text="Bit 15 (Unused)" />
+                                       </children>
+                                    </VBox>
+                                    <VBox spacing="20.0">
+                                       <children>
+                                          <CheckBox fx:id="propertyBit16" mnemonicParsing="false" text="Bit 16 (Unused)" />
+                                          <CheckBox fx:id="propertyBit17" mnemonicParsing="false" text="Bit 17 (Unused)" />
+                                          <CheckBox fx:id="propertyBit18" mnemonicParsing="false" text="Bit 18 (Unused)" />
+                                          <CheckBox fx:id="propertyBit19" mnemonicParsing="false" text="Bit 19 (Unused)" />
+                                          <CheckBox fx:id="propertyBit20" mnemonicParsing="false" text="Bit 20 (Unused)" />
+                                          <CheckBox fx:id="propertyBit21" mnemonicParsing="false" text="Bit 21 (Unused)" />
+                                          <CheckBox fx:id="propertyBit22" mnemonicParsing="false" text="Bit 22 (Unused)" />
+                                          <CheckBox fx:id="propertyBit23" mnemonicParsing="false" text="Bit 23 (Unused)" />
+                                       </children>
+                                    </VBox>
+                                    <VBox spacing="20.0">
+                                       <children>
+                                          <CheckBox fx:id="propertyBit24" mnemonicParsing="false" text="Bit 24 (Unused)" />
+                                          <CheckBox fx:id="propertyBit25" mnemonicParsing="false" text="Bit 25 (Unused)" />
+                                          <CheckBox fx:id="propertyBit26" mnemonicParsing="false" text="Bit 26 (Unused)" />
+                                          <CheckBox fx:id="propertyBit27" mnemonicParsing="false" text="Bit 27 (Unused)" />
+                                          <CheckBox fx:id="propertyBit28" mnemonicParsing="false" text="Bit 28 (Unused)" />
+                                          <CheckBox fx:id="propertyBit29" mnemonicParsing="false" text="Bit 29 (Unused)" />
+                                          <CheckBox fx:id="propertyBit30" mnemonicParsing="false" text="Bit 30 (Unused)" />
+                                          <CheckBox fx:id="propertyBit31" mnemonicParsing="false" text="Bit 31 (Unused)" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="Description" />
+                                          <TextArea fx:id="equipmentDescription" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets left="20.0" />
+                                 </VBox.margin>
+                              </HBox>
+                           </children>
+                           <padding>
+                              <Insets top="20.0" />
+                           </padding>
+                        </VBox>
+                     </content>
+                  </Tab>
+                  <Tab text="Sprite">
+                     <content>
+                        <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0">
+                           <children>
+                              <HBox alignment="TOP_CENTER" spacing="20.0">
+                                 <children>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="Sprite" />
+                                          <ComboBox fx:id="sprite" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="Palette" />
+                                          <ComboBox fx:id="palette" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                           </children>
+                           <padding>
+                              <Insets top="20.0" />
+                           </padding>
+                        </VBox>
+                     </content></Tab>
+              </tabs>
+            </TabPane>
+        </items>
+      </SplitPane>
+   </children>
+</AnchorPane>

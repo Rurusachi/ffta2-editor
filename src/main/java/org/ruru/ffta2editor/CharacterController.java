@@ -1,0 +1,317 @@
+package org.ruru.ffta2editor;
+
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.util.List;
+import java.util.stream.IntStream;
+
+import org.ruru.ffta2editor.JobController.JobCell;
+import org.ruru.ffta2editor.JobController.JobSpriteCell;
+import org.ruru.ffta2editor.TextController.StringPropertyCell;
+import org.ruru.ffta2editor.model.character.CharacterData;
+import org.ruru.ffta2editor.model.job.JobData;
+import org.ruru.ffta2editor.model.job.JobGender;
+import org.ruru.ffta2editor.model.job.JobRequirementData;
+import org.ruru.ffta2editor.utility.ByteChangeListener;
+import org.ruru.ffta2editor.utility.ShortChangeListener;
+import org.ruru.ffta2editor.utility.UnitSprite;
+import org.ruru.ffta2editor.utility.UnsignedByteStringConverter;
+import org.ruru.ffta2editor.utility.UnsignedShortStringConverter;
+
+import javafx.beans.binding.Binding;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.ObjectBinding;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
+import javafx.util.StringConverter;
+
+public class CharacterController {
+    
+    public static class CharacterCell extends ListCell<CharacterData> {
+        Label label = new Label();
+
+
+        public CharacterCell() {
+            label.setStyle("-fx-text-fill: black");
+        }
+
+        @Override protected void updateItem(CharacterData character, boolean empty) {
+            super.updateItem(character, empty);
+            if (character != null) {
+                label.setText(String.format("%X: %s", character.id , character.nameString.getValue()));
+            }
+            setGraphic(label);
+        }
+    }
+
+    @FXML ListView<CharacterData> characterList;
+
+
+    @FXML ComboBox<StringProperty> name;
+    @FXML TextField dialogueRole;
+    @FXML ComboBox<JobGender> gender;
+    @FXML ComboBox<JobData> defaultJob;
+    
+    // Short
+    @FXML TextField _0x14;
+    @FXML TextField _0x16;
+
+    // Byte
+    @FXML TextField _0x13;
+    @FXML TextField _0x1a;
+    @FXML TextField _0x1b;
+
+    // Sprite
+    @FXML TextField unitPortrait;
+    @FXML TextField enemyPortrait;
+    @FXML TextField unitTopSprite;
+    @FXML TextField enemyTopSprite;
+
+    @FXML ComboBox<UnitSprite> unitSprite;
+    @FXML ComboBox<UnitSprite> unitAlternateSprite;
+    @FXML ComboBox<UnitSprite> enemySprite;
+    @FXML ComboBox<UnitSprite> enemyAlternateSprite;
+
+    @FXML ComboBox<Byte> unitPalette;
+    @FXML ComboBox<Byte> enemyPalette;
+
+
+
+    
+    private ObjectProperty<CharacterData> characterProperty = new SimpleObjectProperty<>();
+    
+    private ObservableList<Byte> unitPaletteList = FXCollections.observableArrayList();
+    private ObservableList<Byte> enemyPaletteList = FXCollections.observableArrayList();
+    @FXML
+    public void initialize() {
+        characterList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (oldValue != null) unbindCharacterData();
+            characterProperty.setValue(newValue);
+            if (newValue != null) bindCharacterData();
+        });
+        ObservableList<JobGender> genderEnums = FXCollections.observableArrayList(JobGender.values());
+        gender.setItems(genderEnums);
+
+        unitPalette.setItems(unitPaletteList);
+        enemyPalette.setItems(enemyPaletteList);
+
+        unitPalette.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            int newPalette = newValue != null ? newValue : 0;
+            unitSprite.setButtonCell(new JobSpriteCell(0, newPalette, 2));
+            unitSprite.setCellFactory(x -> new JobSpriteCell(0, newPalette, 2));
+            unitAlternateSprite.setButtonCell(new JobSpriteCell(0, newPalette, 2));
+            unitAlternateSprite.setCellFactory(x -> new JobSpriteCell(0, newPalette, 2));
+        });
+        enemyPalette.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            int newPalette = newValue != null ? newValue : 0;
+            enemySprite.setButtonCell(new JobSpriteCell(0, newPalette, 2));
+            enemySprite.setCellFactory(x -> new JobSpriteCell(0, newPalette, 2));
+            enemyAlternateSprite.setButtonCell(new JobSpriteCell(0, newPalette, 2));
+            enemyAlternateSprite.setCellFactory(x -> new JobSpriteCell(0, newPalette, 2));
+        });
+
+        unitSprite.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            int selected = unitPalette.getSelectionModel().getSelectedIndex();
+            unitPaletteList.clear();
+            if (newValue != null) {
+                IntStream.range(0, newValue.spritePalettes.palettes.size()).forEach(i -> unitPaletteList.add((byte)i));
+            }
+            if (selected < unitPaletteList.size()) unitPalette.getSelectionModel().select(selected);
+            else unitPalette.getSelectionModel().select(0);
+        });
+        enemySprite.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            int selected = enemyPalette.getSelectionModel().getSelectedIndex();
+            enemyPaletteList.clear();
+            if (newValue != null) {
+                IntStream.range(0, newValue.spritePalettes.palettes.size()).forEach(i -> enemyPaletteList.add((byte)i));
+            }
+            if (selected < enemyPaletteList.size()) enemyPalette.getSelectionModel().select(selected);
+            else enemyPalette.getSelectionModel().select(0);
+        });
+        
+
+        // Data validators
+        unitPortrait.textProperty().addListener(new ShortChangeListener(unitPortrait));
+        enemyPortrait.textProperty().addListener(new ShortChangeListener(enemyPortrait));
+        _0x14.textProperty().addListener(new ShortChangeListener(_0x14));
+        _0x16.textProperty().addListener(new ShortChangeListener(_0x16));
+
+        dialogueRole.textProperty().addListener(new ByteChangeListener(dialogueRole));
+        unitTopSprite.textProperty().addListener(new ByteChangeListener(unitTopSprite));
+        enemyTopSprite.textProperty().addListener(new ByteChangeListener(enemyTopSprite));
+        _0x13.textProperty().addListener(new ByteChangeListener(_0x13));
+        _0x1a.textProperty().addListener(new ByteChangeListener(_0x1a));
+        _0x1b.textProperty().addListener(new ByteChangeListener(_0x1b));
+    }
+
+    private void unbindCharacterData() {
+        unitPortrait.textProperty().unbindBidirectional(characterProperty.getValue().unitPortrait);
+        enemyPortrait.textProperty().unbindBidirectional(characterProperty.getValue().enemyPortrait);
+        _0x14.textProperty().unbindBidirectional(characterProperty.getValue()._0x14);
+        _0x16.textProperty().unbindBidirectional(characterProperty.getValue()._0x16);
+
+        dialogueRole.textProperty().unbindBidirectional(characterProperty.getValue().dialogueRole);
+        unitTopSprite.textProperty().unbindBidirectional(characterProperty.getValue().unitTopSprite);
+        enemyTopSprite.textProperty().unbindBidirectional(characterProperty.getValue().enemyTopSprite);
+        _0x13.textProperty().unbindBidirectional(characterProperty.getValue()._0x13);
+        _0x1a.textProperty().unbindBidirectional(characterProperty.getValue()._0x1a);
+        _0x1b.textProperty().unbindBidirectional(characterProperty.getValue()._0x1b);
+
+        characterProperty.getValue().name.unbind();
+        gender.valueProperty().unbindBidirectional(characterProperty.getValue().gender);
+        defaultJob.valueProperty().unbindBidirectional(characterProperty.getValue().defaultJob);
+        
+        unitSprite.valueProperty().unbindBidirectional(characterProperty.getValue().unitSprite);
+        unitAlternateSprite.valueProperty().unbindBidirectional(characterProperty.getValue().unitAlternateSprite);
+        enemySprite.valueProperty().unbindBidirectional(characterProperty.getValue().enemySprite);
+        enemyAlternateSprite.valueProperty().unbindBidirectional(characterProperty.getValue().enemyAlternateSprite);
+        unitPalette.valueProperty().unbindBidirectional(characterProperty.getValue().unitPalette);
+        enemyPalette.valueProperty().unbindBidirectional(characterProperty.getValue().enemyPalette);
+    }
+
+    private void bindCharacterData() {
+        StringConverter<Short> unsignedShortConverter = new UnsignedShortStringConverter();
+        Bindings.bindBidirectional(unitPortrait.textProperty(), characterProperty.getValue().unitPortrait, unsignedShortConverter);
+        Bindings.bindBidirectional(enemyPortrait.textProperty(), characterProperty.getValue().enemyPortrait, unsignedShortConverter);
+        Bindings.bindBidirectional(_0x14.textProperty(), characterProperty.getValue()._0x14, unsignedShortConverter);
+        Bindings.bindBidirectional(_0x16.textProperty(), characterProperty.getValue()._0x16, unsignedShortConverter);
+        
+        StringConverter<Byte> unsignedByteConverter = new UnsignedByteStringConverter();
+        Bindings.bindBidirectional(dialogueRole.textProperty(), characterProperty.getValue().dialogueRole, unsignedByteConverter);
+        Bindings.bindBidirectional(unitTopSprite.textProperty(), characterProperty.getValue().unitTopSprite, unsignedByteConverter);
+        Bindings.bindBidirectional(enemyTopSprite.textProperty(), characterProperty.getValue().enemyTopSprite, unsignedByteConverter);
+        Bindings.bindBidirectional(_0x13.textProperty(), characterProperty.getValue()._0x13, unsignedByteConverter);
+        Bindings.bindBidirectional(_0x1a.textProperty(), characterProperty.getValue()._0x1a, unsignedByteConverter);
+        Bindings.bindBidirectional(_0x1b.textProperty(), characterProperty.getValue()._0x1b, unsignedByteConverter);
+
+        //name.valueProperty().bindBidirectional(characterProperty.getValue().name);
+        name.getSelectionModel().select(Short.toUnsignedInt(characterProperty.getValue().name.getValue()));
+        characterProperty.getValue().name.bind(new ObjectBinding<Short>() {
+            {bind(name.valueProperty());}
+            @Override
+            protected Short computeValue() {
+                return (short)App.characterNames.indexOf(name.valueProperty().getValue());
+            }
+
+        });
+
+
+
+        gender.valueProperty().bindBidirectional(characterProperty.getValue().gender);
+        defaultJob.valueProperty().bindBidirectional(characterProperty.getValue().defaultJob);
+
+        unitSprite.valueProperty().bindBidirectional(characterProperty.getValue().unitSprite);
+        unitAlternateSprite.valueProperty().bindBidirectional(characterProperty.getValue().unitAlternateSprite);
+        enemySprite.valueProperty().bindBidirectional(characterProperty.getValue().enemySprite);
+        enemyAlternateSprite.valueProperty().bindBidirectional(characterProperty.getValue().enemyAlternateSprite);
+        unitPalette.valueProperty().bindBidirectional(characterProperty.getValue().unitPalette);
+        enemyPalette.valueProperty().bindBidirectional(characterProperty.getValue().enemyPalette);
+        
+        unitSprite.setButtonCell(new JobSpriteCell(0, characterProperty.getValue().unitPalette.getValue(), 2));
+        unitSprite.setCellFactory(x -> new JobSpriteCell(0, characterProperty.getValue().unitPalette.getValue(), 2));
+        unitAlternateSprite.setButtonCell(new JobSpriteCell(0, characterProperty.getValue().unitPalette.getValue(), 2));
+        unitAlternateSprite.setCellFactory(x -> new JobSpriteCell(0, characterProperty.getValue().unitPalette.getValue(), 2));
+
+        enemySprite.setButtonCell(new JobSpriteCell(0, characterProperty.getValue().enemyPalette.getValue(), 2));
+        enemySprite.setCellFactory(x -> new JobSpriteCell(0, characterProperty.getValue().enemyPalette.getValue(), 2));
+        enemyAlternateSprite.setButtonCell(new JobSpriteCell(0, characterProperty.getValue().enemyPalette.getValue(), 2));
+        enemyAlternateSprite.setCellFactory(x -> new JobSpriteCell(0, characterProperty.getValue().enemyPalette.getValue(), 2));
+    }
+
+
+    @FXML
+    public void addCharacter() {
+        if (characterList.getItems() != null) {
+            int newIndex = characterList.getItems().size();
+            characterList.getItems().add(new CharacterData(newIndex));
+            characterList.getSelectionModel().selectLast();
+        }
+    }
+ 
+    @FXML
+    public void removeCharacter() {
+        //if (characterList.getSelectionModel().getSelectedItem() != null && characterList.getSelectionModel().getSelectedIndex() > 0) {
+        //    characterList.getItems().remove(characterList.getSelectionModel().getSelectedIndex());
+        //}
+        if (characterList.getItems().size() > 0){
+            characterList.getItems().removeLast();
+        }
+    }
+
+    public void loadCharacters() {
+        if (App.archive != null) {
+
+            ByteBuffer characterDataBytes = App.sysdata.getFile(0);
+
+            if (characterDataBytes == null) {
+                System.err.println("IdxAndPak null file error");
+                return;
+            }
+            characterDataBytes.rewind();
+
+            ObservableList<CharacterData> characterDataList = FXCollections.observableArrayList();
+
+
+            //int numAbilitysets = abilitySetBytes.remaining() / 0xc;
+            int numCharacters = Byte.toUnsignedInt(App.arm9.get(0x000cb018))+1;
+            for (int i = 0; i < numCharacters; i++) {
+                CharacterData character = new CharacterData(characterDataBytes, i);
+                characterDataList.add(character);
+            }
+            App.characterList = characterDataList;
+            characterDataBytes.rewind();
+
+
+            characterList.setItems(characterDataList);
+            characterList.setCellFactory(x -> new CharacterCell());
+            
+            defaultJob.setItems(App.jobDataList);
+            defaultJob.setButtonCell(new JobCell());
+            defaultJob.setCellFactory(x -> new JobCell());
+
+            name.setItems(App.characterNames);
+            name.setButtonCell(new StringPropertyCell());
+            name.setCellFactory(x -> new StringPropertyCell());
+            
+            unitSprite.setButtonCell(new JobSpriteCell(0, 0, 2));
+            unitSprite.setCellFactory(x -> new JobSpriteCell(0, 0, 2));
+            unitSprite.setItems(App.unitSprites);
+
+            unitAlternateSprite.setButtonCell(new JobSpriteCell(0, 0, 2));
+            unitAlternateSprite.setCellFactory(x -> new JobSpriteCell(0, 0, 2));
+            unitAlternateSprite.setItems(App.unitSprites);
+            
+            enemySprite.setButtonCell(new JobSpriteCell(0, 0, 2));
+            enemySprite.setCellFactory(x -> new JobSpriteCell(0, 0, 2));
+            enemySprite.setItems(App.unitSprites);
+            
+            enemyAlternateSprite.setButtonCell(new JobSpriteCell(0, 0, 2));
+            enemyAlternateSprite.setCellFactory(x -> new JobSpriteCell(0, 0, 2));
+            enemyAlternateSprite.setItems(App.unitSprites);
+        }
+    }
+
+    public void saveCharacters() {
+        List<CharacterData> characters = characterList.getItems();
+        ByteBuffer newCharacterDataBytes = ByteBuffer.allocate(characters.size()*0x1C).order(ByteOrder.LITTLE_ENDIAN);
+
+        for (int i = 0; i < characters.size(); i++) {
+            newCharacterDataBytes.put(characters.get(i).toBytes());
+        }
+        newCharacterDataBytes.rewind();
+        App.sysdata.setFile(0, newCharacterDataBytes);
+        // Patch arm9 code with new Characters length
+        App.arm9.put(0x000cb018, (byte)(characters.size()-1));
+        App.arm9.put(0x000cb01c, (byte)(characters.size()-1));
+    }
+
+}

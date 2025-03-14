@@ -1,0 +1,722 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Copyright (c) 2015, 2019, Gluon and/or its affiliates.
+  All rights reserved. Use is subject to license terms.
+
+  This file is available and licensed under the following license:
+
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions
+  are met:
+
+  - Redistributions of source code must retain the above copyright
+    notice, this list of conditions and the following disclaimer.
+  - Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in
+    the documentation and/or other materials provided with the distribution.
+  - Neither the name of Oracle Corporation nor the names of its
+    contributors may be used to endorse or promote products derived
+    from this software without specific prior written permission.
+
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.ruru.ffta2editor.JobController">
+   <children>
+      <SplitPane dividerPositions="0.2" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <items>
+            <VBox spacing="20.0" SplitPane.resizableWithParent="false">
+               <children>
+                  <HBox alignment="CENTER" spacing="20.0">
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#addJob" text="Add Job" />
+                        <Button mnemonicParsing="false" onAction="#removeJob" text="Remove Job" />
+                     </children>
+                     <padding>
+                        <Insets top="20.0" />
+                     </padding>
+                  </HBox>
+                  <ScrollPane fx:id="abilityScrollPane" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" VBox.vgrow="ALWAYS">
+                     <content>
+                        <ListView fx:id="jobList" />
+                     </content>
+                  </ScrollPane>
+               </children>
+            </VBox>
+            <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
+              <tabs>
+                <Tab text="Main">
+                     <content>
+                        <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <HBox alignment="TOP_CENTER" spacing="20.0">
+                                 <children>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="Name" />
+                                          <TextField fx:id="jobName" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="Gender" />
+                                          <ComboBox fx:id="gender" prefWidth="150.0" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="Race" />
+                                          <ComboBox fx:id="race" prefWidth="150.0" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="Movement Type" />
+                                          <ComboBox fx:id="moveType" prefWidth="150.0" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="Movable Places" />
+                                          <TextField fx:id="movablePlaces" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER" prefWidth="1019.0" spacing="100.0">
+                                 <children>
+                                    <GridPane alignment="CENTER">
+                                      <columnConstraints>
+                                        <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="SOMETIMES" maxWidth="100.0" />
+                                        <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="SOMETIMES" maxWidth="100.0" />
+                                          <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="SOMETIMES" maxWidth="100.0" />
+                                      </columnConstraints>
+                                      <rowConstraints>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                      </rowConstraints>
+                                       <children>
+                                          <Label text="Base" GridPane.columnIndex="1" />
+                                          <Label text="Growth" GridPane.columnIndex="2" />
+                                          <Label text="HP" GridPane.rowIndex="1" />
+                                          <Label text="MP" GridPane.rowIndex="2" />
+                                          <Label text="Speed" GridPane.rowIndex="3" />
+                                          <Label text="Attack" GridPane.rowIndex="4" />
+                                          <Label text="Defense" GridPane.rowIndex="5" />
+                                          <Label text="Magick" GridPane.rowIndex="6" />
+                                          <Label text="Resistance" GridPane.rowIndex="7" />
+                                          <TextField fx:id="hpBase" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                          <TextField fx:id="mpBase" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                          <TextField fx:id="speedBase" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                          <TextField fx:id="attackBase" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                          <TextField fx:id="defenseBase" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                          <TextField fx:id="magickBase" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                                          <TextField fx:id="resistanceBase" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                                          <TextField fx:id="hpGrowth" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                          <TextField fx:id="mpGrowth" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                          <TextField fx:id="speedGrowth" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                          <TextField fx:id="attackGrowth" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                                          <TextField fx:id="defenseGrowth" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+                                          <TextField fx:id="magickGrowth" GridPane.columnIndex="2" GridPane.rowIndex="6" />
+                                          <TextField fx:id="resistanceGrowth" GridPane.columnIndex="2" GridPane.rowIndex="7" />
+                                       </children>
+                                    </GridPane>
+                                    <GridPane alignment="CENTER">
+                                       <columnConstraints>
+                                          <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="SOMETIMES" maxWidth="100.0" />
+                                          <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="SOMETIMES" maxWidth="200.0" />
+                                       </columnConstraints>
+                                       <rowConstraints>
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                       </rowConstraints>
+                                       <children>
+                                          <Label text="Other stats" GridPane.columnIndex="1" />
+                                          <Label text="Move" GridPane.rowIndex="1" />
+                                          <Label text="Jump" GridPane.rowIndex="2" />
+                                          <Label text="Evasion" GridPane.rowIndex="3" />
+                                          <Label text="Resilience" GridPane.rowIndex="4" />
+                                          <Label text="Unarmed Bonus" GridPane.rowIndex="5" />
+                                          <Label text="Unknown stats" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                                          <Label text="0x2A" GridPane.rowIndex="7" />
+                                          <Label text="0x2B" GridPane.rowIndex="8" />
+                                          <Label text="0x2C" GridPane.rowIndex="9" />
+                                          <TextField fx:id="move" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                          <TextField fx:id="jump" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                          <TextField fx:id="evasion" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                          <TextField fx:id="resilience" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                          <TextField fx:id="unarmedBonus" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                          <TextField fx:id="_0x2a" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                                          <TextField fx:id="_0x2b" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                                          <TextField fx:id="_0x2c" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                                       </children>
+                                    </GridPane>
+                                    <GridPane alignment="CENTER">
+                                       <columnConstraints>
+                                          <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="SOMETIMES" maxWidth="100.0" />
+                                          <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="SOMETIMES" maxWidth="200.0" />
+                                       </columnConstraints>
+                                       <rowConstraints>
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                       </rowConstraints>
+                                       <children>
+                                          <Label text="Elemental resistances" GridPane.columnIndex="1" />
+                                          <Label text="Fire" GridPane.rowIndex="1" />
+                                          <Label text="Air" GridPane.rowIndex="2" />
+                                          <Label text="Earth" GridPane.rowIndex="3" />
+                                          <Label text="Water" GridPane.rowIndex="4" />
+                                          <Label text="Ice" GridPane.rowIndex="5" />
+                                          <Label text="Electricity" GridPane.rowIndex="6" />
+                                          <Label text="Holy" GridPane.rowIndex="7" />
+                                          <Label text="Dark" GridPane.rowIndex="8" />
+                                          <ComboBox fx:id="fireResistance" minWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                          <ComboBox fx:id="airResistance" minWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                          <ComboBox fx:id="earthResistance" minWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                          <ComboBox fx:id="waterResistance" minWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                          <ComboBox fx:id="iceResistance" minWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                          <ComboBox fx:id="electricityResistance" minWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                                          <ComboBox fx:id="holyResistance" minWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                                          <ComboBox fx:id="darkResistance" minWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                                       </children>
+                                    </GridPane>
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER" spacing="20.0">
+                                 <children>
+                                    <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0">
+                                       <children>
+                                          <CheckBox fx:id="equipKnife" mnemonicParsing="false" text="Knife" />
+                                          <CheckBox fx:id="equipSword" mnemonicParsing="false" text="Sword" />
+                                          <CheckBox fx:id="equipBlade" mnemonicParsing="false" text="Blade" />
+                                          <CheckBox fx:id="equipSaber" mnemonicParsing="false" text="Saber" />
+                                          <CheckBox fx:id="equipKnightsword" mnemonicParsing="false" text="Knightsword" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0">
+                                       <children>
+                                          <CheckBox fx:id="equipRapier" mnemonicParsing="false" text="Rapier" />
+                                          <CheckBox fx:id="equipGreatsword" mnemonicParsing="false" text="Greatsword" />
+                                          <CheckBox fx:id="equipBroadsword" mnemonicParsing="false" text="Broadsword" />
+                                          <CheckBox fx:id="equipKatana" mnemonicParsing="false" text="Katana" />
+                                          <CheckBox fx:id="equipSpear" mnemonicParsing="false" text="Spear" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0">
+                                       <children>
+                                          <CheckBox fx:id="equipRod" mnemonicParsing="false" text="Rod" />
+                                          <CheckBox fx:id="equipStaff" mnemonicParsing="false" text="Staff" />
+                                          <CheckBox fx:id="equipPole" mnemonicParsing="false" text="Pole" />
+                                          <CheckBox fx:id="equipKnuckles" mnemonicParsing="false" text="Knuckles" />
+                                          <CheckBox fx:id="equipBow" mnemonicParsing="false" text="Bow" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0">
+                                       <children>
+                                          <CheckBox fx:id="equipGreatbow" mnemonicParsing="false" text="Greatbow" />
+                                          <CheckBox fx:id="equipGun" mnemonicParsing="false" text="Gun" />
+                                          <CheckBox fx:id="equipInstrument" mnemonicParsing="false" text="Instrument" />
+                                          <CheckBox fx:id="equipHandCannon" mnemonicParsing="false" text="Hand-cannon" />
+                                          <CheckBox fx:id="equipGrenade" mnemonicParsing="false" text="Grenade" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0">
+                                       <children>
+                                          <CheckBox fx:id="equipAxe" mnemonicParsing="false" text="Axe" />
+                                          <CheckBox fx:id="equipHammer" mnemonicParsing="false" text="Hammer" />
+                                          <CheckBox fx:id="equipMace" mnemonicParsing="false" text="Mace" />
+                                          <CheckBox fx:id="equipCard" mnemonicParsing="false" text="Card" />
+                                          <CheckBox fx:id="equipBook" mnemonicParsing="false" text="Book" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0">
+                                       <children>
+                                          <CheckBox fx:id="equipShield" mnemonicParsing="false" text="Shield" />
+                                          <CheckBox fx:id="equipHelm" mnemonicParsing="false" text="Helm" />
+                                          <CheckBox fx:id="equipHairAccessory" mnemonicParsing="false" text="Hair Accessory" />
+                                          <CheckBox fx:id="equipHat" mnemonicParsing="false" text="Hat" />
+                                          <CheckBox fx:id="equipHeavyArmor" mnemonicParsing="false" text="Heavy Armor" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0">
+                                       <children>
+                                          <CheckBox fx:id="equipLightArmor" mnemonicParsing="false" text="Light Armor" />
+                                          <CheckBox fx:id="equipRobe" mnemonicParsing="false" text="Robe" />
+                                          <CheckBox fx:id="equipBoots" mnemonicParsing="false" text="Boots" />
+                                          <CheckBox fx:id="equipGloves" mnemonicParsing="false" text="Gloves" />
+                                          <CheckBox fx:id="equipAccessory" mnemonicParsing="false" text="Accessory" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0">
+                                       <children>
+                                          <CheckBox fx:id="equipBit0" mnemonicParsing="false" text="Unused" />
+                                          <CheckBox fx:id="equipBit36" mnemonicParsing="false" text="Unused" />
+                                          <CheckBox fx:id="equipBit37" mnemonicParsing="false" text="Unused" />
+                                          <CheckBox fx:id="equipBit38" mnemonicParsing="false" text="Unused" />
+                                          <CheckBox fx:id="equipBit39" mnemonicParsing="false" text="Unused" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                                 <padding>
+                                    <Insets top="20.0" />
+                                 </padding>
+                              </HBox>
+                              <VBox alignment="TOP_CENTER">
+                                 <children>
+                                    <Label text="Description" />
+                                    <TextArea fx:id="jobDescription" prefHeight="200.0" prefWidth="200.0" />
+                                 </children>
+                              </VBox>
+                           </children>
+                           <padding>
+                              <Insets top="20.0" />
+                           </padding>
+                        </VBox>
+                     </content>
+                  </Tab>
+                  <Tab text="Sprite">
+                     <content>
+                        <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0">
+                           <children>
+                              <HBox alignment="TOP_CENTER" spacing="20.0">
+                                 <children>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="Unit portrait" />
+                                          <TextField fx:id="unitPortrait" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="Unit top sprite" />
+                                          <TextField fx:id="unitTopSprite" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="Unit sprite" />
+                                          <ComboBox fx:id="unitSprite" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="Unit alternate sprite" />
+                                          <ComboBox fx:id="unitAlternateSprite" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="Unit palette" />
+                                          <ComboBox fx:id="unitPalette" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                              <HBox alignment="TOP_CENTER" spacing="20.0">
+                                 <children>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="Enemy portrait" />
+                                          <TextField fx:id="enemyPortrait" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="Enemy top sprite" />
+                                          <TextField fx:id="enemyTopSprite" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="Enemy sprite" />
+                                          <ComboBox fx:id="enemySprite" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="Enemy alternate sprite" />
+                                          <ComboBox fx:id="enemyAlternateSprite" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="Enemy palette" />
+                                          <ComboBox fx:id="enemyPalette" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                           </children>
+                           <padding>
+                              <Insets top="20.0" />
+                           </padding>
+                        </VBox>
+                     </content></Tab>
+                  <Tab text="Ability Set">
+                     <content>
+                        <HBox spacing="100.0">
+                           <children>
+                              <VBox alignment="TOP_CENTER">
+                                 <children>
+                                    <VBox alignment="TOP_CENTER" spacing="10.0">
+                                       <children>
+                                          <HBox alignment="CENTER" spacing="20.0">
+                                             <children>
+                                                <VBox alignment="TOP_CENTER">
+                                                   <children>
+                                                      <Label text="Ability Set" />
+                                                      <ComboBox fx:id="abilitySetList" />
+                                                   </children>
+                                                </VBox>
+                                              <Button mnemonicParsing="false" onAction="#addAbilitySet" text="Add set" />
+                                                <Button mnemonicParsing="false" onAction="#removeAbilitySet" text="Remove set" />
+                                                <Button layoutX="235.0" layoutY="19.0" mnemonicParsing="false" onAction="#addAbilitySetAbility" text="Add ability" />
+                                                <Button layoutX="347.0" layoutY="19.0" mnemonicParsing="false" onAction="#removeAbilitySetAbility" text="Remove ability" />
+                                             </children>
+                                             <opaqueInsets>
+                                                <Insets />
+                                             </opaqueInsets>
+                                          </HBox>
+                                          <ListView fx:id="abilitySetAbilityList" />
+                                       </children>
+                                    </VBox>
+                                    <Label text="Usable by races" />
+                                    <HBox>
+                                       <children>
+                                          <VBox prefHeight="200.0" prefWidth="100.0" spacing="20.0">
+                                             <children>
+                                                <CheckBox fx:id="raceBit_0" mnemonicParsing="false" text="Bit_0" />
+                                                <CheckBox fx:id="raceHume" mnemonicParsing="false" text="Hume" />
+                                                <CheckBox fx:id="raceBangaa" mnemonicParsing="false" text="Bangaa" />
+                                                <CheckBox fx:id="raceNuMou" mnemonicParsing="false" text="Nu Mou" />
+                                                <CheckBox fx:id="raceViera" mnemonicParsing="false" text="Viera" />
+                                                <CheckBox fx:id="raceMoogle" mnemonicParsing="false" text="Moogle" />
+                                                <CheckBox fx:id="raceSeeq" mnemonicParsing="false" text="Seeq" />
+                                                <CheckBox fx:id="raceGria" mnemonicParsing="false" text="Gria" />
+                                             </children>
+                                          </VBox>
+                                          <VBox prefHeight="200.0" prefWidth="100.0" spacing="20.0">
+                                             <children>
+                                                <CheckBox fx:id="raceBit_8" mnemonicParsing="false" text="Bit_8" />
+                                                <CheckBox fx:id="raceBit_9" mnemonicParsing="false" text="Bit_9" />
+                                                <CheckBox fx:id="raceBaknamy" mnemonicParsing="false" text="Baknamy" />
+                                                <CheckBox fx:id="raceSprite" mnemonicParsing="false" text="Sprite" />
+                                                <CheckBox fx:id="raceLamia" mnemonicParsing="false" text="Lamia" />
+                                                <CheckBox fx:id="raceWolf" mnemonicParsing="false" text="Wolf" />
+                                                <CheckBox fx:id="raceDreamhare" mnemonicParsing="false" text="Dreamhare" />
+                                                <CheckBox fx:id="raceWerewolf" mnemonicParsing="false" text="Werewolf" />
+                                             </children>
+                                          </VBox>
+                                          <VBox prefHeight="200.0" prefWidth="100.0" spacing="20.0">
+                                             <children>
+                                                <CheckBox fx:id="raceAntlion" mnemonicParsing="false" text="Antlion" />
+                                                <CheckBox fx:id="raceShelling" mnemonicParsing="false" text="Shelling" />
+                                                <CheckBox fx:id="raceMalboro" mnemonicParsing="false" text="Malboro" />
+                                                <CheckBox fx:id="raceTomato" mnemonicParsing="false" text="Tomato" />
+                                                <CheckBox fx:id="raceCockatrice" mnemonicParsing="false" text="Cockatrice" />
+                                                <CheckBox fx:id="raceChocobo" mnemonicParsing="false" text="Chocobo" />
+                                                <CheckBox fx:id="raceFlan" mnemonicParsing="false" text="Flan" />
+                                                <CheckBox fx:id="raceBomb" mnemonicParsing="false" text="Bomb" />
+                                             </children>
+                                          </VBox>
+                                          <VBox prefHeight="200.0" prefWidth="100.0" spacing="20.0">
+                                             <children>
+                                                <CheckBox fx:id="raceZombie" mnemonicParsing="false" text="Zombie" />
+                                                <CheckBox fx:id="raceGhost" mnemonicParsing="false" text="Ghost" />
+                                                <CheckBox fx:id="raceDeathscythe" mnemonicParsing="false" text="Deathscythe" />
+                                                <CheckBox fx:id="raceFloatingEye" mnemonicParsing="false" text="Floating Eye" />
+                                                <CheckBox fx:id="raceAhriman" mnemonicParsing="false" text="Ahriman" />
+                                                <CheckBox fx:id="raceTonberry" mnemonicParsing="false" text="Tonberry" />
+                                                <CheckBox fx:id="raceHeadless" mnemonicParsing="false" text="Headless" />
+                                                <CheckBox fx:id="raceBehemoth" mnemonicParsing="false" text="Behemoth" />
+                                             </children>
+                                          </VBox>
+                                          <VBox prefHeight="200.0" prefWidth="100.0" spacing="20.0">
+                                             <children>
+                                                <CheckBox fx:id="raceMagickPot" mnemonicParsing="false" text="MagickPot" />
+                                                <CheckBox fx:id="raceDrake" mnemonicParsing="false" text="Drake" />
+                                                <CheckBox fx:id="raceMimic" mnemonicParsing="false" text="Mimic" />
+                                                <CheckBox fx:id="raceBit_35" mnemonicParsing="false" text="Bit_35" />
+                                                <CheckBox fx:id="raceYowie" mnemonicParsing="false" text="Yowie" />
+                                                <CheckBox fx:id="raceRafflesia" mnemonicParsing="false" text="Rafflesia" />
+                                                <CheckBox fx:id="raceDemonWall" mnemonicParsing="false" text="DemonWall" />
+                                                <CheckBox fx:id="raceNeukhia" mnemonicParsing="false" text="Neukhia" />
+                                             </children>
+                                          </VBox>
+                                          <VBox prefHeight="200.0" prefWidth="100.0" spacing="20.0">
+                                             <children>
+                                                <CheckBox fx:id="raceUpsilon" mnemonicParsing="false" text="Upsilon" />
+                                                <CheckBox fx:id="raceBit_41" mnemonicParsing="false" text="Bit_41" />
+                                                <CheckBox fx:id="raceBit_42" mnemonicParsing="false" text="Bit_42" />
+                                                <CheckBox fx:id="raceBit_43" mnemonicParsing="false" text="Bit_43" />
+                                                <CheckBox fx:id="raceBit_44" mnemonicParsing="false" text="Bit_44" />
+                                                <CheckBox fx:id="raceBit_45" mnemonicParsing="false" text="Bit_45" />
+                                                <CheckBox fx:id="raceBit_46" mnemonicParsing="false" text="Bit_46" />
+                                                <CheckBox fx:id="raceBit_47" mnemonicParsing="false" text="Bit_47" />
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </VBox>
+                              <VBox alignment="TOP_CENTER" spacing="20.0">
+                                 <children>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="Ability" />
+                                          <ComboBox fx:id="abilitySetAbilityData" prefWidth="150.0" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="Max AP" />
+                                          <TextField fx:id="maxAP" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="Animation" />
+                                          <TextField fx:id="abilityAnimation" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="Weapon Animation?" />
+                                          <TextField fx:id="weaponAnimation" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0x4" />
+                                          <TextField fx:id="ability_0x4" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0x5" />
+                                          <TextField fx:id="ability_0x5" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0x6" />
+                                          <TextField fx:id="ability_0x6" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0x7" />
+                                          <TextField fx:id="ability_0x7" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0x8" />
+                                          <TextField fx:id="ability_0x8" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0xa" />
+                                          <TextField fx:id="ability_0xa" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0xb" />
+                                          <TextField fx:id="ability_0xb" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </VBox>
+                           </children>
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                           <padding>
+                              <Insets bottom="20.0" left="20.0" top="20.0" />
+                           </padding>
+                        </HBox>
+                     </content></Tab>
+                  <Tab text="Other">
+                     <content>
+                        <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+                                 <children>
+                                    <VBox alignment="TOP_CENTER" spacing="20.0">
+                                       <children>
+                                          <Label text="0x31 (Race something?)" />
+                                          <TextField fx:id="raceSomethingMaybe" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER" spacing="20.0">
+                                       <children>
+                                          <Label text="0x32" />
+                                          <TextField fx:id="_0x32" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                              <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+                                 <children>
+                                    <VBox alignment="TOP_CENTER" spacing="20.0">
+                                       <children>
+                                          <Label text="0x34" />
+                                          <TextField fx:id="_0x34" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER" spacing="20.0">
+                                       <children>
+                                          <Label text="0x35" />
+                                          <TextField fx:id="_0x35" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER" spacing="20.0">
+                                       <children>
+                                          <Label text="0x36" />
+                                          <TextField fx:id="_0x36" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER" spacing="20.0">
+                                       <children>
+                                          <Label text="0x37" />
+                                          <TextField fx:id="_0x37" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER" spacing="20.0">
+                                       <children>
+                                          <Label text="0x38" />
+                                          <TextField fx:id="_0x38" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER" spacing="20.0">
+                                       <children>
+                                          <Label text="0x39" />
+                                          <TextField fx:id="_0x39" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                              <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+                                 <children>
+                                    <VBox alignment="TOP_CENTER" spacing="20.0">
+                                       <children>
+                                          <Label text="0x3A" />
+                                          <TextField fx:id="_0x3a" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER" spacing="20.0">
+                                       <children>
+                                          <Label text="0x3B" />
+                                          <TextField fx:id="_0x3b" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER" spacing="20.0">
+                                       <children>
+                                          <Label text="0x3C" />
+                                          <TextField fx:id="_0x3c" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER" spacing="20.0">
+                                       <children>
+                                          <Label text="0x3D" />
+                                          <TextField fx:id="_0x3d" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER" spacing="20.0">
+                                       <children>
+                                          <Label text="0x3E" />
+                                          <TextField fx:id="_0x3e" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER" spacing="20.0">
+                                       <children>
+                                          <Label text="0x41" />
+                                          <TextField fx:id="_0x41" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                              <VBox prefHeight="200.0" prefWidth="100.0" spacing="20.0">
+                                 <children>
+                                    <Label text="Properties" />
+                                    <CheckBox fx:id="propertyBit0" mnemonicParsing="false" text="Bit 0" />
+                                    <CheckBox fx:id="propertyBit1" mnemonicParsing="false" text="Bit 1" />
+                                    <CheckBox fx:id="canChangeJobs" mnemonicParsing="false" text="Can change jobs" />
+                                    <CheckBox fx:id="propertyBit3" mnemonicParsing="false" text="Bit 3" />
+                                    <CheckBox fx:id="propertyBit4" mnemonicParsing="false" text="Bit 4" />
+                                    <CheckBox fx:id="propertyBit5" mnemonicParsing="false" text="Bit 5" />
+                                    <CheckBox fx:id="canAlwaysUseItems" mnemonicParsing="false" text="Can always use Items" />
+                                    <CheckBox fx:id="propertyBit7" mnemonicParsing="false" text="Bit 7" />
+                                 </children>
+                                 <opaqueInsets>
+                                    <Insets />
+                                 </opaqueInsets>
+                                 <padding>
+                                    <Insets left="20.0" />
+                                 </padding>
+                              </VBox>
+                           </children>
+                           <padding>
+                              <Insets top="20.0" />
+                           </padding>
+                        </VBox>
+                     </content></Tab>
+              </tabs>
+            </TabPane>
+        </items>
+      </SplitPane>
+   </children>
+</AnchorPane>
