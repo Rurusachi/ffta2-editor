@@ -5,7 +5,6 @@ import java.nio.ByteOrder;
 import java.util.List;
 
 import org.ruru.ffta2editor.JobController.JobCell;
-import org.ruru.ffta2editor.model.job.AbilitySet;
 import org.ruru.ffta2editor.model.job.JobData;
 import org.ruru.ffta2editor.model.job.JobGroup;
 
@@ -35,6 +34,8 @@ public class JobGroupController {
                                                                               group.job2.getValue().name.getValue(),
                                                                               group.job3.getValue().name.getValue(), 
                                                                               group.job4.getValue().name.getValue()));
+            } else {
+                label.setText("");
             }
             setGraphic(label);
         }

@@ -11,14 +11,12 @@ import org.ruru.ffta2editor.TextController.StringPropertyCell;
 import org.ruru.ffta2editor.model.character.CharacterData;
 import org.ruru.ffta2editor.model.job.JobData;
 import org.ruru.ffta2editor.model.job.JobGender;
-import org.ruru.ffta2editor.model.job.JobRequirementData;
 import org.ruru.ffta2editor.utility.ByteChangeListener;
 import org.ruru.ffta2editor.utility.ShortChangeListener;
 import org.ruru.ffta2editor.utility.UnitSprite;
 import org.ruru.ffta2editor.utility.UnsignedByteStringConverter;
 import org.ruru.ffta2editor.utility.UnsignedShortStringConverter;
 
-import javafx.beans.binding.Binding;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.ObjectProperty;
@@ -48,6 +46,8 @@ public class CharacterController {
             super.updateItem(character, empty);
             if (character != null) {
                 label.setText(String.format("%X: %s", character.id , character.nameString.getValue()));
+            } else {
+                label.setText("");
             }
             setGraphic(label);
         }

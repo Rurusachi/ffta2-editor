@@ -58,6 +58,18 @@ public class IdxAndPak {
         files.set(id, newFile);
     }
 
+    public void setNumFiles(int newCount) {
+        if (files.size() < newCount) {
+            while (files.size() < newCount) {
+                files.add(null);
+            }
+        } else {
+            while (files.size() > newCount) {
+                files.removeLast();
+            }
+        }
+    }
+
     private int align16(int d) {
         return (d + 0x1f) & ~0x1f;
     }

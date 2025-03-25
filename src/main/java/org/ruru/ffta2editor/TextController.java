@@ -2,7 +2,6 @@ package org.ruru.ffta2editor;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.ruru.ffta2editor.model.stringTable.MessageId;
@@ -34,6 +33,8 @@ public class TextController {
             super.updateItem(table, empty);
             if (table != null) {
                 label.setText(String.format("%X: %s", table.id , table.name));
+            } else {
+                label.setText("");
             }
             setGraphic(label);
         }
@@ -51,6 +52,8 @@ public class TextController {
             super.updateItem(property, empty);
             if (property != null) {
                 label.setText(property.getValue());
+            } else {
+                label.setText("");
             }
             setGraphic(label);
         }
@@ -113,6 +116,7 @@ public class TextController {
                 StringTable stringTable = new StringTable(stringTableBytes, MessageId.messageNames[i], i);
                 tempMessageList.add(stringTable);
 
+                ObservableList<StringProperty> tempList;
                 switch (i) {
                     case 0:
                         App.characterNames = stringTable.strings.getValue();
@@ -126,8 +130,25 @@ public class TextController {
                     case 3:
                         App.abilityNames = stringTable.strings.getValue();
                         break;
-                    case 38:
-                        App.jobDescriptions = stringTable.strings.getValue();
+                    case 5:
+                        App.locationNames = stringTable.strings.getValue();
+                        break;
+                    case 6:
+                        App.questNames = stringTable.strings.getValue();
+                        break;
+                    case 11:
+                        App.itemNames = stringTable.strings.getValue();
+                        break;
+                    case 14:
+                        App.lawNames = stringTable.strings.getValue();
+                        break;
+                    case 18:
+                        tempList = FXCollections.observableArrayList(stringTable.strings.getValue().subList(0x75, 0xC8));
+                        tempList.addFirst(new SimpleStringProperty("None"));
+                        App.bonusEffects = tempList;
+                        break;
+                    case 24:
+                        App.bazaarSetNames = stringTable.strings.getValue();
                         break;
                     case 30:
                         App.abilitySetDescriptions = stringTable.strings.getValue();
@@ -135,17 +156,17 @@ public class TextController {
                     case 31:
                         App.abilityDescriptions = stringTable.strings.getValue();
                         break;
-                    case 11:
-                        App.itemNames = stringTable.strings.getValue();
+                    case 35:
+                        App.questDescriptions = stringTable.strings.getValue();
+                        break;
+                    case 38:
+                        App.jobDescriptions = stringTable.strings.getValue();
                         break;
                     case 39:
                         App.itemDescriptions = stringTable.strings.getValue();
                         break;
-                    case 18:
-                        System.out.println(stringTable.strings.getValue().size());
-                        ObservableList<StringProperty> tempList = FXCollections.observableArrayList(stringTable.strings.getValue().subList(0x75, 0xC8));
-                        tempList.addFirst(new SimpleStringProperty("None"));
-                        App.bonusEffects = tempList;
+                    case 53:
+                        App.bazaarSetDescriptions = stringTable.strings.getValue();
                         break;
                 
                     default:

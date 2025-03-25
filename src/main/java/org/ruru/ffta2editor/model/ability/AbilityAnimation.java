@@ -58,6 +58,32 @@ public class AbilityAnimation {
         _0x17.set(bytes.get());
     }
 
+    public AbilityAnimation() {
+        animation.set((short)0);
+        subtype.set((byte)0);
+        start.set((byte)0);
+        first.set((byte)0);
+        untilSecond.set((byte)0);
+        second.set((byte)0);
+        untilThird.set((byte)0);
+        third.set((byte)0);
+        untilFourth.set((byte)0);
+        fourth.set((byte)0);
+        untilEnd.set((byte)0);
+        _0x0C.set((byte)0);
+        _0x0D.set((byte)0);
+        flinch_Glee.set((byte)0);
+        _0x0F.set((byte)0);
+        _0x10.set((byte)0);
+        _0x11.set((byte)0);
+        _0x12.set((byte)0);
+        _0x13.set((byte)0);
+        _0x14.set((byte)0);
+        _0x15.set((byte)0);
+        _0x16.set((byte)0);
+        _0x17.set((byte)0);
+    }
+
     public byte[] toBytes() {
         ByteBuffer buffer = ByteBuffer.allocate(0x18).order(ByteOrder.LITTLE_ENDIAN);
 

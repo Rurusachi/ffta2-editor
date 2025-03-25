@@ -3,12 +3,9 @@ package org.ruru.ffta2editor.utility;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -18,19 +15,7 @@ public class LZSS {
     private static final int N = 4096;
     private static final int F = 18;
     private static final int THRESHOLD = 3;
-    private static final int NIL = N;
-
-    private int textsize = 0;
-    private int codesize = 0;
-    private byte[] text_buf = new byte[N + F -1];
-
-    private int match_position;
-    private int match_length;
-
-    //private ByteBuffer infile;
-    //private ByteBuffer outfile;
-
-    private TreeMap<Integer, Byte> tree;
+    //private static final int NIL = N;
 
     public static class LZSSDecodeResult {
         public ByteBuffer decodedData;
@@ -160,9 +145,10 @@ public class LZSS {
         public void removePosition(SuffixNode node, int position) {
             var iterator = node.children.iterator();
             SuffixNode childNode;
-            int i = 0;
+            //int i = 0;
             LinkedList<SuffixNode> newChildren = new LinkedList<>();
-            for (; iterator.hasNext(); i++) {
+            //for (; iterator.hasNext(); i++) {
+            while (iterator.hasNext()) {
                 childNode = iterator.next();
                 if (childNode.position == position) {
                     //node.children.remove(i);
@@ -286,10 +272,10 @@ public class LZSS {
 
 
         BitSet flags = new BitSet(8);
-        int startPos = inFile.position();
+        //int startPos = inFile.position();
         inFile.order(ByteOrder.LITTLE_ENDIAN);
         ByteBuffer outFile = ByteBuffer.allocate(1024*1024).order(ByteOrder.LITTLE_ENDIAN);
-        ByteBuffer copyBuffer = outFile.asReadOnlyBuffer().order(ByteOrder.LITTLE_ENDIAN);
+        //ByteBuffer copyBuffer = outFile.asReadOnlyBuffer().order(ByteOrder.LITTLE_ENDIAN);
 
         int compressionType = 0x10;
         int uncompressedSize = inFile.remaining();

@@ -1,6 +1,5 @@
 package org.ruru.ffta2editor;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -9,26 +8,14 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
 
-import javax.imageio.ImageIO;
-import javax.imageio.stream.ImageOutputStream;
-
-import org.ruru.ffta2editor.model.unitSst.SpriteData;
-import org.ruru.ffta2editor.model.unitSst.SpritePalettes;
-import org.ruru.ffta2editor.model.unitSst.UnitSst;
 import org.ruru.ffta2editor.utility.Archive;
 import org.ruru.ffta2editor.utility.IdxAndPak;
 import org.ruru.ffta2editor.utility.LZSS;
-import org.ruru.ffta2editor.utility.UnitSprite;
-import org.ruru.ffta2editor.utility.LZSS.LZSSDecodeResult;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.SplitPane;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
-import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.util.Pair;
 
@@ -57,6 +44,15 @@ public class MainController {
 
     @FXML AnchorPane characterTab;
     @FXML CharacterController characterTabController;
+
+    @FXML AnchorPane formationTab;
+    @FXML FormationController formationTabController;
+
+    @FXML AnchorPane questTab;
+    @FXML QuestController questTabController;
+
+    @FXML AnchorPane bazaarTab;
+    @FXML BazaarController bazaarTabController;
 
     @FXML AnchorPane equipmentTab;
     @FXML EquipmentController equipmentTabController;
@@ -114,6 +110,9 @@ public class MainController {
             FileInputStream overlay11 = new FileInputStream(dataPath.resolve("overlay\\overlay_0011.bin").toFile());
             App.overlay11 = ByteBuffer.wrap(overlay11.readAllBytes()).order(ByteOrder.LITTLE_ENDIAN);
             overlay11.close();
+            FileInputStream overlay8 = new FileInputStream(dataPath.resolve("overlay\\overlay_0008.bin").toFile());
+            App.overlay8 = ByteBuffer.wrap(overlay8.readAllBytes()).order(ByteOrder.LITTLE_ENDIAN);
+            overlay8.close();
         } catch (Exception e) {
             System.err.println(e);
             return;
@@ -140,6 +139,20 @@ public class MainController {
         ByteBuffer jdMessagePak = App.archive.getFile(String.format("system/rom/JD_message_%d.pak", 0));
         App.jdMessage = new IdxAndPak(jdMessageIdx, jdMessagePak);
 
+        ByteBuffer entrydataIdx = App.archive.getFile("system/rom/entrydata_rom.idx");
+        ByteBuffer entrydataPak = App.archive.getFile("system/rom/entrydata.pak");
+        App.entrydata = new IdxAndPak(entrydataIdx, entrydataPak);
+
+        try {
+            var animTable = App.archive.getFile("char/NaUnitAnimTable.bin");
+            App.naUnitAnimTable = LZSS.decode(animTable.position(4)).decodedData;
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+
+        
+        
+
         textTabController.loadMessages();
         abilityTabController.loadAbilities();
         spritesTabController.loadSprites();
@@ -148,6 +161,9 @@ public class MainController {
         jobRequirementTabController.loadJobRequirements();
         jobGroupTabController.loadJobGroups();
         equipmentTabController.loadEquipment();
+        formationTabController.loadFormations();
+        questTabController.loadQuests();
+        bazaarTabController.loadBazaar();
         // var animTable = App.archive.getFile("char/NaUnitAnimTable.bin");
         // try {
         //     LZSSDecodeResult decoded = LZSS.decode(animTable.position(4));
@@ -240,6 +256,9 @@ public class MainController {
             jobRequirementTabController.saveJobRequirements();
             jobGroupTabController.saveJobGroups();
             equipmentTabController.saveEquipment();
+            formationTabController.saveFormations();
+            questTabController.saveQuests();
+            bazaarTabController.saveBazaar();
             //patchesTabController.applyPatches(); // TODO: Redo patch application
 
             // Repack sub-archives
@@ -258,6 +277,16 @@ public class MainController {
             Pair<ByteBuffer, ByteBuffer> jdMessageIdxPak = App.jdMessage.repack();
             App.archive.setFile(String.format("system/rom/JD_message_rom_%d.idx", 0), jdMessageIdxPak.getKey());
             App.archive.setFile(String.format("system/rom/JD_message_%d.pak", 0), jdMessageIdxPak.getValue());
+
+            Pair<ByteBuffer, ByteBuffer> entrydataIdxPak = App.entrydata.repack();
+            App.archive.setFile("system/rom/entrydata_rom.idx", entrydataIdxPak.getKey());
+            App.archive.setFile("system/rom/entrydata.pak", entrydataIdxPak.getValue());
+
+            ByteBuffer encodedTable = LZSS.encode(App.naUnitAnimTable.rewind());
+            ByteBuffer newTable = ByteBuffer.allocate(encodedTable.capacity()+4);
+            newTable.putInt(encodedTable.getShort(1));
+            newTable.put(encodedTable);
+            App.archive.setFile("char/NaUnitAnimTable.bin", newTable);
 
             // Repack archive
             ByteBuffer newIdx = ByteBuffer.allocate(256*1024*1024).order(ByteOrder.LITTLE_ENDIAN);

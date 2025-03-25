@@ -14,8 +14,7 @@ import org.ruru.ffta2editor.model.ability.AbilityEffect.Targets;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;;
+import javafx.beans.property.SimpleStringProperty;;
 
 
 public class ActiveAbilityData extends AbilityData {
@@ -65,16 +64,13 @@ public class ActiveAbilityData extends AbilityData {
     public AbilityEffect effect3;
     public AbilityEffect effect4;
 
-    public SimpleObjectProperty<Byte> _0x0 = new SimpleObjectProperty<>();
-    public SimpleObjectProperty<Byte> _0x1 = new SimpleObjectProperty<>();
+    public SimpleObjectProperty<Short> _0x0 = new SimpleObjectProperty<>();
     public SimpleObjectProperty<AbilityElement> abilityElement = new SimpleObjectProperty<>();
     public SimpleObjectProperty<Byte> mpCost = new SimpleObjectProperty<>();
     public SimpleObjectProperty<Byte> _0x4 = new SimpleObjectProperty<>();
     public SimpleObjectProperty<Byte> _0x5 = new SimpleObjectProperty<>();
-    public SimpleObjectProperty<Byte> power = new SimpleObjectProperty<>();
-    public SimpleObjectProperty<Byte> _0x7 = new SimpleObjectProperty<>();
+    public SimpleObjectProperty<Short> power = new SimpleObjectProperty<>();
     public SimpleObjectProperty<WeaponRequirement> weaponRequirement = new SimpleObjectProperty<>();
-    public SimpleObjectProperty<Byte> _0x9 = new SimpleObjectProperty<>();
     public SimpleObjectProperty<SpecialRequirement> specialRequirement = new SimpleObjectProperty<>();
     public SimpleObjectProperty<RangeAOEType> rangeAOEType = new SimpleObjectProperty<>();
     public SimpleObjectProperty<Byte> range = new SimpleObjectProperty<>();
@@ -238,16 +234,13 @@ public class ActiveAbilityData extends AbilityData {
             this.description = new SimpleStringProperty("\\var2:000\\\\end\\");
         }
         this.id = id;
-        _0x0.set(bytes.get()); 
-        _0x1.set(bytes.get());
+        _0x0.set(bytes.getShort()); 
         abilityElement.set(AbilityElement.fromInteger(bytes.get()));
         mpCost.set(bytes.get());
         _0x4.set(bytes.get());
         _0x5.set(bytes.get());
-        power.set(bytes.get());
-        _0x7.set(bytes.get());
-        weaponRequirement.set(WeaponRequirement.fromInteger(bytes.get()));
-        _0x9.set(bytes.get());
+        power.set(bytes.getShort());
+        weaponRequirement.set(WeaponRequirement.fromInteger(bytes.getShort()));
         specialRequirement.set(SpecialRequirement.fromInteger(bytes.get()));
         rangeAOEType.set(RangeAOEType.fromInteger(bytes.get()));
         range.set(bytes.get());
@@ -300,16 +293,13 @@ public class ActiveAbilityData extends AbilityData {
             App.abilityDescriptions.add(this.description);
         }
         this.id = id;
-        _0x0.set((byte)0); 
-        _0x1.set((byte)0);
+        _0x0.set((short)0); 
         abilityElement.set(AbilityElement.fromInteger((byte)0));
         mpCost.set((byte)0);
         _0x4.set((byte)0);
         _0x5.set((byte)0);
-        power.set((byte)0);
-        _0x7.set((byte)0);
-        weaponRequirement.set(WeaponRequirement.fromInteger((byte)0));
-        _0x9.set((byte)0);
+        power.set((short)0);
+        weaponRequirement.set(WeaponRequirement.fromInteger((short)0));
         specialRequirement.set(SpecialRequirement.fromInteger((byte)0));
         rangeAOEType.set(RangeAOEType.fromInteger((byte)0));
         range.set((byte)0);
@@ -351,16 +341,13 @@ public class ActiveAbilityData extends AbilityData {
     public byte[] toBytes() {
         ByteBuffer buffer = ByteBuffer.allocate(0x34).order(ByteOrder.LITTLE_ENDIAN);
 
-        buffer.put(_0x0.getValue().byteValue());
-        buffer.put(_0x1.getValue().byteValue());
+        buffer.putShort(_0x0.getValue().byteValue());
         buffer.put(abilityElement.getValue().value);
         buffer.put(mpCost.getValue().byteValue());
         buffer.put(_0x4.getValue().byteValue());
         buffer.put(_0x5.getValue().byteValue());
-        buffer.put(power.getValue().byteValue());
-        buffer.put(_0x7.getValue().byteValue());
-        buffer.put(weaponRequirement.getValue().value);
-        buffer.put(_0x9.getValue().byteValue());
+        buffer.putShort(power.getValue().byteValue());
+        buffer.putShort(weaponRequirement.getValue().value);
         buffer.put(specialRequirement.getValue().value);
         buffer.put(rangeAOEType.getValue().value);
         buffer.put(range.getValue().byteValue());

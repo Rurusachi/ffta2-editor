@@ -6,17 +6,13 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import org.ruru.ffta2editor.AbilityController.AbilityCell;
-import org.ruru.ffta2editor.AbilityController.AbilityIdCell;
-import org.ruru.ffta2editor.SpritesController.SpriteCell;
 import org.ruru.ffta2editor.model.Race;
 import org.ruru.ffta2editor.model.ability.ActiveAbilityData;
 import org.ruru.ffta2editor.model.job.AbilitySet;
 import org.ruru.ffta2editor.model.job.AbilitySetAbility;
-import org.ruru.ffta2editor.model.job.AbilitySetId;
 import org.ruru.ffta2editor.model.job.JobData;
 import org.ruru.ffta2editor.model.job.JobElementalResistance;
 import org.ruru.ffta2editor.model.job.JobGender;
-import org.ruru.ffta2editor.model.job.JobId;
 import org.ruru.ffta2editor.model.job.JobMoveType;
 import org.ruru.ffta2editor.utility.ByteChangeListener;
 import org.ruru.ffta2editor.utility.ShortChangeListener;
@@ -25,24 +21,22 @@ import org.ruru.ffta2editor.utility.UnsignedByteStringConverter;
 import org.ruru.ffta2editor.utility.UnsignedShortStringConverter;
 
 import javafx.beans.binding.Bindings;
-import javafx.beans.binding.BooleanBinding;
-import javafx.beans.binding.ListBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
-import javafx.scene.control.TextField;
-import javafx.scene.image.ImageView;
-import javafx.util.Pair;
-import javafx.util.StringConverter;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
+import javafx.util.Pair;
+import javafx.util.StringConverter;
 
 public class JobController {
     
@@ -57,6 +51,8 @@ public class JobController {
             super.updateItem(job, empty);
             if (job != null) {
                 label.setText(String.format("%X: %s", job.id , job.name.getValue()));
+            } else {
+                label.setText("");
             }
             setGraphic(label);
         }
@@ -1032,7 +1028,7 @@ public class JobController {
         assert (newAbilitySetAbilitybytes.capacity() / 0xc) - 1 == firstAbilityIndex - 1;
 
         App.sysdata.setFile(2, newAbilitySetbytes.rewind());
-        // Patch arm9 code with new Ability Set length
+        // Patch code with new Ability Set length
         App.arm9.put(0x000cb054, (byte)(abilitySets.size()-1));
         App.arm9.put(0x000cb058, (byte)(abilitySets.size()-1));
         App.arm9.put(0x000b81dc, (byte)abilitySets.size());
@@ -1041,7 +1037,7 @@ public class JobController {
 
 
         App.sysdata.setFile(3, newAbilitySetAbilitybytes.rewind());
-        // Patch arm9 code with new Ability Set Abilities length
+        // Patch code with new Ability Set Abilities length
         App.arm9.putInt(0x000cb1d0, firstAbilityIndex - 1);
         
         

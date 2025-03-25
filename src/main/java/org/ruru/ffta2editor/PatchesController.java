@@ -11,7 +11,6 @@ import java.util.List;
 
 import org.ruru.ffta2editor.model.unitSst.UnitSst;
 import org.ruru.ffta2editor.model.unitSst.UnitSst.SstHeaderNode;
-import org.ruru.ffta2editor.utility.IdxAndPak;
 import org.ruru.ffta2editor.utility.LZSS;
 import org.ruru.ffta2editor.utility.LZSS.LZSSDecodeResult;
 

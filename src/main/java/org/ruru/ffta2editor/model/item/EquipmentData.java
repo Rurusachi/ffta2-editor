@@ -1,11 +1,10 @@
-package org.ruru.ffta2editor.model.equipment;
+package org.ruru.ffta2editor.model.item;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.BitSet;
 
 import org.ruru.ffta2editor.App;
-import org.ruru.ffta2editor.model.ability.ActiveAbilityData;
 import org.ruru.ffta2editor.model.ability.AbilityData;
 import org.ruru.ffta2editor.model.ability.AbilityElement;
 import org.ruru.ffta2editor.model.job.JobGroup;
@@ -15,13 +14,8 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 
-public class EquipmentData {
-    public StringProperty name;
-    public StringProperty description;
-    public int id;
-
+public class EquipmentData extends ItemData {
     public ObjectProperty<EquipmentType> equipmentType = new SimpleObjectProperty<>(); 
     public ObjectProperty<Short> notName = new SimpleObjectProperty<>();
     public ObjectProperty<AbilityElement> element = new SimpleObjectProperty<>();

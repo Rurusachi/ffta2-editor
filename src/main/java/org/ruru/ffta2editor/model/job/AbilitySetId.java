@@ -1,8 +1,5 @@
 package org.ruru.ffta2editor.model.job;
 
-import java.util.List;
-import java.util.stream.IntStream;
-
 public class AbilitySetId {
 
     

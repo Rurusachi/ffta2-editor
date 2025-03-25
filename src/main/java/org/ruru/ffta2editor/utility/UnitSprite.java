@@ -2,9 +2,6 @@ package org.ruru.ffta2editor.utility;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.awt.image.ColorModel;
-import java.awt.image.DataBuffer;
-import java.awt.image.DataBufferByte;
 import java.awt.image.IndexColorModel;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -12,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
 import java.util.stream.IntStream;
 
 import org.ruru.ffta2editor.model.unitSst.SpriteData;

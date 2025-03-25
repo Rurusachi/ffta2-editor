@@ -2,10 +2,6 @@ package org.ruru.ffta2editor.utility;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.charset.Charset;
-import java.nio.charset.CharsetDecoder;
-import java.nio.charset.CharsetEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -183,17 +179,17 @@ public class FFTA2Charset {
         decodingMap.put(0xA8, "≥");
         decodingMap.put(0xC000,"\n");
         decodingMap.put(0xC1, "\\end\\");
-        decodingMap.put(0xC2, "\\var2:%03d\\");
-        decodingMap.put(0xC3, "\\var3:%03d\\");
-        decodingMap.put(0xC4, "\\var4:%03d\\");
-        decodingMap.put(0xC5, "\\var5:%03d\\");
-        decodingMap.put(0xC6, "\\var6:%03d\\");
-        decodingMap.put(0xC7, "\\var7:%03d\\");
-        decodingMap.put(0xC8, "\\var8:%03d\\");
-        decodingMap.put(0xC9, "\\var9:%03d\\");
-        decodingMap.put(0xCA, "\\varA:%03d\\");
-        decodingMap.put(0xCB, "\\sprite:%03d\\");
-        decodingMap.put(0xCE, "\\varE:%03d\\");
+        decodingMap.put(0xC2, "\\var2:%02X\\");
+        decodingMap.put(0xC300, "\\endPage\\");
+        decodingMap.put(0xC4, "\\var4:%02X\\");
+        decodingMap.put(0xC5, "\\var5:%02X\\");
+        decodingMap.put(0xC6, "\\var6:%02X\\");
+        decodingMap.put(0xC7, "\\defaultOption:%02X\\");
+        decodingMap.put(0xC800, "\\endOption\\");
+        decodingMap.put(0xC9, "\\var9:%02X\\");
+        decodingMap.put(0xCA, "\\varA:%02X\\");
+        decodingMap.put(0xCB, "\\sprite:%02X\\");
+        decodingMap.put(0xCE, "\\varE:%02X\\");
     }
     public static HashMap<String, Integer> encodingMap = new HashMap<>();
     static {
@@ -369,12 +365,12 @@ public class FFTA2Charset {
         encodingMap.put("\n", 0xC0);
         encodingMap.put("\\end\\", 0xC1);
         encodingMap.put("\\var2:", 0xC2);
-        encodingMap.put("\\var3:", 0xC3);
+        encodingMap.put("\\endPage\\", 0xC3);
         encodingMap.put("\\var4:", 0xC4);
         encodingMap.put("\\var5:", 0xC5);
         encodingMap.put("\\var6:", 0xC6);
-        encodingMap.put("\\var7:", 0xC7);
-        encodingMap.put("\\var8:", 0xC8);
+        encodingMap.put("\\defaultOption:", 0xC7);
+        encodingMap.put("\\endOption\\", 0xC8);
         encodingMap.put("\\var9:", 0xC9);
         encodingMap.put("\\varA:", 0xCA);
         encodingMap.put("\\sprite:", 0xCB);
@@ -404,7 +400,8 @@ public class FFTA2Charset {
                 }
                 System.out.println(s);
                 //throw new Exception(String.format("Failed to decode: %04X", b));
-            } else if (s.startsWith("\\sprite") || s.startsWith("\\var")) {
+            //} else if (s.startsWith("\\sprite") || s.startsWith("\\defaultOption") || s.startsWith("\\var")) {
+            } else if (s.startsWith("\\") && s.endsWith("%02X\\")) {
                 s = String.format(s, bytes.get());
             }
             //if (s == "\r") break;
@@ -428,11 +425,11 @@ public class FFTA2Charset {
                 encodedChar = encodingMap.get(sb.substring(i, j));
                 if (encodedChar != null) {
                     if (encodedChar >= 0xC0) {
-                        if (encodedChar >= 0xC2) {
-                            int value = Integer.parseInt(sb.substring(j, j+3));
+                        if (encodedChar >= 0xC2 && encodedChar != 0xC3 && encodedChar != 0xC8) {
+                            int value = Integer.parseInt(sb.substring(j, j+2), 16);
                             encodedBytes.put(encodedChar.byteValue());
                             encodedBytes.put((byte)value);
-                            j += 4;
+                            j += 3;
                         } else {
                             encodedBytes.putShort((short)encodedChar.shortValue());
                             //byte b = (byte)(encodedChar >>> 8);

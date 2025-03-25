@@ -7,7 +7,6 @@ import org.ruru.ffta2editor.App;
 
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 
 public class SPAbilityData extends AbilityData {
 

@@ -1,5 +1,26 @@
 package org.ruru.ffta2editor;
 
+import java.io.IOException;
+import java.nio.ByteBuffer;
+
+import org.ruru.ffta2editor.model.ability.AbilityData;
+import org.ruru.ffta2editor.model.ability.ActiveAbilityData;
+import org.ruru.ffta2editor.model.ability.SPAbilityData;
+import org.ruru.ffta2editor.model.bazaar.BazaarRecipe;
+import org.ruru.ffta2editor.model.character.CharacterData;
+import org.ruru.ffta2editor.model.formation.FormationData;
+import org.ruru.ffta2editor.model.item.ConsumableData;
+import org.ruru.ffta2editor.model.item.EquipmentData;
+import org.ruru.ffta2editor.model.item.ItemData;
+import org.ruru.ffta2editor.model.item.LootData;
+import org.ruru.ffta2editor.model.job.AbilitySet;
+import org.ruru.ffta2editor.model.job.JobData;
+import org.ruru.ffta2editor.model.job.JobGroup;
+import org.ruru.ffta2editor.model.unitSst.UnitSst;
+import org.ruru.ffta2editor.utility.Archive;
+import org.ruru.ffta2editor.utility.IdxAndPak;
+import org.ruru.ffta2editor.utility.UnitSprite;
+
 import javafx.application.Application;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
@@ -7,24 +28,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.util.stream.IntStream;
-
-import org.ruru.ffta2editor.model.ability.AbilityData;
-import org.ruru.ffta2editor.model.ability.ActiveAbilityData;
-import org.ruru.ffta2editor.model.ability.SPAbilityData;
-import org.ruru.ffta2editor.model.character.CharacterData;
-import org.ruru.ffta2editor.model.equipment.EquipmentData;
-import org.ruru.ffta2editor.model.job.AbilitySet;
-import org.ruru.ffta2editor.model.job.JobData;
-import org.ruru.ffta2editor.model.job.JobGroup;
-import org.ruru.ffta2editor.utility.Archive;
-import org.ruru.ffta2editor.utility.FFTA2Charset;
-import org.ruru.ffta2editor.utility.IdxAndPak;
-import org.ruru.ffta2editor.utility.UnitSprite;
 
 
 // build exe: jpackage --type app-image --module org.ruru.ffta2editor/org.ruru.ffta2editor.App  -n ffta2-editor --runtime-image .\target\image\
@@ -39,20 +42,29 @@ public class App extends Application {
     public static IdxAndPak unitSsts;
     public static IdxAndPak unitCgs;
     public static IdxAndPak jdMessage;
+    public static IdxAndPak entrydata;
     public static ByteBuffer arm9;
+    public static ByteBuffer overlay8;
     public static ByteBuffer overlay11;
+    public static ByteBuffer naUnitAnimTable;
 
 
     public static ObservableList<UnitSprite> unitSprites;
     public static ObservableList<JobData> jobDataList;
     public static ObservableList<ActiveAbilityData> activeAbilityList;
-    public static ObservableList<SPAbilityData> supportAbilityList;
+    public static ObservableList<SPAbilityData> passiveAbilityList;
     public static ObservableList<SPAbilityData> reactionAbilityList;
     public static ObservableList<AbilityData> abilityList;
     public static ObservableList<AbilitySet> abilitySetList;
     public static ObservableList<CharacterData> characterList;
     public static ObservableList<JobGroup> jobGroupList;
     public static ObservableList<EquipmentData> equipmentList;
+    public static ObservableList<ConsumableData> consumableList;
+    public static ObservableList<LootData> lootList;
+    public static ObservableList<ItemData> itemList;
+    public static ObservableList<FormationData> formationList;
+    public static ObservableList<BazaarRecipe> bazaarRecipeList;
+    public static ObservableList<UnitSst> unitSstList;
 
     public static ObservableList<StringProperty> characterNames;
     public static ObservableList<StringProperty> jobNames;
@@ -64,6 +76,12 @@ public class App extends Application {
     public static ObservableList<StringProperty> itemNames;
     public static ObservableList<StringProperty> itemDescriptions;
     public static ObservableList<StringProperty> bonusEffects;
+    public static ObservableList<StringProperty> lawNames;
+    public static ObservableList<StringProperty> questNames;
+    public static ObservableList<StringProperty> questDescriptions;
+    public static ObservableList<StringProperty> locationNames;
+    public static ObservableList<StringProperty> bazaarSetNames;
+    public static ObservableList<StringProperty> bazaarSetDescriptions;
 
 
 

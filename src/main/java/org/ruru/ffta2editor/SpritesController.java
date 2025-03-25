@@ -1,28 +1,17 @@
 package org.ruru.ffta2editor;
 
-import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import javax.imageio.ImageIO;
 
-import org.ruru.ffta2editor.AbilityController.AbilityCell;
-import org.ruru.ffta2editor.model.ability.ActiveAbilityData;
+import org.ruru.ffta2editor.model.quest.Quest;
 import org.ruru.ffta2editor.model.unitSst.SpriteData;
 import org.ruru.ffta2editor.model.unitSst.UnitSst;
-import org.ruru.ffta2editor.model.unitSst.UnitSst.SstHeaderNode;
-import org.ruru.ffta2editor.utility.IdxAndPak;
-import org.ruru.ffta2editor.utility.LZSS;
-import org.ruru.ffta2editor.utility.LZSS.LZSSDecodeResult;
 import org.ruru.ffta2editor.utility.UnitSprite;
 
 import javafx.beans.property.ObjectProperty;
@@ -33,20 +22,15 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
-import javafx.util.Pair;
 
 public class SpritesController {
     public static class SpriteCell extends ListCell<UnitSprite> {
@@ -211,19 +195,77 @@ public class SpritesController {
             spriteVBox.getChildren().setAll(spriteVBoxList);
     }
 
+    //@FXML
+    //public void addUnit() {
+    //    if (unitList.getItems() != null) {
+    //        int newIndex = unitList.getItems().size();
+    //        unitList.getItems().add(new new UnitSprite(newIndex, null, null, null));
+    //        unitList.getSelectionModel().selectLast();
+    //    }
+    //}
+
+    @FXML
+    public void copyUnit() {
+        if (unitList.getItems() != null && unitList.getSelectionModel().getSelectedItem() != null) {
+            int oldIndex = unitList.getSelectionModel().getSelectedIndex();
+            UnitSprite unitSprite = unitList.getSelectionModel().getSelectedItem();
+            ByteBuffer unitCgBytes = App.unitCgs.getFile(oldIndex).rewind();
+
+            var savedSprite = unitSprite.saveSprites();
+            UnitSst unitSst = App.unitSstList.get(oldIndex);
+
+            UnitSst newUnitSst = new UnitSst(unitSst.toByteBuffer());
+            unitSst.setCompressedValue(0x00FF, savedSprite.getKey());
+            unitSst.setCompressedValue(0x00F0, unitSprite.savePalettes());
+            App.unitSstList.add(newUnitSst);
+            
+            int numEntries = Short.toUnsignedInt(App.naUnitAnimTable.getShort(0)) + 1;
+            int entryLength = Short.toUnsignedInt(App.naUnitAnimTable.getShort(2)) + 1;
+
+            byte[] animBytes = new byte[entryLength];
+            App.naUnitAnimTable.get(4 + oldIndex*entryLength, animBytes);
+
+            ByteBuffer newTable = ByteBuffer.allocate(App.naUnitAnimTable.limit() + entryLength).order(ByteOrder.LITTLE_ENDIAN);
+
+            newTable.put(App.naUnitAnimTable.rewind());
+            newTable.put(animBytes);
+            newTable.putShort(0, (short)numEntries);
+
+            App.naUnitAnimTable = newTable;
+
+            int newIndex = unitList.getItems().size();
+            UnitSprite newUnitsprite = new UnitSprite(newIndex, newUnitSst.getSpriteMap(), newUnitSst.getPalettes(), unitCgBytes);
+
+            unitList.getItems().add(newUnitsprite);
+            unitList.getSelectionModel().selectLast();
+        }
+    }
+
+    @FXML
+    public void removeUnit() {
+        if (unitList.getItems().size() > 0) {
+            unitList.getItems().removeLast();
+        }
+    }
+
     public void loadSprites() {
+        ObservableList<UnitSst> unitSstDataList = FXCollections.observableArrayList();
         ObservableList<UnitSprite> unitSprites = FXCollections.observableArrayList();
         // last file is empty??
         for (int i = 0; i < App.unitSsts.numFiles()-1; i++) {
             ByteBuffer unitCgBytes = App.unitCgs.getFile(i);
             ByteBuffer unitSstBytes = App.unitSsts.getFile(i);
             UnitSst unitSst = new UnitSst(unitSstBytes);
+            unitSstDataList.add(unitSst);
             ByteBuffer spritePalette = unitSst.getPalettes();
             SpriteData spriteData = unitSst.getSpriteMap();
             UnitSprite unitSprite = new UnitSprite(i, spriteData, spritePalette, unitCgBytes);
-            //unitSprites.add(unitSprite);
             unitSprites.add(unitSprite);
+
+            unitCgBytes.rewind();
+            unitSstBytes.rewind();
         }
+        App.unitSstList = unitSstDataList;
         unitList.setCellFactory(x -> new SpriteCell(0, 0, 2));
         unitList.setItems(unitSprites);
         App.unitSprites = unitSprites;
@@ -231,10 +273,13 @@ public class SpritesController {
     }
 
     public void saveSprites() {
+        App.unitSsts.setNumFiles(unitList.getItems().size());
+        App.unitCgs.setNumFiles(unitList.getItems().size());
         for (int i = 0; i < unitList.getItems().size(); i++) {
             if (!unitList.getItems().get(i).hasChanged) continue;
-            ByteBuffer unitSstBytes = App.unitSsts.getFile(i);
-            UnitSst unitSst = new UnitSst(unitSstBytes);
+            //ByteBuffer unitSstBytes = App.unitSsts.getFile(i);
+            //UnitSst unitSst = new UnitSst(unitSstBytes);
+            UnitSst unitSst = App.unitSstList.get(i);
             var savedSprite = unitList.getItems().get(i).saveSprites();
             //SstHeaderNode node = unitSst.find(0x00FF);
             //ByteBuffer newCompressedValue = ByteBuffer.allocate(savedSprite.getKey().capacity()+4);

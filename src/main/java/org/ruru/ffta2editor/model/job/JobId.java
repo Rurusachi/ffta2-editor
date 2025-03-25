@@ -1,10 +1,5 @@
 package org.ruru.ffta2editor.model.job;
 
-import java.util.List;
-import java.util.stream.IntStream;
-
-import org.ruru.ffta2editor.App;
-
 public class JobId {
     
     public short id;

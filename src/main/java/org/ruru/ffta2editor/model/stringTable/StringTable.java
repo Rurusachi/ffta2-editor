@@ -2,6 +2,7 @@ package org.ruru.ffta2editor.model.stringTable;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -50,11 +51,26 @@ public class StringTable {
         for (String s : stringList) {
             try {
                 byte[] bytes = FFTA2Charset.encode(s);
-                short numLines = (short)IntStream.range(0, bytes.length).mapToObj(i -> bytes[i]).filter(b -> b == (byte)0xC0 || b == (byte)0xC1 || b == (byte)0xC7).mapToInt(b -> (int)b).count();
+                
+                //short numLines = (short)IntStream.range(0, bytes.length).mapToObj(i -> bytes[i]).filter(b -> b == (byte)0xC0 || b == (byte)0xC1 || b == (byte)0xC7).mapToInt(b -> (int)b).count();
+                // This may not be 100% correct
+                ArrayList<byte[]> pages = new ArrayList<>();
+                int start = 0;
+                for (int i = 0; i < bytes.length; i++) {
+                    if (bytes[i] == (byte)0xC1) {
+                        pages.add(Arrays.copyOfRange(bytes, start, i+2));
+                        start = i+2;
+                    }
+                }
+                int maxLines = 0;
+                for (byte[] page : pages) {
+                    int numLines = (short)IntStream.range(0, page.length).mapToObj(i -> page[i]).filter(b -> b == (byte)0xC0 || b == (byte)0xC2 || b == (byte)0xC8).mapToInt(b -> (int)b).count();
+                    maxLines = Math.max(maxLines, numLines);
+                }
                 //short numLines = (short)IntStream.range(0, bytes.length).mapToObj(i -> bytes[i]).filter(b -> (Byte.toUnsignedInt(b) > 0xC1 && Byte.toUnsignedInt(b) < 0xCA)).mapToInt(b -> (int)b).count();
                 tableBytes.putInt(bytes.length);
                 tableBytes.putInt(offset);
-                tableBytes.putShort(numLines);
+                tableBytes.putShort((short)maxLines);
 
                 tableBytes.put(offset, bytes);
                 offset += bytes.length;

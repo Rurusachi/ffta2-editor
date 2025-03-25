@@ -114,6 +114,21 @@
                     <fx:include fx:id="characterTab" source="character.fxml" />
                 </content>
             </Tab>
+          <Tab text="Formations">
+                <content>
+                    <fx:include fx:id="formationTab" source="formation.fxml" />
+                </content>
+            </Tab>
+          <Tab text="Quests">
+                <content>
+                    <fx:include fx:id="questTab" source="quest.fxml" />
+                </content>
+            </Tab>
+          <Tab text="Bazaar">
+                <content>
+                    <fx:include fx:id="bazaarTab" source="bazaar.fxml" />
+                </content>
+            </Tab>
           <Tab text="Patches">
                 <content>
                     <fx:include fx:id="patchesTab" source="patches.fxml" />

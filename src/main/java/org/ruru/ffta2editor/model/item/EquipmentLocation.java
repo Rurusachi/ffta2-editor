@@ -1,4 +1,4 @@
-package org.ruru.ffta2editor.model.equipment;
+package org.ruru.ffta2editor.model.item;
 
 public enum EquipmentLocation {
     NONE(0x00),

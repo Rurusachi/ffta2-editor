@@ -10,23 +10,24 @@ import java.util.stream.IntStream;
 import org.ruru.ffta2editor.model.Race;
 import org.ruru.ffta2editor.model.ability.AbilityAnimation;
 import org.ruru.ffta2editor.model.ability.AbilityData;
-import org.ruru.ffta2editor.model.ability.ActiveAbilityData;
 import org.ruru.ffta2editor.model.ability.AbilityEffect;
 import org.ruru.ffta2editor.model.ability.AbilityElement;
-import org.ruru.ffta2editor.model.ability.AbilityId;
 import org.ruru.ffta2editor.model.ability.AbilityMenuRoutine;
+import org.ruru.ffta2editor.model.ability.ActiveAbilityData;
 import org.ruru.ffta2editor.model.ability.RangeAOEType;
 import org.ruru.ffta2editor.model.ability.SPAbilityData;
 import org.ruru.ffta2editor.model.ability.SpecialRequirement;
 import org.ruru.ffta2editor.model.ability.WeaponRequirement;
+import org.ruru.ffta2editor.model.bazaar.BazaarSet;
 import org.ruru.ffta2editor.utility.ByteChangeListener;
-import org.ruru.ffta2editor.utility.IdxAndPak;
+import org.ruru.ffta2editor.utility.ShortChangeListener;
 import org.ruru.ffta2editor.utility.UnsignedByteStringConverter;
 import org.ruru.ffta2editor.utility.UnsignedShortStringConverter;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -35,8 +36,8 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.util.Pair;
 import javafx.util.StringConverter;
 
 public class AbilityController {
@@ -53,6 +54,8 @@ public class AbilityController {
             super.updateItem(ability, empty);
             if (ability != null) {
                 label.setText(String.format("%X: %s", ability.id , ability.name.getValue()));
+            } else {
+                label.setText("");
             }
             setGraphic(label);
         }
@@ -78,6 +81,9 @@ public class AbilityController {
     
     @FXML ListView<ActiveAbilityData> activeAbilityList;
 
+    @FXML TextField abilityName;
+    @FXML TextArea abilityDescription;
+
 
     @FXML ComboBox<AbilityEffect.Targets> targets1;
     @FXML ComboBox<AbilityEffect.Targets> targets2;
@@ -101,11 +107,8 @@ public class AbilityController {
 
     
     @FXML TextField unknownByte0;
-    @FXML TextField unknownByte1;
     @FXML TextField unknownByte4;
     @FXML TextField unknownByte5;
-    @FXML TextField unknownByte7;
-    @FXML TextField unknownByte9;
     @FXML TextField unknownByte30;
     @FXML TextField unknownByte31;
 
@@ -254,12 +257,9 @@ public class AbilityController {
         menuRoutine.setItems(menuRoutineEnums);
         
         // Data validators
-        unknownByte0.textProperty().addListener(new ByteChangeListener(unknownByte0));
-        unknownByte1.textProperty().addListener(new ByteChangeListener(unknownByte1));
+        unknownByte0.textProperty().addListener(new ShortChangeListener(unknownByte0));
         unknownByte4.textProperty().addListener(new ByteChangeListener(unknownByte4));
         unknownByte5.textProperty().addListener(new ByteChangeListener(unknownByte5));
-        unknownByte7.textProperty().addListener(new ByteChangeListener(unknownByte7));
-        unknownByte9.textProperty().addListener(new ByteChangeListener(unknownByte9));
         unknownByte30.textProperty().addListener(new ByteChangeListener(unknownByte30));
         unknownByte31.textProperty().addListener(new ByteChangeListener(unknownByte31));
 
@@ -284,6 +284,9 @@ public class AbilityController {
     }
 
     private void unbindAbilityData() {
+        abilityName.textProperty().unbindBidirectional(abilityProperty.getValue().name);
+        abilityDescription.textProperty().unbindBidirectional(abilityProperty.getValue().description);
+
         targets1.valueProperty().unbindBidirectional(abilityProperty.getValue().effect1.targetsProperty);
         targets2.valueProperty().unbindBidirectional(abilityProperty.getValue().effect2.targetsProperty);
         targets3.valueProperty().unbindBidirectional(abilityProperty.getValue().effect3.targetsProperty);
@@ -305,11 +308,8 @@ public class AbilityController {
         modifier4.valueProperty().unbindBidirectional(abilityProperty.getValue().effect4.modifierProperty);
 
         unknownByte0.textProperty().unbindBidirectional(abilityProperty.getValue()._0x0);
-        unknownByte1.textProperty().unbindBidirectional(abilityProperty.getValue()._0x1);
         unknownByte4.textProperty().unbindBidirectional(abilityProperty.getValue()._0x4);
         unknownByte5.textProperty().unbindBidirectional(abilityProperty.getValue()._0x5);
-        unknownByte7.textProperty().unbindBidirectional(abilityProperty.getValue()._0x7);
-        unknownByte9.textProperty().unbindBidirectional(abilityProperty.getValue()._0x9);
         unknownByte30.textProperty().unbindBidirectional(abilityProperty.getValue()._0x30);
         unknownByte31.textProperty().unbindBidirectional(abilityProperty.getValue()._0x31);
 
@@ -404,6 +404,9 @@ public class AbilityController {
 
 
     private void bindAbilityData() {
+        abilityName.textProperty().bindBidirectional(abilityProperty.getValue().name);
+        abilityDescription.textProperty().bindBidirectional(abilityProperty.getValue().description);
+
         targets1.valueProperty().bindBidirectional(abilityProperty.getValue().effect1.targetsProperty);
         targets2.valueProperty().bindBidirectional(abilityProperty.getValue().effect2.targetsProperty);
         targets3.valueProperty().bindBidirectional(abilityProperty.getValue().effect3.targetsProperty);
@@ -426,12 +429,10 @@ public class AbilityController {
 
 
         StringConverter<Byte> unsignedByteConverter = new UnsignedByteStringConverter();
-        Bindings.bindBidirectional(unknownByte0.textProperty(), abilityProperty.getValue()._0x0, unsignedByteConverter);
-        Bindings.bindBidirectional(unknownByte1.textProperty(), abilityProperty.getValue()._0x1, unsignedByteConverter);
+        StringConverter<Short> unsignedShortConverter = new UnsignedShortStringConverter();
+        Bindings.bindBidirectional(unknownByte0.textProperty(), abilityProperty.getValue()._0x0, unsignedShortConverter);
         Bindings.bindBidirectional(unknownByte4.textProperty(), abilityProperty.getValue()._0x4, unsignedByteConverter);
         Bindings.bindBidirectional(unknownByte5.textProperty(), abilityProperty.getValue()._0x5, unsignedByteConverter);
-        Bindings.bindBidirectional(unknownByte7.textProperty(), abilityProperty.getValue()._0x7, unsignedByteConverter);
-        Bindings.bindBidirectional(unknownByte9.textProperty(), abilityProperty.getValue()._0x9, unsignedByteConverter);
         Bindings.bindBidirectional(unknownByte30.textProperty(), abilityProperty.getValue()._0x30, unsignedByteConverter);
         Bindings.bindBidirectional(unknownByte31.textProperty(), abilityProperty.getValue()._0x31, unsignedByteConverter);
         
@@ -471,7 +472,7 @@ public class AbilityController {
             
         // });
 
-        Bindings.bindBidirectional(power.textProperty(), abilityProperty.getValue().power, unsignedByteConverter);
+        Bindings.bindBidirectional(power.textProperty(), abilityProperty.getValue().power, unsignedShortConverter);
         Bindings.bindBidirectional(mpCost.textProperty(), abilityProperty.getValue().mpCost, unsignedByteConverter);
         Bindings.bindBidirectional(range.textProperty(), abilityProperty.getValue().range, unsignedByteConverter);
         Bindings.bindBidirectional(radius.textProperty(), abilityProperty.getValue().radius, unsignedByteConverter);
@@ -519,7 +520,6 @@ public class AbilityController {
         bit_31.selectedProperty().bindBidirectional(abilityProperty.getValue().abilityFlags.bit_31);
 
         // Animation data
-        StringConverter<Short> unsignedShortConverter = new UnsignedShortStringConverter();
         Bindings.bindBidirectional(animation.textProperty(),abilityAnimationProperty.getValue().animation, unsignedShortConverter);
         Bindings.bindBidirectional(subtype.textProperty(),abilityAnimationProperty.getValue().subtype, unsignedByteConverter);
         Bindings.bindBidirectional(start.textProperty(),abilityAnimationProperty.getValue().start, unsignedByteConverter);
@@ -546,47 +546,42 @@ public class AbilityController {
     }
 
     @FXML
-    private void loadFile() throws IOException {
-        if (App.archive != null) {
-            ByteBuffer file = App.archive.getFile("");
-            if (file != null) {
-                currentFile = file;
-                byte[] bytes = new byte[0x20];
-                file.get(bytes);
-                StringBuffer buf = new StringBuffer();
-                for (byte b : bytes) {
-                    buf.append(String.format("%02X", b));
-                    buf.append(" ");
-                }
-            }
-            
-        }
+    public void addAbility() {
+        //if (activeAbilityList.getItems() != null) {
+        //    int newIndex = activeAbilityList.getItems().size();
+        //    App.abilityNames.add(newIndex, new SimpleStringProperty("-"));
+        //    App.abilityDescriptions.add(newIndex, new SimpleStringProperty("\\end\\"));
+        //    ActiveAbilityData newAbility = new ActiveAbilityData("", newIndex);
+        //    activeAbilityList.getItems().add(newAbility);
+        //    App.abilityList.add(newIndex, newAbility);
+        //    abilityAnimationList.add(new AbilityAnimation());
+        //    activeAbilityList.getSelectionModel().selectLast();
+        //    for (AbilityData ability : App.reactionAbilityList) {
+        //        ability.id++;
+        //    }
+        //    for (AbilityData ability : App.passiveAbilityList) {
+        //        ability.id++;
+        //    }
+        //}
     }
 
-    public void saveAbilities() {
-        List<ActiveAbilityData> abilities = activeAbilityList.getItems();
-        ByteBuffer newAbilityDatabytes = ByteBuffer.allocate(abilities.size()*0x34).order(ByteOrder.LITTLE_ENDIAN);
-
-        for (int i = 0; i < abilities.size(); i++) {
-            newAbilityDatabytes.put(abilities.get(i).toBytes());
-        }
-        newAbilityDatabytes.rewind();
-        App.sysdata.setFile(4, newAbilityDatabytes);
-
-        ByteBuffer newAbilityAnimationbytes = ByteBuffer.allocate(abilityAnimationList.size()*0x18).order(ByteOrder.LITTLE_ENDIAN);
-
-        for (int i = 0; i < abilityAnimationList.size(); i++) {
-            newAbilityAnimationbytes.put(abilityAnimationList.get(i).toBytes());
-        }
-        newAbilityAnimationbytes.rewind();
-        App.sysdata.setFile(5, newAbilityAnimationbytes);
-
-        //Pair<ByteBuffer, ByteBuffer> idxPak = App.sysdata.repack();
-        //App.archive.setFile("system/rom/sysdata_rom.idx", idxPak.getKey());
-        //App.archive.setFile("system/rom/sysdata.pak", idxPak.getValue());
-        
+    @FXML
+    public void removeAbility() {
+        //if (activeAbilityList.getItems().size() > 0) {
+        //    int removedIndex = activeAbilityList.getItems().size()-1;
+        //    App.abilityNames.remove(removedIndex);
+        //    App.abilityDescriptions.remove(removedIndex);
+        //    App.abilityList.remove(removedIndex);
+        //    activeAbilityList.getItems().removeLast();
+        //    abilityAnimationList.removeLast();
+        //    for (AbilityData ability : App.reactionAbilityList) {
+        //        ability.id--;
+        //    }
+        //    for (AbilityData ability : App.passiveAbilityList) {
+        //        ability.id--;
+        //    }
+        //}
     }
-
 
     public void loadAbilities() {
         if (App.archive != null) {
@@ -623,6 +618,7 @@ public class AbilityController {
 
             ObservableList<SPAbilityData> reactionAbilityDataList = FXCollections.observableArrayList();
 
+            reactionAbilityDataList.add(new SPAbilityData("", 0));
             for (int i = 0; i < 0x1D; i++) {
                 SPAbilityData reactionAbilityData = new SPAbilityData(reactionAbilityDataBytes, i + 0x336);
                 reactionAbilityDataList.add(reactionAbilityData);
@@ -635,30 +631,31 @@ public class AbilityController {
 
         
             // Support Abilities
-            ByteBuffer supportAbilityDataBytes = App.sysdata.getFile(7);
+            ByteBuffer passiveAbilityDataBytes = App.sysdata.getFile(7);
 
-            if (supportAbilityDataBytes == null) {
+            if (passiveAbilityDataBytes == null) {
                 System.err.println("IdxAndPak null file error");
                 return;
             }
-            supportAbilityDataBytes.rewind();
+            passiveAbilityDataBytes.rewind();
 
-            ObservableList<SPAbilityData> supportAbilityDataList = FXCollections.observableArrayList();
+            ObservableList<SPAbilityData> passiveAbilityDataList = FXCollections.observableArrayList();
 
+            passiveAbilityDataList.add(new SPAbilityData("", 0));
             for (int i = 0; i < 0x28; i++) {
-                SPAbilityData supportAbilityData = new SPAbilityData(supportAbilityDataBytes, i + 0x353);
-                supportAbilityDataList.add(supportAbilityData);
+                SPAbilityData passiveAbilityData = new SPAbilityData(passiveAbilityDataBytes, i + 0x353);
+                passiveAbilityDataList.add(passiveAbilityData);
             }
             //supportAbilityList.setCellFactory(x -> new AbilityCell());
             //supportAbilityList.setItems(supportAbilityDataList);
-            App.supportAbilityList = supportAbilityDataList;
+            App.passiveAbilityList = passiveAbilityDataList;
             
-            supportAbilityDataBytes.rewind();
+            passiveAbilityDataBytes.rewind();
 
             App.abilityList = FXCollections.observableArrayList();
             App.abilityList.addAll(App.activeAbilityList);
-            App.abilityList.addAll(App.reactionAbilityList);
-            App.abilityList.addAll(App.supportAbilityList);
+            App.abilityList.addAll(App.reactionAbilityList.subList(1, App.reactionAbilityList.size()));
+            App.abilityList.addAll(App.passiveAbilityList.subList(1, App.passiveAbilityList.size()));
 
             // Ability Animations
             ByteBuffer abilityAnimationBytes = App.sysdata.getFile(5);
@@ -680,7 +677,120 @@ public class AbilityController {
             learnedAbility.setItems(abilityNameIds);
             learnedAbility.setButtonCell(new AbilityIdCell());
             learnedAbility.setCellFactory(x -> new AbilityIdCell());
-
         }
+    }
+
+    public void saveAbilities() {
+        List<ActiveAbilityData> abilities = activeAbilityList.getItems();
+        ByteBuffer newAbilityDatabytes = ByteBuffer.allocate(abilities.size()*0x34).order(ByteOrder.LITTLE_ENDIAN);
+
+        for (int i = 0; i < abilities.size(); i++) {
+            newAbilityDatabytes.put(abilities.get(i).toBytes());
+        }
+        newAbilityDatabytes.rewind();
+        App.sysdata.setFile(4, newAbilityDatabytes);
+
+        ByteBuffer newAbilityAnimationbytes = ByteBuffer.allocate(abilityAnimationList.size()*0x18).order(ByteOrder.LITTLE_ENDIAN);
+
+        for (int i = 0; i < abilityAnimationList.size(); i++) {
+            newAbilityAnimationbytes.put(abilityAnimationList.get(i).toBytes());
+        }
+        newAbilityAnimationbytes.rewind();
+        App.sysdata.setFile(5, newAbilityAnimationbytes);
+
+
+        // App.reactionAbilityList and App.passiveAbilityList have a copy of the 0th ability as a null value
+        int numActive = App.activeAbilityList.size();
+        int numReaction = App.reactionAbilityList.size() - 1;
+        int numPassive = App.passiveAbilityList.size() - 1;
+
+
+        // TODO: Rewrite FUN_02080f38
+        /* 
+        // 0x020cb0a8, 0x020bbde4, 0x020c0208, 0x020b63bc, 0x020b68ac, 0x020b6f48, 0x020b84a0, 0x0210f8e0, 0x020b8640 = activeAbilities.size()-1 (short)
+        App.arm9.putShort(0x000cb0a8, (short)(numActive - 1));
+        App.arm9.putShort(0x000bbde4, (short)(numActive - 1));
+        App.arm9.putShort(0x000c0208, (short)(numActive - 1));
+        App.arm9.putShort(0x000b63bc, (short)(numActive - 1));
+        App.arm9.putShort(0x000b68ac, (short)(numActive - 1));
+        App.arm9.putShort(0x000b6f48, (short)(numActive - 1));
+        App.arm9.putShort(0x000b84a0, (short)(numActive - 1));
+        App.arm9.putShort(0x0010f8e0, (short)(numActive - 1));
+        App.arm9.putShort(0x000b8640, (short)(numActive - 1));
+
+        // 0x020bb108, 0x020bbddc, 0x020cb0f4, 0x020b6a34, 0x020cb558, 0x020b84a4, 0x0209f7c0, 0x0210f8e4 = activeAbilities.size() (short)
+        App.arm9.putShort(0x000bb108, (short)(numActive));
+        App.arm9.putShort(0x000bbddc, (short)(numActive));
+        App.arm9.putShort(0x000cb0f4, (short)(numActive));
+        App.arm9.putShort(0x000b6a34, (short)(numActive));
+        App.arm9.putShort(0x000cb558, (short)(numActive));
+        App.arm9.putShort(0x000b84a4, (short)(numActive));
+        App.arm9.putShort(0x0009f7c0, (short)(numActive));
+        App.arm9.putShort(0x0010f8e4, (short)(numActive));
+
+        // 0x020b7464 = 0xe3a04fcd (mov r4, 334)
+        App.arm9.putInt(0x000b7464, 0xe3a04fcd);
+        
+        // 0x020b746c = 0xe28400XX (add r0, r4, XX) (XX = activeAbilities.size()-0x334)
+        App.arm9.putInt(0x000b746c, 0xe2840000 + (numActive-0x334));
+
+        // 0x020bbc50 = 0xe3e00000 (mvn r0, 0)
+        App.arm9.putInt(0x000bbc50, 0xe3e00000);
+
+        // 0x0207c5d4 = activeAbilities.size() - 0x300 (byte)
+        App.arm9.put(0x0007c5d4, (byte)(numActive-0x300));
+
+        // 0x020bb10c, 0x020bbde0, 0x020cb144, 0x020b6b48, 0x020b84a8, 0x0209f7c4, 0x0210f8e8 = activeAbilities.size() + reactionAblities.size() (short)
+        App.arm9.putShort(0x000bb10c, (short)(numActive + numReaction));
+        App.arm9.putShort(0x000bbde0, (short)(numActive + numReaction));
+        App.arm9.putShort(0x000cb144, (short)(numActive + numReaction));
+        App.arm9.putShort(0x000b6b48, (short)(numActive + numReaction));
+        App.arm9.putShort(0x000b84a8, (short)(numActive + numReaction));
+        App.arm9.putShort(0x0009f7c4, (short)(numActive + numReaction));
+        App.arm9.putShort(0x0010f8e8, (short)(numActive + numReaction));
+
+        // 0x020f0028 = activeAbilities.size() + reactionAblities.size() - 1 (short)
+        App.arm9.putShort(0x000f0028, (short)(numActive + numReaction - 1));
+
+        // 0x020cb0f8 = -activeAblities.size() (int)
+        App.arm9.putInt(0x000cb0f8, -numActive);
+
+        // 0x020cb148 = -(activeAblities.size() + reactionAblities.size()) (int)
+        App.arm9.putInt(0x000cb148, -(numActive + numReaction));
+
+        // 0x020baebc, 0x020bbb58, 0x020cb0d8, 0x020b697c, 0x020cb538, 0x020b83c0, 0x0209f72c, 0x0210f8ac, 0x020efe60 = reactionAbilities.size()-1 (byte)
+        App.arm9.put(0x000baebc, (byte)(numReaction - 1));
+        App.arm9.put(0x000bbb58, (byte)(numReaction - 1));
+        App.arm9.put(0x000cb0d8, (byte)(numReaction - 1));
+        App.arm9.put(0x000b697c, (byte)(numReaction - 1));
+        App.arm9.put(0x000cb538, (byte)(numReaction - 1));
+        App.arm9.put(0x000b83c0, (byte)(numReaction - 1));
+        App.arm9.put(0x0009f72c, (byte)(numReaction - 1));
+        App.arm9.put(0x0010f8ac, (byte)(numReaction - 1));
+        App.arm9.put(0x000efe60, (byte)(numReaction - 1));
+
+        // 0x020baee4, 0x020bbbcc, 0x020cb128, 0x020b6a90, 0x020b8420, 0x0209f74c, 0x0210f8c8 = passiveAbilities.size()-1 (byte)
+        App.arm9.put(0x000baee4, (byte)(numPassive - 1));
+        App.arm9.put(0x000bbbcc, (byte)(numPassive - 1));
+        App.arm9.put(0x000cb128, (byte)(numPassive - 1));
+        App.arm9.put(0x000b6a90, (byte)(numPassive - 1));
+        App.arm9.put(0x000b8420, (byte)(numPassive - 1));
+        App.arm9.put(0x0009f74c, (byte)(numPassive - 1));
+        App.arm9.put(0x0010f8c8, (byte)(numPassive - 1));
+
+        // 0x020efe70 = passiveAbilities.size() (byte)
+        App.arm9.put(0x000efe70, (byte)numPassive);
+
+        // 0x020cb18c = abilityAnimationList.size()-1 (should be same as activeAbilities.size()-1)
+        App.arm9.put(0x000cb18c, (byte)(abilityAnimationList.size() - 1));
+        */
+
+
+
+
+        //Pair<ByteBuffer, ByteBuffer> idxPak = App.sysdata.repack();
+        //App.archive.setFile("system/rom/sysdata_rom.idx", idxPak.getKey());
+        //App.archive.setFile("system/rom/sysdata.pak", idxPak.getValue());
+        
     }
 }

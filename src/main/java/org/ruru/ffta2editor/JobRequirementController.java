@@ -5,9 +5,7 @@ import java.nio.ByteOrder;
 import java.util.List;
 
 import org.ruru.ffta2editor.CharacterController.CharacterCell;
-import org.ruru.ffta2editor.JobController.AbilitySetCell;
 import org.ruru.ffta2editor.JobController.JobCell;
-import org.ruru.ffta2editor.TextController.StringPropertyCell;
 import org.ruru.ffta2editor.model.character.CharacterData;
 import org.ruru.ffta2editor.model.job.JobData;
 import org.ruru.ffta2editor.model.job.JobRequirementData;
@@ -43,6 +41,8 @@ public class JobRequirementController {
             super.updateItem(jobRequirement, empty);
             if (jobRequirement != null) {
                 label.setText(String.format("%X: %s", jobRequirement.id , jobRequirement.jobId.getValue().name.getValue()));
+            } else {
+                label.setText("");
             }
             setGraphic(label);
         }
@@ -193,7 +193,7 @@ public class JobRequirementController {
         }
         newJobRequirementBytes.rewind();
         App.sysdata.setFile(19, newJobRequirementBytes);
-        // Patch arm9 code with new Characters length
+        // Patch code with new Characters length
         App.arm9.put(0x000cb4bc, (byte)(jobRequirements.size()-1));
         App.arm9.put(0x000cb4c0, (byte)(jobRequirements.size()-1));
         App.arm9.put(0x000b80b8, (byte)(jobRequirements.size()));

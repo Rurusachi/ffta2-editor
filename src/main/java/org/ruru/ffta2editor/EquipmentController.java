@@ -6,17 +6,17 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import org.ruru.ffta2editor.AbilityController.AbilityCell;
-import org.ruru.ffta2editor.JobController.JobCell;
 import org.ruru.ffta2editor.JobController.JobSpriteCell;
 import org.ruru.ffta2editor.JobGroupController.JobGroupCell;
 import org.ruru.ffta2editor.TextController.StringPropertyCell;
-import org.ruru.ffta2editor.model.ability.ActiveAbilityData;
 import org.ruru.ffta2editor.model.ability.AbilityData;
 import org.ruru.ffta2editor.model.ability.AbilityElement;
-import org.ruru.ffta2editor.model.equipment.EquipmentData;
-import org.ruru.ffta2editor.model.equipment.EquipmentLocation;
-import org.ruru.ffta2editor.model.equipment.EquipmentType;
-import org.ruru.ffta2editor.model.job.JobData;
+import org.ruru.ffta2editor.model.item.ConsumableData;
+import org.ruru.ffta2editor.model.item.EquipmentData;
+import org.ruru.ffta2editor.model.item.EquipmentLocation;
+import org.ruru.ffta2editor.model.item.EquipmentType;
+import org.ruru.ffta2editor.model.item.ItemData;
+import org.ruru.ffta2editor.model.item.LootData;
 import org.ruru.ffta2editor.model.job.JobGroup;
 import org.ruru.ffta2editor.utility.ByteChangeListener;
 import org.ruru.ffta2editor.utility.ShortChangeListener;
@@ -43,17 +43,19 @@ import javafx.util.StringConverter;
 
 public class EquipmentController {
     
-    public static class EquipmentCell extends ListCell<EquipmentData> {
+    public static class ItemCell<T extends ItemData>  extends ListCell<T> {
         Label label = new Label();
 
-        public EquipmentCell() {
+        public ItemCell() {
             label.setStyle("-fx-text-fill: black");
         }
 
-        @Override protected void updateItem(EquipmentData equipment, boolean empty) {
-            super.updateItem(equipment, empty);
-            if (equipment != null) {
-                label.setText(String.format("%X: %s", equipment.id, equipment.name.getValue()));
+        @Override protected void updateItem(T item, boolean empty) {
+            super.updateItem(item, empty);
+            if (item != null) {
+                label.setText(String.format("%X: %s", item.id, item.name.getValue()));
+            } else {
+                label.setText("");
             }
             setGraphic(label);
         }
@@ -360,9 +362,59 @@ public class EquipmentController {
             }
             App.equipmentList = equipmentDataList;
             equipmentList.setItems(equipmentDataList);
-            equipmentList.setCellFactory(x -> new EquipmentCell());
+            equipmentList.setCellFactory(x -> new ItemCell<>());
 
             equipmentDataBytes.rewind();
+
+            // Consumables
+            ByteBuffer consumableDataBytes = App.sysdata.getFile(17);
+
+            if (consumableDataBytes == null) {
+                System.err.println("IdxAndPak null file error");
+                return;
+            }
+            consumableDataBytes.rewind();
+
+            ObservableList<ConsumableData> consumableDataList = FXCollections.observableArrayList();
+
+            consumableDataList.add(new ConsumableData("", 0));
+            int numConsumables = 0x13;
+            for (int i = 0; i < numConsumables; i++) {
+                ConsumableData consumableData = new ConsumableData(consumableDataBytes, i+numEquipment);
+                consumableDataList.add(consumableData);
+            }
+            App.consumableList = consumableDataList;
+
+            consumableDataBytes.rewind();
+
+            // Loot
+            ByteBuffer lootDataBytes = App.sysdata.getFile(18);
+
+            if (lootDataBytes == null) {
+                System.err.println("IdxAndPak null file error");
+                return;
+            }
+            lootDataBytes.rewind();
+
+            ObservableList<LootData> lootDataList = FXCollections.observableArrayList();
+
+            lootDataList.add(new LootData("", 0));
+            int numloot = 0xCC;
+            for (int i = 0; i < numloot; i++) {
+                LootData lootData = new LootData(lootDataBytes, i+numEquipment+numConsumables);
+                lootDataList.add(lootData);
+            }
+            App.lootList = lootDataList;
+
+            lootDataBytes.rewind();
+
+            App.itemList = FXCollections.observableArrayList();
+            App.itemList.addAll(App.equipmentList);
+            App.itemList.addAll(App.consumableList.subList(1, App.consumableList.size()));
+            App.itemList.addAll(App.lootList.subList(1, App.lootList.size()));
+
+
+
             
             sprite.setButtonCell(new JobSpriteCell(0, 0, 2));
             sprite.setCellFactory(x -> new JobSpriteCell(0, 0, 2));

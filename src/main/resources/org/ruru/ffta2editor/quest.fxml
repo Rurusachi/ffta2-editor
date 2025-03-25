@@ -1,0 +1,625 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Copyright (c) 2015, 2019, Gluon and/or its affiliates.
+  All rights reserved. Use is subject to license terms.
+
+  This file is available and licensed under the following license:
+
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions
+  are met:
+
+  - Redistributions of source code must retain the above copyright
+    notice, this list of conditions and the following disclaimer.
+  - Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in
+    the documentation and/or other materials provided with the distribution.
+  - Neither the name of Oracle Corporation nor the names of its
+    contributors may be used to endorse or promote products derived
+    from this software without specific prior written permission.
+
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.ruru.ffta2editor.QuestController">
+   <children>
+      <SplitPane dividerPositions="0.2" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <items>
+            <VBox spacing="20.0" SplitPane.resizableWithParent="false">
+               <children>
+                  <HBox alignment="CENTER" spacing="20.0">
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#addQuest" text="Add Quest" />
+                        <Button mnemonicParsing="false" onAction="#removeQuest" text="Remove Last Quest" />
+                     </children>
+                     <padding>
+                        <Insets top="20.0" />
+                     </padding>
+                  </HBox>
+                  <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" VBox.vgrow="ALWAYS">
+                     <content>
+                        <ListView fx:id="questList" />
+                     </content>
+                  </ScrollPane>
+               </children>
+            </VBox>
+            <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
+              <tabs>
+                <Tab text="Main">
+                     <content>
+                        <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="40.0">
+                           <children>
+                              <HBox alignment="TOP_CENTER" spacing="20.0">
+                                 <children>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="Name" />
+                                          <TextField fx:id="questName" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="Formation" />
+                                          <ComboBox fx:id="formation" prefWidth="150.0" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0x02" />
+                                          <TextField fx:id="info_0x02" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="Start Event" />
+                                          <TextField fx:id="startEvent" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="End Event?" />
+                                          <TextField fx:id="endEvent" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                              <HBox alignment="TOP_CENTER" spacing="20.0">
+                                 <children>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="Story Requirement" />
+                                          <TextField fx:id="storyRequirement" />
+                                          <Label text="Flag Requirement" />
+                                          <TextField fx:id="flagRequirement" />
+                                          <Label text="Unknown Requirement (index/value)" />
+                                          <HBox>
+                                             <children>
+                                                <TextField fx:id="unknownRequirementIndex" />
+                                                <TextField fx:id="unknownRequirementValue" />
+                                             </children>
+                                          </HBox>
+                                          <Label text="Required Month" />
+                                          <ComboBox fx:id="monthRequirement" prefWidth="200.0" />
+                                          <Label text="Required Day" />
+                                          <TextField fx:id="dayRequirement" />
+                                          <Label text="0x0D" />
+                                          <TextField fx:id="_0x0d" />
+                                          <Label text="Required Ability" />
+                                          <ComboBox fx:id="abilityRequirement" prefWidth="200.0" />
+                                          <Label text="Required Items (item/amount)" />
+                                          <HBox>
+                                             <children>
+                                                <ComboBox fx:id="requiredItem1" prefWidth="200.0" />
+                                                <TextField fx:id="requiredItemAmount1" />
+                                             </children>
+                                             <padding>
+                                                <Insets bottom="10.0" />
+                                             </padding>
+                                          </HBox>
+                                          <HBox>
+                                             <children>
+                                                <ComboBox fx:id="requiredItem2" prefWidth="200.0" />
+                                                <TextField fx:id="requiredItemAmount2" />
+                                             </children>
+                                          </HBox>
+                                          <Label text="Fee (x100)" />
+                                          <TextField fx:id="fee" />
+                                          <Label text="Negotiation" />
+                                          <TextField fx:id="negotiation" />
+                                          <Label text="Aptitude" />
+                                          <TextField fx:id="aptitude" />
+                                          <Label text="Teamwork" />
+                                          <TextField fx:id="teamwork" />
+                                          <Label text="Adaptability" />
+                                          <TextField fx:id="adaptability" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="Type" />
+                                          <TextField fx:id="type" />
+                                          <Label text="Group" />
+                                          <TextField fx:id="questGroup" />
+                                          <Label text="Rank" />
+                                          <TextField fx:id="rank" />
+                                          <Label text="Cooldown days (failure?)" />
+                                          <Label text="253: ???, 254: Never, 255: Once a year" />
+                                          <TextField fx:id="cooldownFailure" />
+                                          <Label text="Cooldown days (success?)" />
+                                          <Label text="253: ???, 254: Never, 255: Once a year" />
+                                          <TextField fx:id="cooldownSuccess" />
+                                          <Label text="Time Limit (days)" />
+                                          <TextField fx:id="days" />
+                                          <Label text="0x20" />
+                                          <TextField fx:id="_0x20" />
+                                          <Label text="Location" />
+                                          <ComboBox fx:id="questLocation" />
+                                          <Label text="Battlefield" />
+                                          <TextField fx:id="battlefield" />
+                                          <Label text="Dispatch / Recommended job" />
+                                          <HBox alignment="CENTER" spacing="10.0">
+                                             <children>
+                                                <CheckBox fx:id="dispatch" mnemonicParsing="false" />
+                                                <ComboBox fx:id="recommendedDispatch" prefWidth="150.0" />
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="Gil Reward" />
+                                          <TextField fx:id="gilReward" />
+                                          <Label text="AP Reward" />
+                                          <TextField fx:id="apReward" />
+                                          <Label text="CP Reward" />
+                                          <TextField fx:id="cpReward" />
+                                          <Label text="EXP Reward" />
+                                          <TextField fx:id="expReward" />
+                                          <Label text="Item Rewards (item/amount)" />
+                                          <HBox>
+                                             <children>
+                                                <ComboBox fx:id="itemReward1" prefWidth="200.0" />
+                                                <TextField fx:id="itemRewardAmount1" />
+                                             </children>
+                                             <padding>
+                                                <Insets bottom="10.0" />
+                                             </padding>
+                                          </HBox>
+                                          <HBox>
+                                             <children>
+                                                <ComboBox fx:id="itemReward2" prefWidth="200.0" />
+                                                <TextField fx:id="itemRewardAmount2" />
+                                             </children>
+                                             <padding>
+                                                <Insets bottom="10.0" />
+                                             </padding>
+                                          </HBox>
+                                          <HBox>
+                                             <children>
+                                                <ComboBox fx:id="itemReward3" prefWidth="200.0" />
+                                                <TextField fx:id="itemRewardAmount3" />
+                                             </children>
+                                             <padding>
+                                                <Insets bottom="10.0" />
+                                             </padding>
+                                          </HBox>
+                                          <HBox>
+                                             <children>
+                                                <ComboBox fx:id="itemReward4" prefWidth="200.0" />
+                                                <TextField fx:id="itemRewardAmount4" />
+                                             </children>
+                                          </HBox>
+                                          <Label text="Available in regions" />
+                                          <VBox>
+                                             <children>
+                                                <CheckBox fx:id="regionBit0" mnemonicParsing="false" text="????" />
+                                                <CheckBox fx:id="goug" mnemonicParsing="false" text="Goug" />
+                                                <CheckBox fx:id="fluorgis" mnemonicParsing="false" text="Fluorgis" />
+                                                <CheckBox fx:id="moorabella" mnemonicParsing="false" text="Moorabella" />
+                                                <CheckBox fx:id="graszton" mnemonicParsing="false" text="Graszton" />
+                                                <CheckBox fx:id="camoa" mnemonicParsing="false" text="Camoa" />
+                                                <CheckBox fx:id="targ" mnemonicParsing="false" text="Targ" />
+                                                <CheckBox fx:id="regionBit7" mnemonicParsing="false" text="????" />
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                              <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
+                                 <children>
+                                    <Label text="Description" />
+                                    <TextArea fx:id="questDescription" prefHeight="200.0" prefWidth="200.0" />
+                                 </children>
+                              </VBox>
+                           </children>
+                           <padding>
+                              <Insets top="20.0" />
+                           </padding>
+                        </VBox>
+                     </content>
+                  </Tab>
+                  <Tab text="Unknown">
+                    <content>
+                        <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="40.0">
+                           <children>
+                              <HBox alignment="TOP_CENTER" spacing="20.0">
+                                 <children>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0x17" />
+                                          <TextField fx:id="_0x17" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0x1b" />
+                                          <TextField fx:id="_0x1b" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                              <HBox alignment="TOP_CENTER" spacing="20.0">
+                                 <children>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0x24" />
+                                          <TextField fx:id="_0x24" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0x25" />
+                                          <TextField fx:id="_0x25" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0x26" />
+                                          <TextField fx:id="_0x26" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0x27" />
+                                          <TextField fx:id="_0x27" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0x28" />
+                                          <TextField fx:id="_0x28" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0x29" />
+                                          <TextField fx:id="_0x29" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                              <HBox alignment="TOP_CENTER" spacing="20.0">
+                                 <children>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0x2B" />
+                                          <TextField fx:id="_0x2b" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0x2C" />
+                                          <TextField fx:id="_0x2c" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0x2D" />
+                                          <TextField fx:id="_0x2d" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0x2E" />
+                                          <TextField fx:id="_0x2e" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                              <HBox alignment="TOP_CENTER" spacing="20.0">
+                                 <children>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0x30" />
+                                          <TextField fx:id="_0x30" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0x31" />
+                                          <TextField fx:id="_0x31" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0x32" />
+                                          <TextField fx:id="_0x32" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0x33" />
+                                          <TextField fx:id="_0x33" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0x34" />
+                                          <TextField fx:id="_0x34" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0x35" />
+                                          <TextField fx:id="_0x35" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                              <HBox alignment="TOP_CENTER" spacing="20.0">
+                                 <children>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0x36" />
+                                          <TextField fx:id="_0x36" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0x37" />
+                                          <TextField fx:id="_0x37" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0x38" />
+                                          <TextField fx:id="_0x38" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0x39" />
+                                          <TextField fx:id="_0x39" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0x3A" />
+                                          <TextField fx:id="_0x3a" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0x3B" />
+                                          <TextField fx:id="_0x3b" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                              <HBox alignment="TOP_CENTER" spacing="20.0">
+                                 <children>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0x3C" />
+                                          <TextField fx:id="_0x3c" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0x3D" />
+                                          <TextField fx:id="_0x3d" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0x3E" />
+                                          <TextField fx:id="_0x3e" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0x3F" />
+                                          <TextField fx:id="_0x3f" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0x40" />
+                                          <TextField fx:id="_0x40" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0x41" />
+                                          <TextField fx:id="_0x41" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                              <HBox alignment="TOP_CENTER" spacing="20.0">
+                                 <children>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0x42" />
+                                          <TextField fx:id="_0x42" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0x43" />
+                                          <TextField fx:id="_0x43" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0x44" />
+                                          <TextField fx:id="_0x44" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0x45" />
+                                          <TextField fx:id="_0x45" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0x46" />
+                                          <TextField fx:id="_0x46" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0x47" />
+                                          <TextField fx:id="_0x47" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                              <HBox alignment="TOP_CENTER" spacing="20.0">
+                                 <children>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0x48" />
+                                          <TextField fx:id="_0x48" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0x49" />
+                                          <TextField fx:id="_0x49" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0x4A" />
+                                          <TextField fx:id="_0x4a" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0x4B" />
+                                          <TextField fx:id="_0x4b" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                              <HBox alignment="TOP_CENTER" spacing="20.0">
+                                 <children>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0x58" />
+                                          <TextField fx:id="_0x58" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0x5A" />
+                                          <TextField fx:id="_0x5a" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0x5B" />
+                                          <TextField fx:id="_0x5b" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0x5C" />
+                                          <TextField fx:id="_0x5c" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0x5D" />
+                                          <TextField fx:id="_0x5d" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                              <HBox alignment="TOP_CENTER" spacing="20.0">
+                                 <children>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0x5F" />
+                                          <TextField fx:id="_0x5f" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0x60" />
+                                          <TextField fx:id="_0x60" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0x61" />
+                                          <TextField fx:id="_0x61" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0x62" />
+                                          <TextField fx:id="_0x62" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="0x63" />
+                                          <TextField fx:id="_0x63" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                           </children>
+                           <padding>
+                              <Insets top="20.0" />
+                           </padding>
+                        </VBox>
+                    </content>
+                  </Tab>
+              </tabs>
+            </TabPane>
+        </items>
+      </SplitPane>
+   </children>
+</AnchorPane>

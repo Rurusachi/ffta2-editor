@@ -1,7 +1,6 @@
 package org.ruru.ffta2editor.model.stringTable;
 
 import java.util.List;
-import java.util.Locale.Category;
 import java.util.stream.IntStream;
 
 public class MessageId {
