@@ -38,7 +38,9 @@ public class PatchesController {
                                              0x45, 0x46, 0x47, 0x48
                                             };
                                              
-    @FXML CheckBox animationFix;
+    //@FXML CheckBox animationFix;
+
+    @FXML
     private void applyAnimationFix() {
             if (App.archive != null) {
 
@@ -70,6 +72,7 @@ public class PatchesController {
                 UnitSst unitSst = App.unitSstList.get(i);
                 for (Pair<Integer, byte[]> animation : compressedAnimations) {
                     if (unitSst.find(animation.getKey()) != null) continue;
+                    System.out.println(i);
                     byte[] compressedAnimation = animation.getValue();
                     if (i == 67) {
                         UnitAnimation decodedAnimation;
@@ -118,8 +121,8 @@ public class PatchesController {
     }
     
     public void applyPatches() {
-        if (animationFix.selectedProperty().getValue()) {
-            applyAnimationFix();
-        }
+        //if (animationFix.selectedProperty().getValue()) {
+        //    applyAnimationFix();
+        //}
     }
 }

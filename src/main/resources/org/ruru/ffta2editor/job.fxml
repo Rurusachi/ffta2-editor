@@ -419,6 +419,12 @@
                                                       <ComboBox fx:id="abilitySetList" />
                                                    </children>
                                                 </VBox>
+                                                <VBox alignment="TOP_CENTER">
+                                                   <children>
+                                                      <Label text="Name" />
+                                                      <TextField fx:id="abilitySetName" />
+                                                   </children>
+                                                </VBox>
                                               <Button mnemonicParsing="false" onAction="#addAbilitySet" text="Add Set" />
                                                 <Button mnemonicParsing="false" onAction="#removeAbilitySet" text="Remove Last Set" />
                                                 <Button layoutX="235.0" layoutY="19.0" mnemonicParsing="false" onAction="#addAbilitySetAbility" text="Add Ability" />
@@ -683,7 +689,7 @@
                                     </VBox>
                                     <VBox alignment="TOP_CENTER" spacing="20.0">
                                        <children>
-                                          <Label text="0x41" />
+                                          <Label text="Job Requirement" />
                                           <TextField fx:id="_0x41" />
                                        </children>
                                     </VBox>

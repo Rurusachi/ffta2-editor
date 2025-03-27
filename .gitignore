@@ -26,3 +26,4 @@ replay_pid*
 *.exe
 target/*
 data/*
+ffta2-editor/*

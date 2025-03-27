@@ -264,6 +264,8 @@ public class JobController {
     // Ability set
     @FXML ComboBox<AbilitySet> abilitySetList;
     @FXML ListView<AbilitySetAbility> abilitySetAbilityList;
+    
+    @FXML TextField abilitySetName;
 
     @FXML ComboBox<ActiveAbilityData> abilitySetAbilityData;
     @FXML TextField maxAP;
@@ -721,6 +723,8 @@ public class JobController {
     }
 
     public void unbindAbilitySetData() {
+        abilitySetName.textProperty().unbindBidirectional(abilitySetProperty.getValue().name);
+
         raceBit_0.selectedProperty().unbindBidirectional(abilitySetProperty.getValue().raceFlags.raceBit_0);
         raceHume.selectedProperty().unbindBidirectional(abilitySetProperty.getValue().raceFlags.raceHume);
         raceBangaa.selectedProperty().unbindBidirectional(abilitySetProperty.getValue().raceFlags.raceBangaa);
@@ -774,6 +778,8 @@ public class JobController {
     }
 
     public void bindAbilitySetData() {
+        abilitySetName.textProperty().bindBidirectional(abilitySetProperty.getValue().name);
+
         raceBit_0.selectedProperty().bindBidirectional(abilitySetProperty.getValue().raceFlags.raceBit_0);
         raceHume.selectedProperty().bindBidirectional(abilitySetProperty.getValue().raceFlags.raceHume);
         raceBangaa.selectedProperty().bindBidirectional(abilitySetProperty.getValue().raceFlags.raceBangaa);
