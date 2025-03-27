@@ -25,6 +25,6 @@
 - (Optional) (Apply the animation fix patch first if you haven't already) Create a new Unit Sprite by copying an existing one. Many units also have an in-water sprite, copy this too if needed. 
 
 # How to make Al-Cid able to change jobs:
-- Select the Agent Job and go to the Other tab and enable "Can change jobs".
+- Select the Agent Job and go to the Other tab and enable `Can change jobs`.
 - Create a new Job Requirement. Set it as unique to Al-Cid.
 - Set the Agent Job's `Job Requirement` field (in the Other tab) to match the index of the one you just created.
