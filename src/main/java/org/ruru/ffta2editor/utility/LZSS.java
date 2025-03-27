@@ -355,7 +355,7 @@ public class LZSS {
         }
         //System.out.println("Encoded");
 
-        ByteBuffer finalOutfile = ByteBuffer.allocate(outFile.position());
+        ByteBuffer finalOutfile = ByteBuffer.allocate(outFile.position()).order(ByteOrder.LITTLE_ENDIAN);
         outFile.limit(outFile.position()).rewind();
         finalOutfile.put(outFile);
 

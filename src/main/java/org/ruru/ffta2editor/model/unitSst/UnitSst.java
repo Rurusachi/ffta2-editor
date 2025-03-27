@@ -161,12 +161,12 @@ public class UnitSst {
 
     public UnitAnimation getAnimation(int key) {
         var node = find(key);
-        data.position(node.offset*0x10);
+        ByteBuffer temp = ByteBuffer.wrap(node.compressedValue).order(ByteOrder.LITTLE_ENDIAN);
         byte[] animHeader = new byte[4];
-        data.get(animHeader);
+        temp.get(animHeader);
 
         try {
-            var anim = LZSS.decode(data);
+            var anim = LZSS.decode(temp);
             return new UnitAnimation(anim.decodedData, animHeader);
         } catch (Exception e) {
             System.err.println(e);
@@ -267,7 +267,7 @@ public class UnitSst {
             currOffset = newSst.position();
             newSst.reset();
         }
-        newSst.putShort((short)0).putInt(newSst.capacity());
+        newSst.putShort((short)0).putInt(newSst.capacity() / 0x10);
 
         return newSst.rewind();
     }

@@ -67,10 +67,14 @@ public class MainController {
     @FXML
     private void openFileSelector() {
 
+        setDim(true);
         FileChooser chooser = new FileChooser();
         chooser.setTitle("Open Directory");
         File file = chooser.showOpenDialog(abilityTab.getScene().getWindow());
-        if (file == null) return;
+        if (file == null) {
+            setDim(false);
+            return;
+        }
         romFile = file;
         //Path dataPath = file.toPath().resolveSibling("data");
         Path dataPath = Path.of("data");
@@ -91,6 +95,7 @@ public class MainController {
             ndsTool.start().waitFor();
         } catch (Exception e) {
             System.err.println(e);
+            setDim(false);
             return;
         }
 
@@ -119,6 +124,7 @@ public class MainController {
             overlay8.close();
         } catch (Exception e) {
             System.err.println(e);
+            setDim(false);
             return;
         }
 
@@ -152,6 +158,7 @@ public class MainController {
             App.naUnitAnimTable = LZSS.decode(animTable.position(4)).decodedData;
         } catch (Exception e) {
             System.err.println(e);
+            setDim(false);
         }
 
         
@@ -169,6 +176,8 @@ public class MainController {
         questTabController.loadQuests();
         bazaarTabController.loadBazaar();
         auctionTabController.loadAuctions();
+        
+        setDim(false);
         // var animTable = App.archive.getFile("char/NaUnitAnimTable.bin");
         // try {
         //     LZSSDecodeResult decoded = LZSS.decode(animTable.position(4));
@@ -253,7 +262,7 @@ public class MainController {
 
     private void save(File savePath) {
         try {
-            patchesTabController.applyPatches(); // TODO: Redo patch application
+            patchesTabController.applyPatches();
             textTabController.saveMessages();
             abilityTabController.saveAbilities();
             jobTabController.saveJobs();
@@ -306,7 +315,8 @@ public class MainController {
             //Files.copy(romFile.toPath(), newRom);
             //newRom.close();
 
-            Path dataPath = romFile.toPath().resolveSibling("data");
+            //Path dataPath = romFile.toPath().resolveSibling("data");
+            Path dataPath = Path.of("data");
             File pcIdx = dataPath.resolve("data\\master\\pc.idx").toFile();
             File pcBin = dataPath.resolve("data\\master\\pc.bin").toFile();
             File arm9 = dataPath.resolve("arm9.bin").toFile();

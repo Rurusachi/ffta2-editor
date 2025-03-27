@@ -3,8 +3,10 @@ package org.ruru.ffta2editor;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.file.Path;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
@@ -284,30 +286,24 @@ public class SpritesController {
         App.unitCgs.setNumFiles(unitList.getItems().size());
         for (int i = 0; i < unitList.getItems().size(); i++) {
             if (!unitList.getItems().get(i).hasChanged && !App.unitSstList.get(i).hasChanged) continue;
-            //ByteBuffer unitSstBytes = App.unitSsts.getFile(i);
-            //UnitSst unitSst = new UnitSst(unitSstBytes);
+            
             UnitSst unitSst = App.unitSstList.get(i);
             var savedSprite = unitList.getItems().get(i).saveSprites();
-            //SstHeaderNode node = unitSst.find(0x00FF);
-            //ByteBuffer newCompressedValue = ByteBuffer.allocate(savedSprite.getKey().capacity()+4);
-            //newCompressedValue.putShort(savedSprite.getKey().getShort(1));
-            //for (int j = 2; j < 4; j++) {
-            //    newCompressedValue.put(node.compressedValue[j]);
-            //}
-            //newCompressedValue.put(savedSprite.getKey());
-            //unitSst.find(0x00FF).compressedValue = newCompressedValue.array();
+            
             unitSst.setCompressedValue(0x00FF, savedSprite.getKey());
             unitSst.setCompressedValue(0x00F0, unitList.getItems().get(i).savePalettes());
             App.unitSsts.setFile(i, unitSst.toByteBuffer());
             App.unitCgs.setFile(i, savedSprite.getValue());
+
+            //Path testPath = Path.of("G:\\zzz");
+            //try {
+            //    FileOutputStream testOutput = new FileOutputStream(testPath.resolve(String.format("unit_sst%03d", i)).toFile());
+            //    testOutput.write(App.unitSstList.get(i).toBytes());
+            //    testOutput.close();
+            //} catch (Exception e) {
+            //    System.err.println(e);
+            //}
         }
-        // Pair<ByteBuffer, ByteBuffer> sstIdxPak = App.unitSsts.repack();
-        // App.archive.setFile("char/rom/rom_idx/UnitSst.rom_idx", sstIdxPak.getKey());
-        // App.archive.setFile("char/rom/pak/UnitSst.pak", sstIdxPak.getValue());
-        
-        // Pair<ByteBuffer, ByteBuffer> cgIdxPak = App.unitCgs.repack();
-        // App.archive.setFile("char/rom/rom_idx/UnitCg.rom_idx", cgIdxPak.getKey());
-        // App.archive.setFile("char/rom/pak/UnitCg.pak", cgIdxPak.getValue());
 
     }
 }

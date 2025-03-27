@@ -1,13 +1,18 @@
 package org.ruru.ffta2editor;
 
 import java.io.FileOutputStream;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.ruru.ffta2editor.model.unitSst.UnitAnimation;
+import org.ruru.ffta2editor.model.unitSst.UnitAnimation.UnitAnimationFrame;
 import org.ruru.ffta2editor.model.unitSst.UnitSst;
 import org.ruru.ffta2editor.model.unitSst.UnitSst.SstHeaderNode;
+import org.ruru.ffta2editor.utility.LZSS;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
@@ -21,7 +26,7 @@ public class PatchesController {
     //private static List<Integer> explosive = Arrays.asList(0x2d, 0x2e, 0x2f);
     //private static List<Integer> knuckles = Arrays.asList(0xb, 0xc, 0xd);
     //private static List<Integer> card = Arrays.asList(0xf);
-    private static List<Integer> dualWield = Arrays.asList(0x45, 0x46, 0x47, 0x48);
+    private static List<Integer> dualWield = Arrays.asList(0x45, 0x46, 0x47, 0x48, 0x49);
 
     private static int[] attackAnimations = {0x21, 0x22, 0x23,
                                              0x24, 0x25, 0x26,
@@ -30,8 +35,8 @@ public class PatchesController {
                                              0x2d, 0x2e, 0x2f,
                                              0xb, 0xc, 0xd,
                                              0xf,
-                                             //0x45, 0x46, 0x47, 0x48};
-                                             0x45, 0x47, 0x48};
+                                             0x45, 0x46, 0x47, 0x48
+                                            };
                                              
     @FXML CheckBox animationFix;
     private void applyAnimationFix() {
@@ -40,10 +45,6 @@ public class PatchesController {
             // Gather required animations from Hume and Moogle
             ArrayList<Pair<Integer, byte[]>> compressedAnimations = new ArrayList<>();
 
-            //ByteBuffer humeSoldierSstBytes = App.unitSsts.getFile(0);
-            //UnitSst humeSoldierSst = new UnitSst(humeSoldierSstBytes);
-            //ByteBuffer moogleAnimistSstBytes = App.unitSsts.getFile(44);
-            //UnitSst moogleAnimistSst = new UnitSst(moogleAnimistSstBytes);
             UnitSst humeSoldierSst = App.unitSstList.get(0);
             UnitSst moogleAnimistSst = App.unitSstList.get(44);
 
@@ -60,134 +61,59 @@ public class PatchesController {
                     }
                 }
             }
-
-            //try {
-            //    byte[] testData = compressedAnimations.get(0).getValue();
-            //    //FileOutputStream lzssTestOutput = new FileOutputStream(new File("G:\\testOriginal"));
-            //    //lzssTestOutput.write(testData);
-            //    //lzssTestOutput.close();
-            //    LZSSDecodeResult decoded = LZSS.decode(ByteBuffer.wrap(testData).position(4));
-            //    //lzssTestOutput = new FileOutputStream(new File("G:\\testDecoded"));
-            //    //lzssTestOutput.write(decoded.decodedData.array());
-            //    //lzssTestOutput.close();
-            //    ByteBuffer encoded = LZSS.encode(ByteBuffer.wrap(decoded.decodedData.array()));
-            //    FileOutputStream lzssTestOutput = new FileOutputStream(new File("G:\\testEncoded"));
-            //    lzssTestOutput.write( Arrays.copyOfRange(encoded.array(), 0, encoded.limit()) );
-            //    lzssTestOutput.close();
-            //    LZSSDecodeResult redecoded = LZSS.decode(encoded.rewind());
-            //    lzssTestOutput = new FileOutputStream(new File("G:\\testReDecoded"));
-            //    lzssTestOutput.write(redecoded.decodedData.array());
-            //    lzssTestOutput.close();
-            //    
-            //} catch (Exception e) {
-            //    System.err.println(e);
-            //    // TODO: handle exception
-            //}
             
-            //Path testPath = Path.of("G:\\zzz");
             int entryLength = Short.toUnsignedInt(App.naUnitAnimTable.getShort(2)) + 1;
-            for (int i = 0; i < 0x46; i++) {
-                // TODO: Recalculate animations for Al-Cid
+            int numUnits = 0x46;
+            for (int i = 0; i < numUnits; i++) {
                 // TODO: Port other missing animations to Illua
-                System.out.println(App.jobNames.get(i+1).getValue());
                 
                 UnitSst unitSst = App.unitSstList.get(i);
                 for (Pair<Integer, byte[]> animation : compressedAnimations) {
                     if (unitSst.find(animation.getKey()) != null) continue;
+                    byte[] compressedAnimation = animation.getValue();
+                    if (i == 67) {
+                        UnitAnimation decodedAnimation;
+                        int animationKey = dualWield.contains(animation.getKey() >> 8) ? (0x45 << 8) | (animation.getKey() & 0xFF) : animation.getKey();
+                        if (humeSoldierSst.find(animationKey) != null) {
+                            decodedAnimation = humeSoldierSst.getAnimation(animationKey);
+                        } else {
+                            decodedAnimation = moogleAnimistSst.getAnimation(animationKey);
+                        }
+                        for (UnitAnimationFrame frame : decodedAnimation.frames) {
+                            if (frame.spriteIndex >= 12) {
+                                frame.spriteIndex += 2;
+                            }
+                        }
+                        ByteBuffer newCompressedAnimation = LZSS.encode(ByteBuffer.wrap(decodedAnimation.toBytes()).order(ByteOrder.LITTLE_ENDIAN));
+                        ByteBuffer newCompressedValue = ByteBuffer.allocate(newCompressedAnimation.capacity()+4).order(ByteOrder.LITTLE_ENDIAN);
+                        newCompressedValue.putShort(newCompressedAnimation.getShort(1));
+                        for (int j = 2; j < 4; j++) {
+                            newCompressedValue.put(decodedAnimation.animHeader[j]);
+                        }
+                        newCompressedValue.put(newCompressedAnimation);
+                        compressedAnimation = newCompressedValue.array();
+                    }
+
                     unitSst.hasChanged = true;
                     byte animationId = (byte)(animation.getKey() >>> 8);
                     byte animationType = (byte)(animation.getKey() & 0xFF);
-                    //System.out.println(String.format("%02X", animationId));
                     SstHeaderNode newNode = new SstHeaderNode(unitSst.size, animationType, animationId, 0);
-                    newNode.compressedValue = animation.getValue();
+                    newNode.compressedValue = compressedAnimation;
                     unitSst.insert(newNode);
                     
                     int oldValue = App.naUnitAnimTable.get(4+1 + i*entryLength + animationId);
-                    //byte newValue = (byte)(oldValue | animationType);
                     byte newValue = (byte)(oldValue | 0x11);
                     App.naUnitAnimTable.put(4+1 + i*entryLength + animationId, newValue);
-                    //System.out.println(String.format("Animation %02X: %02X -> %02X", animationId, oldValue, newValue));
                 }
             }
-            Path testPath = Path.of("G:\\zzz");
-            try {
-                    FileOutputStream testOutput = new FileOutputStream(testPath.resolve("naUnitAnimTable").toFile());
-                    testOutput.write(App.naUnitAnimTable.array());
-                    testOutput.close();
-                } catch (Exception e) {
-                    // TODO: handle exception
-            }
-//            for (int i = 0; i < 0x3D; i++) {
-//                ByteBuffer unitSstBytes = App.unitSsts.getFile(i);
-//                UnitSst unitSst = new UnitSst(unitSstBytes);
-//
-//                ByteBuffer newSstHeader = ByteBuffer.allocate(1024*1024).order(ByteOrder.LITTLE_ENDIAN);
-//                ByteBuffer newSstData = ByteBuffer.allocate(1024*1024).order(ByteOrder.LITTLE_ENDIAN);
-//                //newSstHeader.put(unitSstBytes.array(), 0, unitSstBytes.position());
-//                int dataOffset = unitSst.root.offset*0x10;
-//                unitSstBytes.position(unitSst.root.offset*0x10);
-//                newSstData.put(unitSstBytes);
-//
-//                int initialNodes = unitSst.size;
-//                int numAdded = 0;
-//                for (Pair<Integer, byte[]> animation : compressedAnimations) {
-//                    if (unitSst.find(animation.getKey()) == null) {
-//                        numAdded++;
-//                        SstHeaderNode newNode = new SstHeaderNode(unitSst.size, (byte)(animation.getKey() & 0xFF), (byte)(animation.getKey() >>> 8), (newSstData.position() + dataOffset) >>> 4);
-//                        unitSst.insert(newNode);
-//                        newSstData.put(animation.getValue());
-//                        if (newSstData.position() % 0x10 != 0) {
-//                            newSstData.put(new byte[0x10 - (newSstData.position() % 0x10)]);
-//                        }
-//                    }
-//                }
-//                newSstData.limit(newSstData.position());
-//
-//                int offsetDifference = numAdded >>> 1;
-//                if (numAdded % 2 == 1 && initialNodes % 2 == 1) {
-//                    offsetDifference++;
-//                }
-//                for (var node : unitSst.asList()) {
-//                    node.offset += offsetDifference;
-//                    newSstHeader.put(node.toBytes());
-//                }
-//                newSstHeader.mark();
-//                newSstHeader.put(new byte[newSstHeader.position() % 0x10 == 0 ? 0x10 : 0x8]);
-//                newSstHeader.limit(newSstHeader.position());
-//
-//                int fullLength = newSstHeader.position() + newSstData.position();
-//                newSstHeader.reset();
-//                newSstHeader.position(newSstHeader.position()+2);
-//                newSstHeader.putInt(fullLength);
-//
-//                ByteBuffer newSstBytes = ByteBuffer.allocate(fullLength).order(ByteOrder.LITTLE_ENDIAN);
-//                newSstHeader.rewind();
-//                newSstBytes.put(newSstHeader);
-//                newSstData.rewind();
-//                newSstBytes.put(newSstData);
-//                App.unitSsts.setFile(i, newSstBytes);
-//            
-//                //Pair<ByteBuffer, ByteBuffer> idxPak = App.unitSsts.repack();
-//                //App.archive.setFile("char/rom/rom_idx/UnitSst.rom_idx", idxPak.getKey());
-//                //App.archive.setFile("char/rom/pak/UnitSst.pak", idxPak.getValue());
-//
-//                try {
-//                    FileOutputStream testOutput = new FileOutputStream(testPath.resolve(String.format("unit_sst%03d", i)).toFile());
-//                    testOutput.write(newSstBytes.array());
-//                    testOutput.close();
-//                } catch (Exception e) {
-//                    // TODO: handle exception
-//                }
-//            }
-            
-            /* 
-            ByteBuffer soldierSstBytes = unitSsts.getFile(0);
-            soldierSst = new UnitSst(soldierSstBytes);
-            ArrayList<SstHeaderNode> nodes = soldierSst.asList();
-            soldierSstBytes.position(soldierSstBytes.position() + soldierSstBytes.remaining());
-            soldierSst.insert(new SstHeaderNode(nodes.size(), 0, 0x21, 4000, 0, 0));
-            
-            */
+            //Path testPath = Path.of("G:\\zzz");
+            //try {
+            //        FileOutputStream testOutput = new FileOutputStream(testPath.resolve("naUnitAnimTable").toFile());
+            //        testOutput.write(App.naUnitAnimTable.array());
+            //        testOutput.close();
+            //    } catch (Exception e) {
+            //        System.err.println(e);
+            //}
         }
     }
     

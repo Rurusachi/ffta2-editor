@@ -4,16 +4,16 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 public class UnitAnimation {
-    public class UnitAnimationFrame {
-        short _0x00; // Used to signal damage number and and special effects?
-        short duration;
-        short _0x04;
-        byte _0x06;
-        byte spriteIndex;
-        short _0x08;
-        short _0x0A;
-        short _0x0C;
-        short _0x0E;
+    public static class UnitAnimationFrame {
+        public short _0x00; // Used to signal damage number and special effects?
+        public short duration;
+        public short _0x04;
+        public byte _0x06;
+        public byte spriteIndex;
+        public short _0x08;
+        public short _0x0A;
+        public short _0x0C;
+        public short _0x0E;
 
         public UnitAnimationFrame(ByteBuffer bytes) {
             _0x00 = bytes.getShort();
@@ -42,8 +42,8 @@ public class UnitAnimation {
         }
     }
 
-    byte[] animHeader;
-    UnitAnimationFrame[] frames;
+    public byte[] animHeader;
+    public UnitAnimationFrame[] frames;
 
     public UnitAnimation(ByteBuffer bytes, byte[] animHeader) {
         bytes.order(ByteOrder.LITTLE_ENDIAN);

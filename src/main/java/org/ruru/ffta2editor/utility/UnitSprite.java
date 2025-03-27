@@ -196,7 +196,7 @@ public class UnitSprite {
         //
 
         int combinedCompressedSize = compressedSpriteList.stream().mapToInt(x -> x.rewind().remaining()).sum();
-        ByteBuffer compressedSprites = ByteBuffer.allocate(combinedCompressedSize);
+        ByteBuffer compressedSprites = ByteBuffer.allocate(combinedCompressedSize).order(ByteOrder.LITTLE_ENDIAN);
         for (int i = 0; i < compressedSpriteList.size(); i++) {
             int newOffset = compressedSprites.position();
             SpriteMap prevMap = spriteData.spriteMaps.get(i);

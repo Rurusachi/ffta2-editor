@@ -35,17 +35,16 @@ public class SpritePalettes {
     }
 
     public ByteBuffer toByteBuffer() {
-        ArrayList<ByteBuffer> compressedPalettes = new ArrayList<>();
-
-        for (int i = 0; i < palettes.size(); i++) {
-            compressedPalettes.add(LZSS.encode(ByteBuffer.wrap(palettes.get(i)), true));
-        }
-        ByteBuffer newPalettes = ByteBuffer.allocate(compressedPalettes.stream().mapToInt(x -> x.remaining()).sum()).order(ByteOrder.LITTLE_ENDIAN);
-
-        for (ByteBuffer paletteBytes : compressedPalettes) {
+        ByteBuffer newPalettes = ByteBuffer.allocate(palettes.stream().mapToInt(x -> x.length).sum()).order(ByteOrder.LITTLE_ENDIAN);
+        
+        for (byte[] paletteBytes : palettes) {
             newPalettes.put(paletteBytes);
         }
+        
+        newPalettes.limit(newPalettes.position());
+        ByteBuffer compressedPalettes = LZSS.encode(newPalettes.rewind(), true);
+        
 
-        return newPalettes.rewind();
+        return compressedPalettes;
     }
 }
