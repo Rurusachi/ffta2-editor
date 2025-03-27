@@ -6,6 +6,7 @@ import java.nio.ByteBuffer;
 import org.ruru.ffta2editor.model.ability.AbilityData;
 import org.ruru.ffta2editor.model.ability.ActiveAbilityData;
 import org.ruru.ffta2editor.model.ability.SPAbilityData;
+import org.ruru.ffta2editor.model.auction.AuctionPrizeTable;
 import org.ruru.ffta2editor.model.bazaar.BazaarRecipe;
 import org.ruru.ffta2editor.model.character.CharacterData;
 import org.ruru.ffta2editor.model.formation.FormationData;
@@ -65,6 +66,8 @@ public class App extends Application {
     public static ObservableList<FormationData> formationList;
     public static ObservableList<BazaarRecipe> bazaarRecipeList;
     public static ObservableList<UnitSst> unitSstList;
+    public static ObservableList<AuctionPrizeTable> auctionPrizeTableList;
+    public static ObservableList<AuctionPrizeTable> auctionGrandPrizeTableList;
 
     public static ObservableList<StringProperty> characterNames;
     public static ObservableList<StringProperty> jobNames;
@@ -79,6 +82,7 @@ public class App extends Application {
     public static ObservableList<StringProperty> lawNames;
     public static ObservableList<StringProperty> questNames;
     public static ObservableList<StringProperty> questDescriptions;
+    public static ObservableList<StringProperty> regionNames;
     public static ObservableList<StringProperty> locationNames;
     public static ObservableList<StringProperty> bazaarSetNames;
     public static ObservableList<StringProperty> bazaarSetDescriptions;

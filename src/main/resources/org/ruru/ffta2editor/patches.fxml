@@ -16,7 +16,7 @@
                   <Insets top="20.0" />
                </padding>
                <children>
-                  <CheckBox fx:id="animationFix" mnemonicParsing="false" text="Animation Fix" />
+                  <CheckBox fx:id="animationFix" mnemonicParsing="false" text="Animation Fix (Applied on save, irreversible)" />
                </children>
             </VBox>
          </children>

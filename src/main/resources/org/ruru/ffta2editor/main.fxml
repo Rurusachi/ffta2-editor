@@ -47,37 +47,8 @@
       <menus>
         <Menu mnemonicParsing="false" text="File">
           <items>
-            <MenuItem mnemonicParsing="false" text="New" />
             <MenuItem mnemonicParsing="false" onAction="#openFileSelector" text="Open…" />
-            <Menu mnemonicParsing="false" text="Open Recent" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Close" />
-            <MenuItem mnemonicParsing="false" text="Save" />
             <MenuItem mnemonicParsing="false" onAction="#saveFileSelector" text="Save As…" />
-            <MenuItem mnemonicParsing="false" text="Revert" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Preferences…" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Quit" />
-          </items>
-        </Menu>
-        <Menu mnemonicParsing="false" text="Edit">
-          <items>
-            <MenuItem mnemonicParsing="false" text="Undo" />
-            <MenuItem mnemonicParsing="false" text="Redo" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Cut" />
-            <MenuItem mnemonicParsing="false" text="Copy" />
-            <MenuItem mnemonicParsing="false" text="Paste" />
-            <MenuItem mnemonicParsing="false" text="Delete" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Select All" />
-            <MenuItem mnemonicParsing="false" text="Unselect All" />
-          </items>
-        </Menu>
-        <Menu mnemonicParsing="false" text="Help">
-          <items>
-            <MenuItem mnemonicParsing="false" text="About MyHelloApp" />
           </items>
         </Menu>
       </menus>
@@ -129,12 +100,11 @@
                     <fx:include fx:id="bazaarTab" source="bazaar.fxml" />
                 </content>
             </Tab>
-          <Tab text="Patches">
+          <Tab text="Auction">
                 <content>
-                    <fx:include fx:id="patchesTab" source="patches.fxml" />
+                    <fx:include fx:id="auctionTab" source="auction.fxml" />
                 </content>
             </Tab>
-        </tabs>
           <Tab text="Sprites">
                 <content>
                     <fx:include fx:id="spritesTab" source="sprites.fxml" />
@@ -145,6 +115,12 @@
                     <fx:include fx:id="textTab" source="text.fxml" />
                 </content>
             </Tab>
+          <Tab text="Patches">
+                <content>
+                    <fx:include fx:id="patchesTab" source="patches.fxml" />
+                </content>
+            </Tab>
+        </tabs>
       </TabPane>
   </children>
 </VBox>

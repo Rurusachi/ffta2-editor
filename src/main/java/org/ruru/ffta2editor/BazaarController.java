@@ -10,7 +10,6 @@ import org.ruru.ffta2editor.model.bazaar.BazaarSet;
 import org.ruru.ffta2editor.model.bazaar.BazaarSet.BazaarSetItem;
 import org.ruru.ffta2editor.model.item.EquipmentData;
 import org.ruru.ffta2editor.model.item.LootData;
-import org.ruru.ffta2editor.utility.ByteChangeListener;
 import org.ruru.ffta2editor.utility.IntRangeChangeListener;
 import org.ruru.ffta2editor.utility.ShortChangeListener;
 import org.ruru.ffta2editor.utility.UnsignedByteStringConverter;
@@ -252,22 +251,22 @@ public class BazaarController {
 
     public void saveBazaar() {
         List<BazaarRecipe> bazaarRecipes = App.bazaarRecipeList;
-        ByteBuffer newBazaarRecipeDatabytes = ByteBuffer.allocate(bazaarRecipes.size()*0x8).order(ByteOrder.LITTLE_ENDIAN);
+        ByteBuffer newBazaarRecipeDataBytes = ByteBuffer.allocate(bazaarRecipes.size()*0x8).order(ByteOrder.LITTLE_ENDIAN);
 
         for (int i = 0; i < bazaarRecipes.size(); i++) {
-            newBazaarRecipeDatabytes.put(bazaarRecipes.get(i).toBytes());
+            newBazaarRecipeDataBytes.put(bazaarRecipes.get(i).toBytes());
         }
-        newBazaarRecipeDatabytes.rewind();
-        App.sysdata.setFile(26, newBazaarRecipeDatabytes);
+        newBazaarRecipeDataBytes.rewind();
+        App.sysdata.setFile(26, newBazaarRecipeDataBytes);
         
         List<BazaarSet> bazaarSets = bazaarSetList.getItems();
-        ByteBuffer newBazaarSetDatabytes = ByteBuffer.allocate(bazaarSets.size()*0x2c).order(ByteOrder.LITTLE_ENDIAN);
+        ByteBuffer newBazaarSetDataBytes = ByteBuffer.allocate(bazaarSets.size()*0x2c).order(ByteOrder.LITTLE_ENDIAN);
 
         for (int i = 0; i < bazaarSets.size(); i++) {
-            newBazaarSetDatabytes.put(bazaarSets.get(i).toBytes());
+            newBazaarSetDataBytes.put(bazaarSets.get(i).toBytes());
         }
-        newBazaarSetDatabytes.rewind();
-        App.sysdata.setFile(25, newBazaarSetDatabytes);
+        newBazaarSetDataBytes.rewind();
+        App.sysdata.setFile(25, newBazaarSetDataBytes);
         // Patch arm9 code with new Set length
         App.arm9.put(0x000cb634, (byte)(bazaarSets.size()-1));
         App.arm9.put(0x000cb638, (byte)(bazaarSets.size()-1));

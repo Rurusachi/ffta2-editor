@@ -219,12 +219,12 @@ public class Archive {
         if (fileList.isList) {
             for (var archiveEntry : fileList.files) {
                 if (archiveEntry.chr_position < name.length() & name.charAt(archiveEntry.chr_position) == archiveEntry.chr) {
-                    System.out.println(String.format("getFile: %s (%d) nested: %d(%s) == %s", name, id, archiveEntry.chr_position, name.charAt(archiveEntry.chr_position), (char)archiveEntry.chr));
+                    //System.out.println(String.format("getFile: %s (%d) nested: %d(%s) == %s", name, id, archiveEntry.chr_position, name.charAt(archiveEntry.chr_position), (char)archiveEntry.chr));
                     return archiveEntry.file;
                 }
             }
         } else {
-            System.out.println(String.format("getFile: %s (%d)", name, id));
+            //System.out.println(String.format("getFile: %s (%d)", name, id));
             return fileList.file;
         }
         return null;

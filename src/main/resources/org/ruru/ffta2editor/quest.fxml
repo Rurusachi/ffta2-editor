@@ -56,8 +56,8 @@
                <children>
                   <HBox alignment="CENTER" spacing="20.0">
                      <children>
-                        <Button mnemonicParsing="false" onAction="#addQuest" text="Add Quest" />
-                        <Button mnemonicParsing="false" onAction="#removeQuest" text="Remove Last Quest" />
+                        <Button disable="true" mnemonicParsing="false" onAction="#addQuest" text="Add Quest" />
+                        <Button disable="true" mnemonicParsing="false" onAction="#removeQuest" text="Remove Last Quest" />
                      </children>
                      <padding>
                         <Insets top="20.0" />

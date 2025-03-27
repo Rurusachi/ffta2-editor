@@ -54,6 +54,9 @@ public class MainController {
     @FXML AnchorPane bazaarTab;
     @FXML BazaarController bazaarTabController;
 
+    @FXML AnchorPane auctionTab;
+    @FXML AuctionController auctionTabController;
+
     @FXML AnchorPane equipmentTab;
     @FXML EquipmentController equipmentTabController;
     
@@ -69,7 +72,8 @@ public class MainController {
         File file = chooser.showOpenDialog(abilityTab.getScene().getWindow());
         if (file == null) return;
         romFile = file;
-        Path dataPath = file.toPath().resolveSibling("data");
+        //Path dataPath = file.toPath().resolveSibling("data");
+        Path dataPath = Path.of("data");
         //ProcessBuilder ndsTool = new ProcessBuilder("G:\\ndstool.exe", "-x", file.toPath().toString(), "-9", dataPath.resolve("arm9.bin").toString(), "-d", dataPath.toString());
         ProcessBuilder ndsTool = new ProcessBuilder("ndstool.exe", "-x", file.toPath().toString(),
                                                "-9", dataPath.resolve("arm9.bin").toString(),
@@ -164,6 +168,7 @@ public class MainController {
         formationTabController.loadFormations();
         questTabController.loadQuests();
         bazaarTabController.loadBazaar();
+        auctionTabController.loadAuctions();
         // var animTable = App.archive.getFile("char/NaUnitAnimTable.bin");
         // try {
         //     LZSSDecodeResult decoded = LZSS.decode(animTable.position(4));
@@ -248,6 +253,7 @@ public class MainController {
 
     private void save(File savePath) {
         try {
+            patchesTabController.applyPatches(); // TODO: Redo patch application
             textTabController.saveMessages();
             abilityTabController.saveAbilities();
             jobTabController.saveJobs();
@@ -259,7 +265,7 @@ public class MainController {
             formationTabController.saveFormations();
             questTabController.saveQuests();
             bazaarTabController.saveBazaar();
-            //patchesTabController.applyPatches(); // TODO: Redo patch application
+            auctionTabController.saveAuctions();
 
             // Repack sub-archives
             Pair<ByteBuffer, ByteBuffer> idxPak = App.sysdata.repack();

@@ -280,7 +280,7 @@ public class LZSS {
         int compressionType = 0x10;
         int uncompressedSize = inFile.remaining();
         int header = (uncompressedSize << 8) | compressionType;
-        System.out.println(String.format("Header: %d, %d, %08X", compressionType, uncompressedSize, header));
+        //System.out.println(String.format("Header: %d, %d, %08X", compressionType, uncompressedSize, header));
         outFile.putInt(header);
 
         byte[] nextBytes = new byte[F];
@@ -353,7 +353,7 @@ public class LZSS {
         if (flagPos != 7) {
             outFile.put(flagPos, flags.toByteArray());
         }
-        System.out.println("Encoded");
+        //System.out.println("Encoded");
 
         ByteBuffer finalOutfile = ByteBuffer.allocate(outFile.position());
         outFile.limit(outFile.position()).rewind();
@@ -374,7 +374,7 @@ public class LZSS {
         int uncompressedSize = header >>> 8;
 
         if (uncompressedSize < 0) throw new Exception("Uncompressed file too large");
-        ByteBuffer outFile = ByteBuffer.allocate(uncompressedSize);
+        ByteBuffer outFile = ByteBuffer.allocate(uncompressedSize).order(ByteOrder.LITTLE_ENDIAN);
         ByteBuffer copyBuffer = outFile.asReadOnlyBuffer();
 
         int flag_index = 7;

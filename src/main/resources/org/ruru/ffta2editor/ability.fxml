@@ -56,8 +56,8 @@
                <children>
                   <HBox alignment="CENTER" spacing="20.0">
                      <children>
-                        <Button mnemonicParsing="false" onAction="#addAbility" text="Add Ability" />
-                        <Button mnemonicParsing="false" onAction="#removeAbility" text="Remove Last Ability" />
+                        <Button disable="true" mnemonicParsing="false" onAction="#addAbility" text="Add Ability" />
+                        <Button disable="true" mnemonicParsing="false" onAction="#removeAbility" text="Remove Last Ability" />
                      </children>
                      <padding>
                         <Insets top="20.0" />

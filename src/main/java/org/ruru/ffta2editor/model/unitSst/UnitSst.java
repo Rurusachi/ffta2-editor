@@ -64,6 +64,7 @@ public class UnitSst {
     ByteBuffer data;
     public SstHeaderNode root;
     public int size = 0;
+    public boolean hasChanged = false;
 
     public UnitSst(ByteBuffer bytes) {
         data = bytes.duplicate().order(ByteOrder.LITTLE_ENDIAN);

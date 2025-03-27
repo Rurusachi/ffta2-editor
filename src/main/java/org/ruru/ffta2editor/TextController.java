@@ -109,7 +109,7 @@ public class TextController {
                 ByteBuffer stringTableBytes = App.jdMessage.getFile(i);
                 //System.out.println(i);
                 if (stringTableBytes == null || stringTableBytes.rewind().remaining() == 0) {
-                    System.err.println(String.format("jdMessage empty %d", i));
+                    //System.err.println(String.format("jdMessage empty %d", i));
                     continue;
                 }
 
@@ -129,6 +129,9 @@ public class TextController {
                         break;
                     case 3:
                         App.abilityNames = stringTable.strings.getValue();
+                        break;
+                    case 4:
+                        App.regionNames = stringTable.strings.getValue();
                         break;
                     case 5:
                         App.locationNames = stringTable.strings.getValue();
@@ -195,9 +198,9 @@ public class TextController {
         //ArrayList<byte[]> encodedMessages = new ArrayList<>();
         for (StringTable table : messages) {
             //encodedMessages.add(table.toBytes());
-            System.out.println(table.id);
+            //System.out.println(table.id);
             byte[] tableBytes = table.toBytes();
-            System.out.println(String.format("%d -> %d", App.jdMessage.getFile(table.id).rewind().remaining(), tableBytes.length));
+            //System.out.println(String.format("%d -> %d", App.jdMessage.getFile(table.id).rewind().remaining(), tableBytes.length));
             App.jdMessage.setFile(table.id, ByteBuffer.wrap(tableBytes).order(ByteOrder.LITTLE_ENDIAN));
         }
         

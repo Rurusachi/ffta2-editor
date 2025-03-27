@@ -9,7 +9,6 @@ import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
-import org.ruru.ffta2editor.model.quest.Quest;
 import org.ruru.ffta2editor.model.unitSst.SpriteData;
 import org.ruru.ffta2editor.model.unitSst.UnitSst;
 import org.ruru.ffta2editor.utility.UnitSprite;
@@ -252,9 +251,17 @@ public class SpritesController {
         ObservableList<UnitSst> unitSstDataList = FXCollections.observableArrayList();
         ObservableList<UnitSprite> unitSprites = FXCollections.observableArrayList();
         // last file is empty??
-        for (int i = 0; i < App.unitSsts.numFiles()-1; i++) {
+        for (int i = 0; i < App.unitSsts.numFiles(); i++) {
             ByteBuffer unitCgBytes = App.unitCgs.getFile(i);
             ByteBuffer unitSstBytes = App.unitSsts.getFile(i);
+            if (unitCgBytes == null) {
+                System.err.println(String.format("Cg %d is null", i));
+                continue;
+            }
+            if (unitSstBytes == null) {
+                System.err.println(String.format("Sst %d is null", i));
+                continue;
+            }
             UnitSst unitSst = new UnitSst(unitSstBytes);
             unitSstDataList.add(unitSst);
             ByteBuffer spritePalette = unitSst.getPalettes();
@@ -276,7 +283,7 @@ public class SpritesController {
         App.unitSsts.setNumFiles(unitList.getItems().size());
         App.unitCgs.setNumFiles(unitList.getItems().size());
         for (int i = 0; i < unitList.getItems().size(); i++) {
-            if (!unitList.getItems().get(i).hasChanged) continue;
+            if (!unitList.getItems().get(i).hasChanged && !App.unitSstList.get(i).hasChanged) continue;
             //ByteBuffer unitSstBytes = App.unitSsts.getFile(i);
             //UnitSst unitSst = new UnitSst(unitSstBytes);
             UnitSst unitSst = App.unitSstList.get(i);

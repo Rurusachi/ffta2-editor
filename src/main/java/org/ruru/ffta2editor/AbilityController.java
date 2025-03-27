@@ -1,6 +1,5 @@
 package org.ruru.ffta2editor;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
@@ -18,7 +17,6 @@ import org.ruru.ffta2editor.model.ability.RangeAOEType;
 import org.ruru.ffta2editor.model.ability.SPAbilityData;
 import org.ruru.ffta2editor.model.ability.SpecialRequirement;
 import org.ruru.ffta2editor.model.ability.WeaponRequirement;
-import org.ruru.ffta2editor.model.bazaar.BazaarSet;
 import org.ruru.ffta2editor.utility.ByteChangeListener;
 import org.ruru.ffta2editor.utility.ShortChangeListener;
 import org.ruru.ffta2editor.utility.UnsignedByteStringConverter;
@@ -27,7 +25,6 @@ import org.ruru.ffta2editor.utility.UnsignedShortStringConverter;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -700,9 +697,9 @@ public class AbilityController {
 
 
         // App.reactionAbilityList and App.passiveAbilityList have a copy of the 0th ability as a null value
-        int numActive = App.activeAbilityList.size();
-        int numReaction = App.reactionAbilityList.size() - 1;
-        int numPassive = App.passiveAbilityList.size() - 1;
+        //int numActive = App.activeAbilityList.size();
+        //int numReaction = App.reactionAbilityList.size() - 1;
+        //int numPassive = App.passiveAbilityList.size() - 1;
 
 
         // TODO: Rewrite FUN_02080f38
