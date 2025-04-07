@@ -3,7 +3,10 @@ package org.ruru.ffta2editor;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.ruru.ffta2editor.model.Race;
@@ -25,6 +28,8 @@ import org.ruru.ffta2editor.utility.UnsignedShortStringConverter;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -76,6 +81,28 @@ public class AbilityController {
         }
     }
     
+    public class AbilitySlotCell extends ListCell<Byte> {
+        ComboBox<Race> race;
+        Label label = new Label();
+
+        public AbilitySlotCell(ComboBox<Race> race) {
+            this.race = race;
+            label.setStyle("-fx-text-fill: black");
+        }
+
+        @Override protected void updateItem(Byte slotIndex, boolean empty) {
+            super.updateItem(slotIndex, empty);
+            if (slotIndex != null) {
+                int slot = Byte.toUnsignedInt(slotIndex);
+                String abilityNames = raceAPSlots.get(race.getSelectionModel().getSelectedItem().value)[slot].stream().map(ability -> ability.name.getValue()).collect(Collectors.joining(", "));
+                label.setText(String.format("%X: %s", slot, abilityNames));
+            } else {
+                label.setText("None");
+            }
+            setGraphic(label);
+        }
+    }
+    
     @FXML ListView<ActiveAbilityData> activeAbilityList;
 
     @FXML TextField abilityName;
@@ -116,12 +143,12 @@ public class AbilityController {
     @FXML ComboBox<Race> race4;
     @FXML ComboBox<Race> race5;
     @FXML ComboBox<Race> race6;
-    @FXML TextField apIndex1;
-    @FXML TextField apIndex2;
-    @FXML TextField apIndex3;
-    @FXML TextField apIndex4;
-    @FXML TextField apIndex5;
-    @FXML TextField apIndex6;
+    @FXML ComboBox<Byte> apIndex1;
+    @FXML ComboBox<Byte> apIndex2;
+    @FXML ComboBox<Byte> apIndex3;
+    @FXML ComboBox<Byte> apIndex4;
+    @FXML ComboBox<Byte> apIndex5;
+    @FXML ComboBox<Byte> apIndex6;
 
     @FXML ComboBox<Short> learnedAbility;
 
@@ -207,15 +234,148 @@ public class AbilityController {
     private ObjectProperty<ActiveAbilityData> abilityProperty = new SimpleObjectProperty<>();
     private ObjectProperty<AbilityAnimation> abilityAnimationProperty = new SimpleObjectProperty<>();
 
+    private ArrayList<LinkedList<AbilityData>[]> raceAPSlots = new ArrayList<>();
+
+    private boolean isRebinding = false;
+
+    private class ApIndexChangeListener implements ChangeListener<Byte> {
+        ComboBox<Race> raceBox;
+
+        public ApIndexChangeListener(ComboBox<Race> race) {
+            this.raceBox = race;
+        }
+
+        @Override
+        public void changed(ObservableValue<? extends Byte> observable, Byte oldValue, Byte newValue) {
+            if (isRebinding) return;
+            Race race = raceBox.getSelectionModel().getSelectedItem();
+            if (oldValue != null && race != Race.NONE) raceAPSlots.get(race.value)[Byte.toUnsignedInt(oldValue)].remove(abilityProperty.getValue());
+            if (newValue != null && race != Race.NONE) raceAPSlots.get(race.value)[Byte.toUnsignedInt(newValue)].add(abilityProperty.getValue());
+        }
+
+    }
+
+    private class ApRaceChangeListener implements ChangeListener<Race> {
+        ComboBox<Byte> apIndexBox;
+
+        public ApRaceChangeListener(ComboBox<Byte> apIndex) {
+            this.apIndexBox = apIndex;
+        }
+
+        @Override
+        public void changed(ObservableValue<? extends Race> observable, Race oldValue, Race newValue) {
+            if (isRebinding) return;
+            int apIndex = Byte.toUnsignedInt(apIndexBox.getSelectionModel().getSelectedItem());
+            if (oldValue != null && oldValue != Race.NONE) raceAPSlots.get(oldValue.value)[apIndex].remove(abilityProperty.getValue());
+            if (newValue != null && newValue != Race.NONE) raceAPSlots.get(newValue.value)[apIndex].add(abilityProperty.getValue());
+            
+            apIndex1.setButtonCell(new AbilitySlotCell(race1));
+            apIndex1.setCellFactory(x -> new AbilitySlotCell(race1));
+            
+            apIndex2.setButtonCell(new AbilitySlotCell(race2));
+            apIndex2.setCellFactory(x -> new AbilitySlotCell(race2));
+            
+            apIndex3.setButtonCell(new AbilitySlotCell(race3));
+            apIndex3.setCellFactory(x -> new AbilitySlotCell(race3));
+            
+            apIndex4.setButtonCell(new AbilitySlotCell(race4));
+            apIndex4.setCellFactory(x -> new AbilitySlotCell(race4));
+            
+            apIndex5.setButtonCell(new AbilitySlotCell(race5));
+            apIndex5.setCellFactory(x -> new AbilitySlotCell(race5));
+            
+            apIndex6.setButtonCell(new AbilitySlotCell(race6));
+            apIndex6.setCellFactory(x -> new AbilitySlotCell(race6));
+        }
+
+    }
+
     @FXML
     public void initialize() {
         
         activeAbilityList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            isRebinding = true;
             if (oldValue != null) unbindAbilityData();
             abilityProperty.setValue(newValue);
             abilityAnimationProperty.setValue(abilityAnimationList.get(newValue.id));
             if (newValue != null) bindAbilityData();
+            isRebinding = false;
         });
+        apIndex1.getSelectionModel().selectedItemProperty().addListener(new ApIndexChangeListener(race1));
+        apIndex2.getSelectionModel().selectedItemProperty().addListener(new ApIndexChangeListener(race2));
+        apIndex3.getSelectionModel().selectedItemProperty().addListener(new ApIndexChangeListener(race3));
+        apIndex4.getSelectionModel().selectedItemProperty().addListener(new ApIndexChangeListener(race4));
+        apIndex5.getSelectionModel().selectedItemProperty().addListener(new ApIndexChangeListener(race5));
+        apIndex6.getSelectionModel().selectedItemProperty().addListener(new ApIndexChangeListener(race6));
+
+        race1.getSelectionModel().selectedItemProperty().addListener(new ApRaceChangeListener(apIndex1));
+        race2.getSelectionModel().selectedItemProperty().addListener(new ApRaceChangeListener(apIndex2));
+        race3.getSelectionModel().selectedItemProperty().addListener(new ApRaceChangeListener(apIndex3));
+        race4.getSelectionModel().selectedItemProperty().addListener(new ApRaceChangeListener(apIndex4));
+        race5.getSelectionModel().selectedItemProperty().addListener(new ApRaceChangeListener(apIndex5));
+        race6.getSelectionModel().selectedItemProperty().addListener(new ApRaceChangeListener(apIndex6));
+        
+        //apIndex1.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+        //    if (oldValue != null) raceAPSlots.get(race1.getSelectionModel().getSelectedItem().value)[Byte.toUnsignedInt(oldValue)].remove(abilityProperty.getValue());
+        //    if (newValue != null) raceAPSlots.get(race1.getSelectionModel().getSelectedItem().value)[Byte.toUnsignedInt(newValue)].add(abilityProperty.getValue());
+        //});
+        //
+        //apIndex2.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+        //    if (oldValue != null) raceAPSlots.get(race2.getSelectionModel().getSelectedItem().value)[Byte.toUnsignedInt(oldValue)].remove(abilityProperty.getValue());
+        //    if (newValue != null) raceAPSlots.get(race2.getSelectionModel().getSelectedItem().value)[Byte.toUnsignedInt(newValue)].add(abilityProperty.getValue());
+        //});
+        //
+        //apIndex3.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+        //    if (oldValue != null) raceAPSlots.get(race3.getSelectionModel().getSelectedItem().value)[Byte.toUnsignedInt(oldValue)].remove(abilityProperty.getValue());
+        //    if (newValue != null) raceAPSlots.get(race3.getSelectionModel().getSelectedItem().value)[Byte.toUnsignedInt(newValue)].add(abilityProperty.getValue());
+        //});
+        //
+        //apIndex4.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+        //    if (oldValue != null) raceAPSlots.get(race4.getSelectionModel().getSelectedItem().value)[Byte.toUnsignedInt(oldValue)].remove(abilityProperty.getValue());
+        //    if (newValue != null) raceAPSlots.get(race4.getSelectionModel().getSelectedItem().value)[Byte.toUnsignedInt(newValue)].add(abilityProperty.getValue());
+        //});
+        //
+        //apIndex5.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+        //    if (oldValue != null) raceAPSlots.get(race5.getSelectionModel().getSelectedItem().value)[Byte.toUnsignedInt(oldValue)].remove(abilityProperty.getValue());
+        //    if (newValue != null) raceAPSlots.get(race5.getSelectionModel().getSelectedItem().value)[Byte.toUnsignedInt(newValue)].add(abilityProperty.getValue());
+        //});
+        //
+        //apIndex6.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+        //    if (oldValue != null) raceAPSlots.get(race6.getSelectionModel().getSelectedItem().value)[Byte.toUnsignedInt(oldValue)].remove(abilityProperty.getValue());
+        //    if (newValue != null) raceAPSlots.get(race6.getSelectionModel().getSelectedItem().value)[Byte.toUnsignedInt(newValue)].add(abilityProperty.getValue());
+        //});
+
+        //race1.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+        //    if (oldValue != null && oldValue != Race.NONE) raceAPSlots.get(oldValue.value)[Byte.toUnsignedInt(apIndex1.getSelectionModel().getSelectedItem())].remove(abilityProperty.getValue());
+        //    if (newValue != null && newValue != Race.NONE) raceAPSlots.get(newValue.value)[Byte.toUnsignedInt(apIndex1.getSelectionModel().getSelectedItem())].add(abilityProperty.getValue());
+        //});
+        //
+        //race2.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+        //    if (oldValue != null && oldValue != Race.NONE) raceAPSlots.get(oldValue.value)[Byte.toUnsignedInt(apIndex2.getSelectionModel().getSelectedItem())].remove(abilityProperty.getValue());
+        //    if (newValue != null && newValue != Race.NONE) raceAPSlots.get(newValue.value)[Byte.toUnsignedInt(apIndex2.getSelectionModel().getSelectedItem())].add(abilityProperty.getValue());
+        //});
+        //
+        //race3.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+        //    if (oldValue != null && oldValue != Race.NONE) raceAPSlots.get(oldValue.value)[Byte.toUnsignedInt(apIndex3.getSelectionModel().getSelectedItem())].remove(abilityProperty.getValue());
+        //    if (newValue != null && newValue != Race.NONE) raceAPSlots.get(newValue.value)[Byte.toUnsignedInt(apIndex3.getSelectionModel().getSelectedItem())].add(abilityProperty.getValue());
+        //});
+        //
+        //race4.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+        //    if (oldValue != null && oldValue != Race.NONE) raceAPSlots.get(oldValue.value)[Byte.toUnsignedInt(apIndex4.getSelectionModel().getSelectedItem())].remove(abilityProperty.getValue());
+        //    if (newValue != null && newValue != Race.NONE) raceAPSlots.get(newValue.value)[Byte.toUnsignedInt(apIndex4.getSelectionModel().getSelectedItem())].add(abilityProperty.getValue());
+        //});
+        //
+        //race5.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+        //    if (oldValue != null && oldValue != Race.NONE) raceAPSlots.get(oldValue.value)[Byte.toUnsignedInt(apIndex5.getSelectionModel().getSelectedItem())].remove(abilityProperty.getValue());
+        //    if (newValue != null && newValue != Race.NONE) raceAPSlots.get(newValue.value)[Byte.toUnsignedInt(apIndex5.getSelectionModel().getSelectedItem())].add(abilityProperty.getValue());
+        //});
+        //
+        //race6.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+        //    if (oldValue != null && oldValue != Race.NONE) raceAPSlots.get(oldValue.value)[Byte.toUnsignedInt(apIndex6.getSelectionModel().getSelectedItem())].remove(abilityProperty.getValue());
+        //    if (newValue != null && newValue != Race.NONE) raceAPSlots.get(newValue.value)[Byte.toUnsignedInt(apIndex6.getSelectionModel().getSelectedItem())].add(abilityProperty.getValue());
+        //});
+
+
         //abilityProperty.addListener((observable, oldValue, newValue) -> bindAbilityData());
         ObservableList<AbilityEffect.Targets> targetEnums = FXCollections.observableArrayList(AbilityEffect.Targets.values());
         targets1.setItems(targetEnums);
@@ -268,12 +428,12 @@ public class AbilityController {
         race4.setItems(raceEnums);
         race5.setItems(raceEnums);
         race6.setItems(raceEnums);
-        apIndex1.textProperty().addListener(new ByteChangeListener(apIndex1));
-        apIndex2.textProperty().addListener(new ByteChangeListener(apIndex2));
-        apIndex3.textProperty().addListener(new ByteChangeListener(apIndex3));
-        apIndex4.textProperty().addListener(new ByteChangeListener(apIndex4));
-        apIndex5.textProperty().addListener(new ByteChangeListener(apIndex5));
-        apIndex6.textProperty().addListener(new ByteChangeListener(apIndex6));
+        //apIndex1.textProperty().addListener(new ByteChangeListener(apIndex1));
+        //apIndex2.textProperty().addListener(new ByteChangeListener(apIndex2));
+        //apIndex3.textProperty().addListener(new ByteChangeListener(apIndex3));
+        //apIndex4.textProperty().addListener(new ByteChangeListener(apIndex4));
+        //apIndex5.textProperty().addListener(new ByteChangeListener(apIndex5));
+        //apIndex6.textProperty().addListener(new ByteChangeListener(apIndex6));
 
         
         //ObservableList<String> abilityNameList = FXCollections.observableArrayList(AbilityData.abilityNames);
@@ -317,12 +477,12 @@ public class AbilityController {
         race5.valueProperty().unbindBidirectional(abilityProperty.getValue().race5);
         race6.valueProperty().unbindBidirectional(abilityProperty.getValue().race6);
 
-        apIndex1.textProperty().unbindBidirectional(abilityProperty.getValue().apIndex1);
-        apIndex2.textProperty().unbindBidirectional(abilityProperty.getValue().apIndex2);
-        apIndex3.textProperty().unbindBidirectional(abilityProperty.getValue().apIndex3);
-        apIndex4.textProperty().unbindBidirectional(abilityProperty.getValue().apIndex4);
-        apIndex5.textProperty().unbindBidirectional(abilityProperty.getValue().apIndex5);
-        apIndex6.textProperty().unbindBidirectional(abilityProperty.getValue().apIndex6);
+        apIndex1.valueProperty().unbindBidirectional(abilityProperty.getValue().apIndex1);
+        apIndex2.valueProperty().unbindBidirectional(abilityProperty.getValue().apIndex2);
+        apIndex3.valueProperty().unbindBidirectional(abilityProperty.getValue().apIndex3);
+        apIndex4.valueProperty().unbindBidirectional(abilityProperty.getValue().apIndex4);
+        apIndex5.valueProperty().unbindBidirectional(abilityProperty.getValue().apIndex5);
+        apIndex6.valueProperty().unbindBidirectional(abilityProperty.getValue().apIndex6);
         
         learnedAbility.valueProperty().unbindBidirectional(abilityProperty.getValue().learnedAbility);
         //learnedAbility.valueProperty().unbind();
@@ -441,12 +601,19 @@ public class AbilityController {
         race5.valueProperty().bindBidirectional(abilityProperty.getValue().race5);
         race6.valueProperty().bindBidirectional(abilityProperty.getValue().race6);
         
-        Bindings.bindBidirectional(apIndex1.textProperty(), abilityProperty.getValue().apIndex1, unsignedByteConverter);
-        Bindings.bindBidirectional(apIndex2.textProperty(), abilityProperty.getValue().apIndex2, unsignedByteConverter);
-        Bindings.bindBidirectional(apIndex3.textProperty(), abilityProperty.getValue().apIndex3, unsignedByteConverter);
-        Bindings.bindBidirectional(apIndex4.textProperty(), abilityProperty.getValue().apIndex4, unsignedByteConverter);
-        Bindings.bindBidirectional(apIndex5.textProperty(), abilityProperty.getValue().apIndex5, unsignedByteConverter);
-        Bindings.bindBidirectional(apIndex6.textProperty(), abilityProperty.getValue().apIndex6, unsignedByteConverter);
+        //Bindings.bindBidirectional(apIndex1.textProperty(), abilityProperty.getValue().apIndex1, unsignedByteConverter);
+        //Bindings.bindBidirectional(apIndex2.textProperty(), abilityProperty.getValue().apIndex2, unsignedByteConverter);
+        //Bindings.bindBidirectional(apIndex3.textProperty(), abilityProperty.getValue().apIndex3, unsignedByteConverter);
+        //Bindings.bindBidirectional(apIndex4.textProperty(), abilityProperty.getValue().apIndex4, unsignedByteConverter);
+        //Bindings.bindBidirectional(apIndex5.textProperty(), abilityProperty.getValue().apIndex5, unsignedByteConverter);
+        //Bindings.bindBidirectional(apIndex6.textProperty(), abilityProperty.getValue().apIndex6, unsignedByteConverter);
+
+        apIndex1.valueProperty().bindBidirectional(abilityProperty.getValue().apIndex1);
+        apIndex2.valueProperty().bindBidirectional(abilityProperty.getValue().apIndex2);
+        apIndex3.valueProperty().bindBidirectional(abilityProperty.getValue().apIndex3);
+        apIndex4.valueProperty().bindBidirectional(abilityProperty.getValue().apIndex4);
+        apIndex5.valueProperty().bindBidirectional(abilityProperty.getValue().apIndex5);
+        apIndex6.valueProperty().bindBidirectional(abilityProperty.getValue().apIndex6);
         
         learnedAbility.valueProperty().bindBidirectional(abilityProperty.getValue().learnedAbility);
         //learnedAbility.valueProperty().bindBidirectional();
@@ -674,6 +841,87 @@ public class AbilityController {
             learnedAbility.setItems(abilityNameIds);
             learnedAbility.setButtonCell(new AbilityIdCell());
             learnedAbility.setCellFactory(x -> new AbilityIdCell());
+
+
+            for (Race r : Race.values()) {
+                raceAPSlots.add(new LinkedList[200]);
+                for (int i = 0; i < 200; i++) {
+                    raceAPSlots.getLast()[i] = new LinkedList<>();
+                }
+            }
+            App.passiveAbilityList.forEach(ability -> {
+                for (LinkedList<AbilityData>[] slots : raceAPSlots.stream().skip(1).toList()) {
+                    int slot = Byte.toUnsignedInt(ability.apIndex.getValue());
+                    if (slot >= 0 && slot < 200) {
+                        slots[ability.apIndex.getValue()].add(ability);
+                    }
+                }
+            });
+            App.reactionAbilityList.forEach(ability -> {
+                for (LinkedList<AbilityData>[] slots : raceAPSlots.stream().skip(1).toList()) {
+                    int slot = Byte.toUnsignedInt(ability.apIndex.getValue());
+                    if (slot >= 0 && slot < 200) {
+                        slots[ability.apIndex.getValue()].add(ability);
+                    }
+                }
+            });
+            App.activeAbilityList.forEach(ability -> {
+                int slot;
+                if (ability.race1.getValue().value != 0){
+                    slot = Byte.toUnsignedInt(ability.apIndex1.getValue());
+                    raceAPSlots.get(ability.race1.getValue().value)[slot].add(ability);
+                }
+
+                if (ability.race2.getValue().value != 0){
+                slot = Byte.toUnsignedInt(ability.apIndex2.getValue());
+                raceAPSlots.get(ability.race2.getValue().value)[slot].add(ability);
+                }
+
+                if (ability.race3.getValue().value != 0){
+                slot = Byte.toUnsignedInt(ability.apIndex3.getValue());
+                raceAPSlots.get(ability.race3.getValue().value)[slot].add(ability);
+                }
+
+                if (ability.race4.getValue().value != 0){
+                slot = Byte.toUnsignedInt(ability.apIndex4.getValue());
+                raceAPSlots.get(ability.race4.getValue().value)[slot].add(ability);
+                }
+
+                if (ability.race5.getValue().value != 0){
+                slot = Byte.toUnsignedInt(ability.apIndex5.getValue());
+                raceAPSlots.get(ability.race5.getValue().value)[slot].add(ability);
+                }
+
+                if (ability.race6.getValue().value != 0){
+                slot = Byte.toUnsignedInt(ability.apIndex6.getValue());
+                raceAPSlots.get(ability.race6.getValue().value)[slot].add(ability);
+                }
+            });
+            
+            ObservableList<Byte> apSlotItems = FXCollections.observableArrayList(IntStream.range(0, 200).mapToObj(i -> (byte)i).toList());
+            apIndex1.setItems(apSlotItems);
+            apIndex1.setButtonCell(new AbilitySlotCell(race1));
+            apIndex1.setCellFactory(x -> new AbilitySlotCell(race1));
+            
+            apIndex2.setItems(apSlotItems);
+            apIndex2.setButtonCell(new AbilitySlotCell(race2));
+            apIndex2.setCellFactory(x -> new AbilitySlotCell(race2));
+            
+            apIndex3.setItems(apSlotItems);
+            apIndex3.setButtonCell(new AbilitySlotCell(race3));
+            apIndex3.setCellFactory(x -> new AbilitySlotCell(race3));
+            
+            apIndex4.setItems(apSlotItems);
+            apIndex4.setButtonCell(new AbilitySlotCell(race4));
+            apIndex4.setCellFactory(x -> new AbilitySlotCell(race4));
+            
+            apIndex5.setItems(apSlotItems);
+            apIndex5.setButtonCell(new AbilitySlotCell(race5));
+            apIndex5.setCellFactory(x -> new AbilitySlotCell(race5));
+            
+            apIndex6.setItems(apSlotItems);
+            apIndex6.setButtonCell(new AbilitySlotCell(race6));
+            apIndex6.setCellFactory(x -> new AbilitySlotCell(race6));
         }
     }
 

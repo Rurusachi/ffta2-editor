@@ -17,6 +17,8 @@ import org.ruru.ffta2editor.model.unitSst.SpriteData.SpritePiece;
 import org.ruru.ffta2editor.model.unitSst.SpritePalettes;
 import org.ruru.ffta2editor.utility.LZSS.LZSSDecodeResult;
 
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.util.Pair;
 
 public class UnitSprite {
@@ -41,8 +43,8 @@ public class UnitSprite {
             if (spritePaletteBytes.remaining() % 0x100 == 0) {
                 while (decodedSprite.decodedData.remaining() > 0) {
                     byte color = decodedSprite.decodedData.get();
-                    if (color != 0 && Byte.toUnsignedInt(color) < 224) {
-                        System.out.println("128 colors");
+                    if (color != 0 && Byte.toUnsignedInt(color) != 126 && Byte.toUnsignedInt(color) != 191 && Byte.toUnsignedInt(color) < 224) {
+                        //System.out.println(String.format("%d: 128 colors", unitIndex));
                         paletteSize = 128;
                         break;
                     }
@@ -59,6 +61,11 @@ public class UnitSprite {
                 cachedImages.add(new HashMap<>());
             }
         } catch (Exception e) {
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
             System.err.println(e);
         }
     }
@@ -112,13 +119,18 @@ public class UnitSprite {
             cachedImages.get(paletteIndex).put(spriteIndex, fullImage);
             return fullImage;
         } catch (Exception e) {
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
             System.err.println(e);
             return null;
         }
     }
 
     public void setSprite(int spriteIndex, BufferedImage newImage) {
-        SpriteMap  spriteMap = spriteData.spriteMaps.get(spriteIndex);
+        SpriteMap spriteMap = spriteData.spriteMaps.get(spriteIndex);
         SpritePiece leftMost = Arrays.stream(spriteMap.pieces()).min(Comparator.comparingInt(x -> x.offsetX())).get();
         SpritePiece topMost = Arrays.stream(spriteMap.pieces()).min(Comparator.comparingInt(x -> x.offsetY())).get();
         BufferedImage[] imagePieces = new BufferedImage[spriteMap.pieces().length];
@@ -128,7 +140,7 @@ public class UnitSprite {
             int yPos = piece.offsetY() - topMost.offsetY();
             imagePieces[i] = newImage.getSubimage(xPos, yPos, piece.width(), piece.height());
         }
-        ByteBuffer spriteBytes = ByteBuffer.allocate(IntStream.range(0, imagePieces.length).map(i -> imagePieces[i].getWidth() * imagePieces[i].getHeight()).sum());
+        ByteBuffer spriteBytes = ByteBuffer.allocate(IntStream.range(0, imagePieces.length).map(i -> imagePieces[i].getWidth() * imagePieces[i].getHeight()).sum()).order(ByteOrder.LITTLE_ENDIAN);
         for (BufferedImage image : imagePieces) {
             for (int y = 0; y < image.getHeight(); y++) {
                 for (int x = 0; x < image.getWidth(); x++) {

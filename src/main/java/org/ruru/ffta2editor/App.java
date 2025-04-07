@@ -2,6 +2,7 @@ package org.ruru.ffta2editor;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.Map;
 
 import org.ruru.ffta2editor.model.ability.AbilityData;
 import org.ruru.ffta2editor.model.ability.ActiveAbilityData;
@@ -17,6 +18,8 @@ import org.ruru.ffta2editor.model.item.LootData;
 import org.ruru.ffta2editor.model.job.AbilitySet;
 import org.ruru.ffta2editor.model.job.JobData;
 import org.ruru.ffta2editor.model.job.JobGroup;
+import org.ruru.ffta2editor.model.topSprite.TopSprite;
+import org.ruru.ffta2editor.model.unitFace.UnitFace;
 import org.ruru.ffta2editor.model.unitSst.UnitSst;
 import org.ruru.ffta2editor.utility.Archive;
 import org.ruru.ffta2editor.utility.IdxAndPak;
@@ -43,7 +46,13 @@ public class App extends Application {
     public static IdxAndPak unitSsts;
     public static IdxAndPak unitCgs;
     public static IdxAndPak jdMessage;
+    public static IdxAndPak jhQuest;
+    public static IdxAndPak jhRumor;
+    public static IdxAndPak jhNotice;
+    public static IdxAndPak evMsg;
     public static IdxAndPak entrydata;
+    public static IdxAndPak atl;
+    public static IdxAndPak face;
     public static ByteBuffer arm9;
     public static ByteBuffer overlay8;
     public static ByteBuffer overlay11;
@@ -51,6 +60,8 @@ public class App extends Application {
 
 
     public static ObservableList<UnitSprite> unitSprites;
+    public static ObservableList<TopSprite> topSprites;
+    public static ObservableList<UnitFace> unitFaces;
     public static ObservableList<JobData> jobDataList;
     public static ObservableList<ActiveAbilityData> activeAbilityList;
     public static ObservableList<SPAbilityData> passiveAbilityList;
@@ -86,6 +97,10 @@ public class App extends Application {
     public static ObservableList<StringProperty> locationNames;
     public static ObservableList<StringProperty> bazaarSetNames;
     public static ObservableList<StringProperty> bazaarSetDescriptions;
+    public static ObservableList<StringProperty> noticeNames;
+    public static ObservableList<StringProperty> rumorNames;
+    public static Map<Integer, StringProperty> evMsgNames;
+    
 
 
 

@@ -65,7 +65,7 @@
             </VBox>
             <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
               <tabs>
-                <Tab text="Main">
+                <Tab closable="false" text="Main">
                      <content>
                         <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
                            <children>
@@ -273,7 +273,7 @@
                         </VBox>
                      </content>
                   </Tab>
-                  <Tab text="Sprite">
+                  <Tab closable="false" text="Sprite">
                      <content>
                         <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0">
                            <children>

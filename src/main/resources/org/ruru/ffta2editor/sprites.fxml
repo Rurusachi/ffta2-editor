@@ -5,6 +5,9 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -13,31 +16,105 @@
    <children>
       <SplitPane dividerPositions="0.5" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <items>
-            <VBox spacing="20.0" SplitPane.resizableWithParent="false">
-               <children>
-                  <HBox alignment="CENTER" spacing="20.0">
-                     <children>
-                        <Button mnemonicParsing="false" onAction="#copyUnit" text="Copy Unit" />
-                        <Button mnemonicParsing="false" onAction="#removeUnit" text="Remove Last Unit" />
-                     </children>
-                     <padding>
-                        <Insets top="20.0" />
-                     </padding>
-                  </HBox>
-                  <ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="ALWAYS">
+            <TabPane SplitPane.resizableWithParent="false">
+               <tabs>
+                  <Tab closable="false" text="Unit">
                      <content>
-                        <ListView fx:id="unitList" />
+                        <VBox spacing="20.0">
+                           <children>
+                              <HBox alignment="CENTER" spacing="20.0">
+                                 <children>
+                                    <Button mnemonicParsing="false" onAction="#copyUnit" text="Copy Unit" />
+                                    <Button mnemonicParsing="false" onAction="#removeUnit" text="Remove Last Unit" />
+                                 </children>
+                                 <padding>
+                                    <Insets top="20.0" />
+                                 </padding>
+                              </HBox>
+                              <ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="ALWAYS">
+                                 <content>
+                                    <ListView fx:id="unitList" />
+                                 </content>
+                              </ScrollPane>
+                           </children>
+                        </VBox>
                      </content>
-                  </ScrollPane>
-               </children>
-            </VBox>
+                  </Tab>
+                  <Tab closable="false" text="Top Screen">
+                     <content>
+                        <VBox spacing="20.0">
+                           <children>
+                              <HBox alignment="CENTER" spacing="20.0">
+                                 <children>
+                                    <Button mnemonicParsing="false" onAction="#copyTopSprite" text="Copy Sprite" />
+                                    <Button mnemonicParsing="false" onAction="#removeTopSprite" text="Remove Last Sprite" />
+                                 </children>
+                                 <padding>
+                                    <Insets top="20.0" />
+                                 </padding>
+                              </HBox>
+                              <ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="ALWAYS">
+                                 <content>
+                                    <ListView fx:id="topSpriteList" />
+                                 </content>
+                              </ScrollPane>
+                           </children>
+                        </VBox>
+                     </content>
+                  </Tab>
+                  <Tab closable="false" text="Face">
+                     <content>
+                        <VBox spacing="20.0">
+                           <children>
+                              <HBox alignment="CENTER" spacing="20.0">
+                                 <children>
+                                    <Button mnemonicParsing="false" onAction="#copyFace" text="Copy Face" />
+                                    <Button mnemonicParsing="false" onAction="#removeFace" text="Remove Last Face" />
+                                 </children>
+                                 <padding>
+                                    <Insets top="20.0" />
+                                 </padding>
+                              </HBox>
+                              <ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="ALWAYS">
+                                 <content>
+                                    <ListView fx:id="faceList" />
+                                 </content>
+                              </ScrollPane>
+                           </children>
+                        </VBox>
+                     </content>
+                  </Tab>
+               </tabs>
+            </TabPane>
             <AnchorPane prefHeight="200.0" prefWidth="200.0">
                <children>
-                  <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="ALWAYS" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                     <content>
-                        <VBox fx:id="spriteVBox" alignment="TOP_CENTER" spacing="10.0" />
-                     </content>
-                  </ScrollPane>
+                  <TabPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <tabs>
+                        <Tab closable="false" text="Sprites">
+                           <content>
+                              <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="ALWAYS">
+                                 <content>
+                                    <VBox fx:id="spriteVBox" alignment="TOP_CENTER" spacing="10.0" />
+                                 </content>
+                              </ScrollPane>
+                           </content>
+                        </Tab>
+                        <Tab fx:id="animationsTab" closable="false" text="Animations">
+                          <content>
+                              <VBox prefHeight="200.0" prefWidth="100.0">
+                                 <children>
+                                    <AnchorPane>
+                                       <children>
+                                          <ImageView fx:id="animatedSprite" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                       </children>
+                                    </AnchorPane>
+                                    <ListView fx:id="animationList" />
+                                 </children>
+                              </VBox>
+                          </content>
+                        </Tab>
+                     </tabs>
+                  </TabPane>
                </children>
             </AnchorPane>
          </items>

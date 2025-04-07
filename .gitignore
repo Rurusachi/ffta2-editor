@@ -27,3 +27,4 @@ replay_pid*
 target/*
 data/*
 ffta2-editor/*
+.vscode/*

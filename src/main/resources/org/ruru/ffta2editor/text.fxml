@@ -1,25 +1,114 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
 <AnchorPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.ruru.ffta2editor.TextController">
    <children>
-      <SplitPane dividerPositions="0.2, 0.4" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <SplitPane dividerPositions="0.2" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <items>
-            <ScrollPane fitToHeight="true" fitToWidth="true" SplitPane.resizableWithParent="false">
-               <content>
-                  <ListView fx:id="messageList" />
-               </content>
-            </ScrollPane>
-            <ScrollPane fitToHeight="true" fitToWidth="true" layoutX="10.0" layoutY="10.0" SplitPane.resizableWithParent="false">
-               <content>
-                  <ListView fx:id="stringList" />
-               </content>
-            </ScrollPane>
+            <TabPane SplitPane.resizableWithParent="false">
+               <tabs>
+                  <Tab closable="false" text="Misc.">
+                     <content>
+                        <SplitPane dividerPositions="0.5">
+                           <items>
+                              <ScrollPane fitToHeight="true" fitToWidth="true">
+                                 <content>
+                                    <ListView fx:id="messageList" />
+                                 </content>
+                              </ScrollPane>
+                              <VBox spacing="20.0" SplitPane.resizableWithParent="false">
+                                 <children>
+                                    <HBox alignment="CENTER" spacing="20.0">
+                                       <children>
+                                          <Button mnemonicParsing="false" onAction="#addMessageString" text="Add String" />
+                                          <Button mnemonicParsing="false" onAction="#removeMessageString" text="Remove Last String" />
+                                       </children>
+                                       <padding>
+                                          <Insets top="20.0" />
+                                       </padding>
+                                    </HBox>
+                                    <ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="ALWAYS">
+                                       <content>
+                                          <ListView fx:id="messageStringList" />
+                                       </content>
+                                    </ScrollPane>
+                                 </children>
+                              </VBox>
+                           </items>
+                        </SplitPane>
+                     </content>
+                  </Tab>
+                  <Tab closable="false" text="Event">
+                     <content>
+                        <SplitPane dividerPositions="0.5">
+                           <items>
+                              <ScrollPane fitToHeight="true" fitToWidth="true">
+                                 <content>
+                                    <ListView fx:id="eventMsgList" />
+                                 </content>
+                              </ScrollPane>
+                              <VBox spacing="20.0" SplitPane.resizableWithParent="false">
+                                 <children>
+                                    <HBox alignment="CENTER" spacing="20.0">
+                                       <children>
+                                          <Button mnemonicParsing="false" onAction="#addEventString" text="Add String" />
+                                          <Button mnemonicParsing="false" onAction="#removeEventString" text="Remove Last String" />
+                                       </children>
+                                       <padding>
+                                          <Insets top="20.0" />
+                                       </padding>
+                                    </HBox>
+                                    <ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="ALWAYS">
+                                       <content>
+                                          <ListView fx:id="eventStringList" />
+                                       </content>
+                                    </ScrollPane>
+                                 </children>
+                              </VBox>
+                           </items>
+                        </SplitPane>
+                     </content>
+                  </Tab>
+                  <Tab closable="false" text="Quest">
+                     <content>
+                        <ScrollPane fitToHeight="true" fitToWidth="true">
+                           <content>
+                              <ListView fx:id="questList" />
+                           </content>
+                        </ScrollPane>
+                     </content>
+                  </Tab>
+                  <Tab closable="false" text="Rumor">
+                     <content>
+                        <ScrollPane fitToHeight="true" fitToWidth="true">
+                           <content>
+                              <ListView fx:id="rumorList" />
+                           </content>
+                        </ScrollPane>
+                     </content>
+                  </Tab>
+                  <Tab closable="false" text="Notice">
+                     <content>
+                        <ScrollPane fitToHeight="true" fitToWidth="true">
+                           <content>
+                              <ListView fx:id="noticeList" />
+                           </content>
+                        </ScrollPane>
+                     </content>
+                  </Tab>
+               </tabs>
+            </TabPane>
             <AnchorPane>
                <children>
                   <TextArea fx:id="stringArea" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />

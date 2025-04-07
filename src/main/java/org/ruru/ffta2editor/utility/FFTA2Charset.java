@@ -450,7 +450,7 @@ public class FFTA2Charset {
                     //i += (j-i)-1;
                     //break;
                 }
-                if (j == s.length()) throw new Exception(String.format("Failed to encode: %s", sb.substring(i, j)));
+                if (j == s.length()) throw new Exception(String.format("Failed to encode unknown character \"%s\" in:\n\"%s\"", s, sb.substring(i, j)));
             }
         }
         if (lastChar != 0x00 && lastChar != 0xC1) {

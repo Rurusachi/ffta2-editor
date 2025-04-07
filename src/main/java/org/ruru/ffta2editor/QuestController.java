@@ -29,6 +29,8 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -573,6 +575,19 @@ public class QuestController {
 
             questInfoBytes.rewind();
             questDataBytes.rewind();
+
+            questDataList.forEach(x -> {
+                try {
+                    App.evMsgNames.get(Short.toUnsignedInt(x.info.startEvent.getValue())).set(x.name.getValue());
+                } catch (Exception e) {
+                    Alert alert = new Alert(AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText(null);
+                    alert.setContentText(e.getMessage());
+                    alert.showAndWait();
+                    System.err.println(e);
+                }
+            });
 
 
             formation.setItems(App.formationList);

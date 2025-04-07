@@ -8,6 +8,9 @@ import java.util.List;
 
 import org.ruru.ffta2editor.utility.LZSS;
 
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+
 public class UnitSst {
 
     public static class SstHeaderNode {
@@ -82,6 +85,11 @@ public class UnitSst {
                 data.get(compressedValue);
                 node.compressedValue = compressedValue;
             } catch (Exception e) {
+                Alert alert = new Alert(AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText(null);
+                alert.setContentText(e.getMessage());
+                alert.showAndWait();
                 System.err.println(e);
                 node.compressedValue = null;
             }
@@ -117,10 +125,11 @@ public class UnitSst {
         SstHeaderNode prevNode = null;
         SstHeaderNode currNode = root;
         while (currNode != null) {
-            prevNode = currNode;
             if (newNode.key() > currNode.key()) {
+                prevNode = currNode;
                 currNode = currNode.leftChild;
             } else if (newNode.key() < currNode.key()) {
+                prevNode = currNode;
                 currNode = currNode.rightChild;
             } else {
                 newNode.leftIndex = currNode.leftIndex;
@@ -128,7 +137,10 @@ public class UnitSst {
 
                 newNode.rightIndex = currNode.rightIndex;
                 newNode.rightChild = currNode.rightChild;
-                return;
+                //return;
+                newNode.index = currNode.index;
+                size -= 1;
+                break;
             }
         }
         size += 1;
@@ -167,8 +179,14 @@ public class UnitSst {
 
         try {
             var anim = LZSS.decode(temp);
-            return new UnitAnimation(anim.decodedData, animHeader);
+            return new UnitAnimation(anim.decodedData, animHeader, key);
         } catch (Exception e) {
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
+            System.err.println(key);
             System.err.println(e);
             return null;
         }
@@ -184,6 +202,11 @@ public class UnitSst {
             //return new SpritePalettes(palettes.decodedData, count);
             return palettes.decodedData;
         } catch (Exception e) {
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
             System.err.println(e);
             return null;
         }
@@ -198,6 +221,11 @@ public class UnitSst {
             var spriteMapBytes = LZSS.decode(data);
             return new SpriteData(spriteMapBytes.decodedData);
         } catch (Exception e) {
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
             System.err.println(e);
             return null;
         }

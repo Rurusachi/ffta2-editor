@@ -55,67 +55,67 @@
     </MenuBar>
       <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
         <tabs>
-          <Tab text="Ability Data">
+          <Tab closable="false" text="Ability Data">
                 <content>
                     <fx:include fx:id="abilityTab" source="ability.fxml" />
                 </content>
             </Tab>
-          <Tab text="Job Data">
+          <Tab closable="false" text="Job Data">
                 <content>
                     <fx:include fx:id="jobTab" source="job.fxml" />
                 </content>
             </Tab>
-          <Tab text="Job Requirements">
+          <Tab closable="false" text="Job Requirements">
                 <content>
                     <fx:include fx:id="jobRequirementTab" source="jobRequirement.fxml" />
                 </content>
             </Tab>
-          <Tab text="Job Groups">
+          <Tab closable="false" text="Job Groups">
                 <content>
                     <fx:include fx:id="jobGroupTab" source="jobGroup.fxml" />
                 </content>
             </Tab>
-          <Tab text="Equipment Data">
+          <Tab closable="false" text="Equipment Data">
                 <content>
                     <fx:include fx:id="equipmentTab" source="equipment.fxml" />
                 </content>
             </Tab>
-          <Tab text="Characters">
+          <Tab closable="false" text="Characters">
                 <content>
                     <fx:include fx:id="characterTab" source="character.fxml" />
                 </content>
             </Tab>
-          <Tab text="Formations">
+          <Tab closable="false" text="Formations">
                 <content>
                     <fx:include fx:id="formationTab" source="formation.fxml" />
                 </content>
             </Tab>
-          <Tab text="Quests">
+          <Tab closable="false" text="Quests">
                 <content>
                     <fx:include fx:id="questTab" source="quest.fxml" />
                 </content>
             </Tab>
-          <Tab text="Bazaar">
+          <Tab closable="false" text="Bazaar">
                 <content>
                     <fx:include fx:id="bazaarTab" source="bazaar.fxml" />
                 </content>
             </Tab>
-          <Tab text="Auction">
+          <Tab closable="false" text="Auction">
                 <content>
                     <fx:include fx:id="auctionTab" source="auction.fxml" />
                 </content>
             </Tab>
-          <Tab text="Sprites">
+          <Tab closable="false" text="Sprites">
                 <content>
                     <fx:include fx:id="spritesTab" source="sprites.fxml" />
                 </content>
             </Tab>
-          <Tab text="Text">
+          <Tab closable="false" text="Text">
                 <content>
                     <fx:include fx:id="textTab" source="text.fxml" />
                 </content>
             </Tab>
-          <Tab text="Patches">
+          <Tab closable="false" text="Patches">
                 <content>
                     <fx:include fx:id="patchesTab" source="patches.fxml" />
                 </content>

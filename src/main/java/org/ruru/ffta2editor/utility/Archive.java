@@ -260,7 +260,6 @@ public class Archive {
         } else {
             fileList.file = newFile;
         }
-        System.err.println("File not found");
         return;
     }
 

@@ -18,6 +18,7 @@
                </padding>
                <children>
                   <Button fx:id="animationFix" mnemonicParsing="false" onAction="#applyAnimationFix" text="Animation Fix (irreversible)" />
+                  <Button fx:id="expandedTopSpritesFix" mnemonicParsing="false" onAction="#applyExpandedTopSpritesFix" text="Expanded Top Sprite Index Limit" />
                </children>
             </VBox>
          </children>

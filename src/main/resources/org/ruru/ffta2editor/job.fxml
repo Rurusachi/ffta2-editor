@@ -75,7 +75,7 @@
             </VBox>
             <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
               <tabs>
-                <Tab text="Main">
+                <Tab closable="false" text="Main">
                      <content>
                         <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
                            <children>
@@ -325,7 +325,7 @@
                         </VBox>
                      </content>
                   </Tab>
-                  <Tab text="Sprite">
+                  <Tab closable="false" text="Sprite">
                      <content>
                         <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0">
                            <children>
@@ -334,13 +334,13 @@
                                     <VBox alignment="TOP_CENTER">
                                        <children>
                                           <Label text="Unit portrait" />
-                                          <TextField fx:id="unitPortrait" />
+                                          <ComboBox fx:id="unitPortrait" />
                                        </children>
                                     </VBox>
                                     <VBox alignment="TOP_CENTER">
                                        <children>
                                           <Label text="Unit top sprite" />
-                                          <TextField fx:id="unitTopSprite" />
+                                          <ComboBox fx:id="unitTopSprite" />
                                        </children>
                                     </VBox>
                                     <VBox alignment="TOP_CENTER">
@@ -368,13 +368,13 @@
                                     <VBox alignment="TOP_CENTER">
                                        <children>
                                           <Label text="Enemy portrait" />
-                                          <TextField fx:id="enemyPortrait" />
+                                          <ComboBox fx:id="enemyPortrait" />
                                        </children>
                                     </VBox>
                                     <VBox alignment="TOP_CENTER">
                                        <children>
                                           <Label text="Enemy top sprite" />
-                                          <TextField fx:id="enemyTopSprite" />
+                                          <ComboBox fx:id="enemyTopSprite" />
                                        </children>
                                     </VBox>
                                     <VBox alignment="TOP_CENTER">
@@ -403,7 +403,7 @@
                            </padding>
                         </VBox>
                      </content></Tab>
-                  <Tab text="Ability Set">
+                  <Tab closable="false" text="Ability Set">
                      <content>
                         <HBox spacing="100.0">
                            <children>
@@ -595,7 +595,7 @@
                            </padding>
                         </HBox>
                      </content></Tab>
-                  <Tab text="Other">
+                  <Tab closable="false" text="Other">
                      <content>
                         <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
                            <children>
@@ -672,13 +672,13 @@
                                     <VBox alignment="TOP_CENTER" spacing="20.0">
                                        <children>
                                           <Label text="0x3C" />
-                                          <TextField fx:id="_0x3c" />
+                                          <TextField disable="true" fx:id="_0x3c" />
                                        </children>
                                     </VBox>
                                     <VBox alignment="TOP_CENTER" spacing="20.0">
                                        <children>
                                           <Label text="0x3D" />
-                                          <TextField fx:id="_0x3d" />
+                                          <TextField disable="true" fx:id="_0x3d" />
                                        </children>
                                     </VBox>
                                     <VBox alignment="TOP_CENTER" spacing="20.0">
@@ -701,7 +701,7 @@
                                     <CheckBox fx:id="propertyBit0" mnemonicParsing="false" text="Bit 0" />
                                     <CheckBox fx:id="propertyBit1" mnemonicParsing="false" text="Bit 1" />
                                     <CheckBox fx:id="canChangeJobs" mnemonicParsing="false" text="Can change jobs" />
-                                    <CheckBox fx:id="propertyBit3" mnemonicParsing="false" text="Bit 3" />
+                                    <CheckBox fx:id="isUndead" mnemonicParsing="false" text="Is Undead" />
                                     <CheckBox fx:id="propertyBit4" mnemonicParsing="false" text="Bit 4" />
                                     <CheckBox fx:id="propertyBit5" mnemonicParsing="false" text="Bit 5" />
                                     <CheckBox fx:id="canAlwaysUseItems" mnemonicParsing="false" text="Can always use Items" />

@@ -8,12 +8,24 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.FutureTask;
+import java.util.stream.IntStream;
 
+import org.ruru.ffta2editor.model.character.CharacterData;
+import org.ruru.ffta2editor.model.job.JobData;
+import org.ruru.ffta2editor.model.unitFace.UnitFace;
 import org.ruru.ffta2editor.utility.Archive;
 import org.ruru.ffta2editor.utility.IdxAndPak;
 import org.ruru.ffta2editor.utility.LZSS;
 
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.DialogPane;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
@@ -70,16 +82,105 @@ public class MainController {
         setDim(true);
         FileChooser chooser = new FileChooser();
         chooser.setTitle("Open Directory");
-        File file = chooser.showOpenDialog(abilityTab.getScene().getWindow());
-        if (file == null) {
+        File loadPath = chooser.showOpenDialog(abilityTab.getScene().getWindow());
+        if (loadPath == null) {
             setDim(false);
             return;
         }
-        romFile = file;
+        if (!load(loadPath)) {
+            Alert loadAlert = new Alert(AlertType.ERROR);
+            loadAlert.setTitle("Loading");
+            loadAlert.setHeaderText("Loading failed");
+            //saveAlert.setDialogPane(new DialogPane());
+            loadAlert.show();
+        }
+
+        
+        //Alert loadAlert = new Alert(AlertType.INFORMATION);
+        //loadAlert.setTitle("Loading");
+        //loadAlert.setHeaderText("Loading. Please wait.");
+        ////saveAlert.setDialogPane(new DialogPane());
+        //loadAlert.show();
+        //CompletableFuture.supplyAsync(() -> load(loadPath)).thenAccept(success -> {
+        //    if (success) {
+        //        Platform.runLater(() -> loadAlert.setContentText("Loaded"));
+        //    } else {
+        //        Platform.runLater(() -> loadAlert.setContentText("Failed to load"));
+        //    }
+        //});
+        
+        /*
+        int oldMinPieces = App.faceSprites.stream().skip(1).mapToInt(x -> x.pieces.length).min().getAsInt();
+        int oldMaxPieces = App.faceSprites.stream().skip(1).mapToInt(x -> x.pieces.length).max().getAsInt();
+        double oldAveragePieces = App.faceSprites.stream().skip(1).mapToInt(x -> x.pieces.length).average().getAsDouble();
+        ArrayList<Pair<Integer,Integer>> sizes = new ArrayList<>();
+        for(int i = 1; i < App.faceSprites.size(); i++) {
+            UnitFace face = App.faceSprites.get(i);
+            var oldTexture = face.image;
+            int excessBytes = face.setTexture(face.getImage());
+            if (excessBytes > 0) {
+                System.err.println(String.format("face %d too big (%d bytes too large)", i, excessBytes));
+            }
+            var newTexture = face.image;
+            sizes.add(new Pair<Integer,Integer>(oldTexture.length, newTexture.length));
+        }
+        int maxDifference = sizes.stream().mapToInt(x -> x.getValue() - x.getKey()).max().getAsInt();
+        int minDifference = sizes.stream().mapToInt(x -> x.getValue() - x.getKey()).min().getAsInt();
+        double oldAverage = sizes.stream().mapToInt(x -> x.getKey()).average().getAsDouble();
+        double newAverage = sizes.stream().mapToInt(x -> x.getValue()).average().getAsDouble();
+
+        int oldMax = sizes.stream().mapToInt(x -> x.getKey()).max().getAsInt();
+        int newMax = sizes.stream().mapToInt(x -> x.getValue()).max().getAsInt();
+
+        
+        int oldCombined = sizes.stream().mapToInt(x -> x.getKey()).sum();
+        int newCombined = sizes.stream().mapToInt(x -> x.getValue()).sum();
+        int newMinPieces = App.faceSprites.stream().skip(1).mapToInt(x -> x.pieces.length).min().getAsInt();
+        int newMaxPieces = App.faceSprites.stream().skip(1).mapToInt(x -> x.pieces.length).max().getAsInt();
+        double newAveragePieces = App.faceSprites.stream().skip(1).mapToInt(x -> x.pieces.length).average().getAsDouble();
+
+        System.out.println(String.format("maxDifference: %d", maxDifference));
+        System.out.println(String.format("minDifference: %d", minDifference));
+        System.out.println(String.format("oldAverage: %f", oldAverage));
+        System.out.println(String.format("newAverage: %f", newAverage));
+        System.out.println(String.format("oldMax: %d", oldMax));
+        System.out.println(String.format("newMax: %d", newMax));
+        System.out.println(String.format("oldCombined: %d", oldCombined));
+        System.out.println(String.format("newCombined: %d", newCombined));
+        System.out.println(String.format("oldAveragePieces: %f", oldAveragePieces));
+        System.out.println(String.format("newAveragePieces: %f", newAveragePieces));
+        System.out.println(String.format("oldPieces: min %d max %d", oldMinPieces, oldMaxPieces));
+        System.out.println(String.format("newPieces: min %d max %d", newMinPieces, newMaxPieces));
+
+        
+        IntStream.range(0, sizes.size()).filter(i -> sizes.get(i).getValue() > 8192).forEach(i -> System.out.println(String.format("Too big: %d (%d bytes)", i+1, sizes.get(i).getValue())));
+        */
+
+
+
+        //try {
+        //    UnitSprite testSprite = new UnitSprite(testData, testPalette, soldierCg);
+        //    for (int pal = 0; pal < testSprite.spritePalettes.palettes.size(); pal++) {
+        //        for (int pose = 0; pose < testData.spriteMaps.size(); pose++) {
+        //            BufferedImage fullImage = testSprite.getSprite(pose, pal);
+        //            Path filePath = Path.of(String.format("G:\\sprites\\unit%03d\\pal%d\\%d.png", i, pal, pose));
+        //            Files.createDirectories(filePath.getParent());
+        //            ImageIO.write(fullImage, "png", filePath.toFile());
+        //        }
+        //    }
+        //} catch (Exception e) {
+        //    System.err.println(e);
+        //}
+
+        //new Alert(AlertType.INFORMATION, "Loaded").showAndWait();
+    }
+
+    private boolean load(File loadPath) {
+        romFile = loadPath;
         //Path dataPath = file.toPath().resolveSibling("data");
         Path dataPath = Path.of("data");
         //ProcessBuilder ndsTool = new ProcessBuilder("G:\\ndstool.exe", "-x", file.toPath().toString(), "-9", dataPath.resolve("arm9.bin").toString(), "-d", dataPath.toString());
-        ProcessBuilder ndsTool = new ProcessBuilder("ndstool.exe", "-x", file.toPath().toString(),
+        ProcessBuilder ndsTool = new ProcessBuilder("ndstool.exe", "-x", loadPath.toPath().toString(),
                                                "-9", dataPath.resolve("arm9.bin").toString(),
                                                "-7", dataPath.resolve("arm7.bin").toString(),
                                                "-y9", dataPath.resolve("y9.bin").toString(),
@@ -95,8 +196,9 @@ public class MainController {
             ndsTool.start().waitFor();
         } catch (Exception e) {
             System.err.println(e);
+            romFile = null;
             setDim(false);
-            return;
+            return false;
         }
 
 
@@ -124,107 +226,98 @@ public class MainController {
             overlay8.close();
         } catch (Exception e) {
             System.err.println(e);
+            romFile = null;
             setDim(false);
-            return;
+            return false;
         }
 
 
-        ByteBuffer sysdataIdx = App.archive.getFile("system/rom/sysdata_rom.idx");
-        ByteBuffer sysdataPak = App.archive.getFile("system/rom/sysdata.pak");
-
-        App.sysdata = new IdxAndPak(sysdataIdx, sysdataPak);
         
-        ByteBuffer unitSstIdx = App.archive.getFile("char/rom/rom_idx/UnitSst.rom_idx");
-        ByteBuffer unitSstPak = App.archive.getFile("char/rom/pak/UnitSst.pak");
-
-        App.unitSsts = new IdxAndPak(unitSstIdx, unitSstPak);
-
-
-        ByteBuffer unitCgsIdx = App.archive.getFile("char/rom/rom_idx/UnitCg.rom_idx");
-        ByteBuffer unitCgsPak = App.archive.getFile("char/rom/pak/UnitCg.pak");
-        App.unitCgs = new IdxAndPak(unitCgsIdx, unitCgsPak);
-        
-        // 0 = US language
-        ByteBuffer jdMessageIdx = App.archive.getFile(String.format("system/rom/JD_message_rom_%d.idx", 0));
-        ByteBuffer jdMessagePak = App.archive.getFile(String.format("system/rom/JD_message_%d.pak", 0));
-        App.jdMessage = new IdxAndPak(jdMessageIdx, jdMessagePak);
-
-        ByteBuffer entrydataIdx = App.archive.getFile("system/rom/entrydata_rom.idx");
-        ByteBuffer entrydataPak = App.archive.getFile("system/rom/entrydata.pak");
-        App.entrydata = new IdxAndPak(entrydataIdx, entrydataPak);
-
         try {
+            ByteBuffer sysdataIdx = App.archive.getFile("system/rom/sysdata_rom.idx");
+            ByteBuffer sysdataPak = App.archive.getFile("system/rom/sysdata.pak");
+    
+            App.sysdata = new IdxAndPak(sysdataIdx, sysdataPak);
+            
+            ByteBuffer unitSstIdx = App.archive.getFile("char/rom/rom_idx/UnitSst.rom_idx");
+            ByteBuffer unitSstPak = App.archive.getFile("char/rom/pak/UnitSst.pak");
+    
+            App.unitSsts = new IdxAndPak(unitSstIdx, unitSstPak);
+    
+    
+            ByteBuffer unitCgsIdx = App.archive.getFile("char/rom/rom_idx/UnitCg.rom_idx");
+            ByteBuffer unitCgsPak = App.archive.getFile("char/rom/pak/UnitCg.pak");
+            App.unitCgs = new IdxAndPak(unitCgsIdx, unitCgsPak);
+            
+            // 0 = US language
+            ByteBuffer jdMessageIdx = App.archive.getFile(String.format("system/rom/JD_message_rom_%d.idx", 0));
+            ByteBuffer jdMessagePak = App.archive.getFile(String.format("system/rom/JD_message_%d.pak", 0));
+            App.jdMessage = new IdxAndPak(jdMessageIdx, jdMessagePak);
+    
+            ByteBuffer jhQuestIdx = App.archive.getFile(String.format("system/rom/JH_questtext_rom_%d.idx", 0));
+            ByteBuffer jhQuestPak = App.archive.getFile(String.format("system/rom/JH_questtext_%d.pak", 0));
+            App.jhQuest = new IdxAndPak(jhQuestIdx, jhQuestPak);
+            
+            ByteBuffer jhRumorIdx = App.archive.getFile(String.format("system/rom/JH_uwasatext_rom_%d.idx", 0));
+            ByteBuffer jhRumorPak = App.archive.getFile(String.format("system/rom/JH_uwasatext_%d.pak", 0));
+            App.jhRumor = new IdxAndPak(jhRumorIdx, jhRumorPak);
+            
+            ByteBuffer jhNoticeIdx = App.archive.getFile(String.format("system/rom/JH_freepapermes_rom_%d.idx", 0));
+            ByteBuffer jhNoticePak = App.archive.getFile(String.format("system/rom/JH_freepapermes_%d.pak", 0));
+            App.jhNotice = new IdxAndPak(jhNoticeIdx, jhNoticePak);
+            
+            ByteBuffer evMsgIdx = App.archive.getFile(String.format("event/rom/ev_msg%d_rom.idx", 0));
+            ByteBuffer evMsgPak = App.archive.getFile(String.format("event/rom/ev_msg%d.pak", 0));
+            App.evMsg = new IdxAndPak(evMsgIdx, evMsgPak);
+    
+            ByteBuffer entrydataIdx = App.archive.getFile("system/rom/entrydata_rom.idx");
+            ByteBuffer entrydataPak = App.archive.getFile("system/rom/entrydata.pak");
+            App.entrydata = new IdxAndPak(entrydataIdx, entrydataPak);
+            
+            ByteBuffer atlIdx = App.archive.getFile("menu/atl_rom/atl_rom.idx");
+            ByteBuffer atlPak = App.archive.getFile("menu/atl_rom/atl.pak");
+            App.atl = new IdxAndPak(atlIdx, atlPak);
+            
+            ByteBuffer faceIdx = App.archive.getFile("menu/face_rom/face_rom.idx");
+            ByteBuffer facePak = App.archive.getFile("menu/face_rom/face.pak");
+            App.face = new IdxAndPak(faceIdx, facePak);
+
+
             var animTable = App.archive.getFile("char/NaUnitAnimTable.bin");
             App.naUnitAnimTable = LZSS.decode(animTable.position(4)).decodedData;
+
+
+            if (App.arm9.getInt(0x000b5ab4) != 0xe5d00018) {
+                JobData.patchedTopSprite = true;
+                CharacterData.patchedTopSprite = true;
+            } else {
+                JobData.patchedTopSprite = false;
+                CharacterData.patchedTopSprite = false;
+            }
+            
+            
+    
+            textTabController.loadMessages();
+            abilityTabController.loadAbilities();
+            spritesTabController.loadSprites();
+            jobTabController.loadJobs();
+            characterTabController.loadCharacters();
+            jobRequirementTabController.loadJobRequirements();
+            jobGroupTabController.loadJobGroups();
+            equipmentTabController.loadEquipment();
+            formationTabController.loadFormations();
+            questTabController.loadQuests();
+            bazaarTabController.loadBazaar();
+            auctionTabController.loadAuctions();
+
         } catch (Exception e) {
             System.err.println(e);
+            romFile = null;
+            return false;
+        } finally {
             setDim(false);
         }
-
-        
-        
-
-        textTabController.loadMessages();
-        abilityTabController.loadAbilities();
-        spritesTabController.loadSprites();
-        jobTabController.loadJobs();
-        characterTabController.loadCharacters();
-        jobRequirementTabController.loadJobRequirements();
-        jobGroupTabController.loadJobGroups();
-        equipmentTabController.loadEquipment();
-        formationTabController.loadFormations();
-        questTabController.loadQuests();
-        bazaarTabController.loadBazaar();
-        auctionTabController.loadAuctions();
-        
-        setDim(false);
-        // var animTable = App.archive.getFile("char/NaUnitAnimTable.bin");
-        // try {
-        //     LZSSDecodeResult decoded = LZSS.decode(animTable.position(4));
-        //     ByteBuffer encoded = LZSS.encode(ByteBuffer.wrap(decoded.decodedData.array()));
-        //     FileOutputStream lzssTestOutput = new FileOutputStream(new File("G:\\animEncoded"));
-        //     lzssTestOutput.write( Arrays.copyOfRange(encoded.array(), 0, encoded.limit()) );
-        //     lzssTestOutput.close();
-        //     LZSSDecodeResult redecoded = LZSS.decode(encoded.rewind());
-        //     lzssTestOutput = new FileOutputStream(new File("G:\\animReDecoded"));
-        //     lzssTestOutput.write(redecoded.decodedData.array());
-        //     lzssTestOutput.close();
-        // } catch (Exception e) {
-        //     System.err.println(e);
-        // }
-
-        // ByteBuffer unitCgsIdx = App.archive.getFile("char/rom/rom_idx/UnitCg.rom_idx");
-        // ByteBuffer unitCgsPak = App.archive.getFile("char/rom/pak/UnitCg.pak");
-        // IdxAndPak unitCgs = new IdxAndPak(unitCgsIdx, unitCgsPak);
-        
-        // ByteBuffer unitSstsIdx = App.archive.getFile("char/rom/rom_idx/UnitSst.rom_idx");
-        // ByteBuffer unitSstsPak = App.archive.getFile("char/rom/pak/UnitSst.pak");
-        // IdxAndPak unitSsts = new IdxAndPak(unitSstsIdx, unitSstsPak);
-
-        // for (int i = 0; i < unitSsts.numFiles(); i++) {
-        //     try {
-        //         System.out.println(i);
-        //         ByteBuffer soldierCg = unitCgs.getFile(i);
-        //         ByteBuffer soldierSst = unitSsts.getFile(i);
-        //         UnitSst testSst = new UnitSst(soldierSst);
-        //         //SpritePalettes testPalette = testSst.getPalettes();
-        //         ByteBuffer testPalette = testSst.getPalettes();
-        //         SpriteData testData = testSst.getSpriteMap();
-
-        //         UnitSprite testSprite = new UnitSprite(testData, testPalette, soldierCg);
-        //         for (int pal = 0; pal < testSprite.spritePalettes.palettes.size(); pal++) {
-        //             for (int pose = 0; pose < testData.spriteMaps.size(); pose++) {
-        //                 BufferedImage fullImage = testSprite.getSprite(pose, pal);
-        //                 Path filePath = Path.of(String.format("G:\\sprites\\unit%03d\\pal%d\\%d.png", i, pal, pose));
-        //                 Files.createDirectories(filePath.getParent());
-        //                 ImageIO.write(fullImage, "png", filePath.toFile());
-        //             }
-        //         }
-        //     } catch (Exception e) {
-        //         System.err.println(e);
-        //     }
-            
-        // }
+        return true;
     }
 
     private ColorAdjust dimEffect = new ColorAdjust();
@@ -257,10 +350,43 @@ public class MainController {
             setDim(false);
             return;
         }
-        save(savePath);
+        Alert saveAlert = new Alert(AlertType.NONE);
+        saveAlert.setTitle("Saving");
+        saveAlert.setHeaderText("Saving. Please wait.");
+        //saveAlert.setDialogPane(new DialogPane());
+        saveAlert.show();
+        CompletableFuture.supplyAsync(() -> save(savePath)).thenAccept(success -> {
+            if (success) {
+                Platform.runLater(() -> {
+                    saveAlert.setAlertType(AlertType.INFORMATION);
+                    saveAlert.setHeaderText("Saved");
+                });
+            } else {
+                Platform.runLater(() -> {
+                    saveAlert.setAlertType(AlertType.ERROR);
+                    saveAlert.setHeaderText("Failed to save");
+                });
+            }
+        });
+
+        //FutureTask<Boolean> f = new FutureTask<>(() -> save(savePath));
+        //f.run();
+        //try {
+        //    if (f.get()) {
+        //        saveAlert.setContentText("Saved");
+        //    } else {
+        //        saveAlert.setContentText("Failed to save");
+        //    }
+        //} catch (Exception e) {
+        //    Alert errorAlert = new Alert(AlertType.ERROR);
+        //    errorAlert.setTitle("Error");
+        //    errorAlert.setHeaderText(null);
+        //    errorAlert.setContentText(e.getMessage());
+        //    errorAlert.showAndWait();
+        //}
     }
 
-    private void save(File savePath) {
+    private boolean save(File savePath) {
         try {
             patchesTabController.applyPatches();
             textTabController.saveMessages();
@@ -292,10 +418,34 @@ public class MainController {
             Pair<ByteBuffer, ByteBuffer> jdMessageIdxPak = App.jdMessage.repack();
             App.archive.setFile(String.format("system/rom/JD_message_rom_%d.idx", 0), jdMessageIdxPak.getKey());
             App.archive.setFile(String.format("system/rom/JD_message_%d.pak", 0), jdMessageIdxPak.getValue());
+            
+            Pair<ByteBuffer, ByteBuffer> jhQuestIdxPak = App.jhQuest.repack();
+            App.archive.setFile(String.format("system/rom/JH_questtext_rom_%d.idx", 0), jhQuestIdxPak.getKey());
+            App.archive.setFile(String.format("system/rom/JH_questtext_%d.pak", 0), jhQuestIdxPak.getValue());
+            
+            Pair<ByteBuffer, ByteBuffer> jhRumorIdxPak = App.jhRumor.repack();
+            App.archive.setFile(String.format("system/rom/JH_uwasatext_rom_%d.idx", 0), jhRumorIdxPak.getKey());
+            App.archive.setFile(String.format("system/rom/JH_uwasatext_%d.pak", 0), jhRumorIdxPak.getValue());
+            
+            Pair<ByteBuffer, ByteBuffer> jhNoticeIdxPak = App.jhNotice.repack();
+            App.archive.setFile(String.format("system/rom/JH_freepapermes_rom_%d.idx", 0), jhNoticeIdxPak.getKey());
+            App.archive.setFile(String.format("system/rom/JH_freepapermes_%d.pak", 0), jhNoticeIdxPak.getValue());
+            
+            Pair<ByteBuffer, ByteBuffer> evMsgIdxPak = App.evMsg.repack();
+            App.archive.setFile(String.format("event/rom/ev_msg%d_rom.idx", 0), evMsgIdxPak.getKey());
+            App.archive.setFile(String.format("event/rom/ev_msg%d.pak", 0), evMsgIdxPak.getValue());
 
             Pair<ByteBuffer, ByteBuffer> entrydataIdxPak = App.entrydata.repack();
             App.archive.setFile("system/rom/entrydata_rom.idx", entrydataIdxPak.getKey());
             App.archive.setFile("system/rom/entrydata.pak", entrydataIdxPak.getValue());
+
+            Pair<ByteBuffer, ByteBuffer> atlIdxPak = App.atl.repack();
+            App.archive.setFile("menu/atl_rom/atl_rom.idx", atlIdxPak.getKey());
+            App.archive.setFile("menu/atl_rom/atl.pak", atlIdxPak.getValue());
+
+            Pair<ByteBuffer, ByteBuffer> faceIdxPak = App.face.repack();
+            App.archive.setFile("menu/face_rom/face_rom.idx", faceIdxPak.getKey());
+            App.archive.setFile("menu/face_rom/face.pak", faceIdxPak.getValue());
 
             ByteBuffer encodedTable = LZSS.encode(App.naUnitAnimTable.rewind());
             ByteBuffer newTable = ByteBuffer.allocate(encodedTable.capacity()+4);
@@ -354,10 +504,11 @@ public class MainController {
             ndsTool.start().waitFor();
         } catch (Exception e) {
             System.err.println(e);
+            return false;
         } finally {
             setDim(false);
         }
-
+        return true;
     }
 
 }

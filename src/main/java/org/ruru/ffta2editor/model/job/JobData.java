@@ -6,6 +6,8 @@ import java.util.BitSet;
 
 import org.ruru.ffta2editor.App;
 import org.ruru.ffta2editor.model.Race;
+import org.ruru.ffta2editor.model.topSprite.TopSprite;
+import org.ruru.ffta2editor.model.unitFace.UnitFace;
 import org.ruru.ffta2editor.utility.UnitSprite;
 
 import javafx.beans.property.SimpleBooleanProperty;
@@ -14,14 +16,16 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public class JobData {
+
+    public static boolean patchedTopSprite = false;
     
     //public String name;
     public StringProperty name;
     public StringProperty description;
     public int id;
     
-    public SimpleObjectProperty<Short> unitPortrait = new SimpleObjectProperty<>();
-    public SimpleObjectProperty<Short> enemyPortrait = new SimpleObjectProperty<>();
+    public SimpleObjectProperty<UnitFace> unitPortrait = new SimpleObjectProperty<>();
+    public SimpleObjectProperty<UnitFace> enemyPortrait = new SimpleObjectProperty<>();
     public SimpleObjectProperty<UnitSprite> unitSprite = new SimpleObjectProperty<>();
     public SimpleObjectProperty<UnitSprite> unitAlternateSprite = new SimpleObjectProperty<>();
     public SimpleObjectProperty<UnitSprite> enemySprite = new SimpleObjectProperty<>();
@@ -81,8 +85,8 @@ public class JobData {
     public SimpleObjectProperty<Byte> _0x3c = new SimpleObjectProperty<>();
     public SimpleObjectProperty<Byte> _0x3d = new SimpleObjectProperty<>();
     public SimpleObjectProperty<Byte> _0x3e = new SimpleObjectProperty<>();
-    public SimpleObjectProperty<Byte> unitTopSprite = new SimpleObjectProperty<>();
-    public SimpleObjectProperty<Byte> enemyTopSprite = new SimpleObjectProperty<>();
+    public SimpleObjectProperty<TopSprite> unitTopSprite = new SimpleObjectProperty<>();
+    public SimpleObjectProperty<TopSprite> enemyTopSprite = new SimpleObjectProperty<>();
     public SimpleObjectProperty<Byte> _0x41 = new SimpleObjectProperty<>();
 
     public class PropertyFlags {
@@ -91,7 +95,7 @@ public class JobData {
         public SimpleBooleanProperty propertyBit0 = new SimpleBooleanProperty();
         public SimpleBooleanProperty propertyBit1 = new SimpleBooleanProperty();
         public SimpleBooleanProperty canChangeJobs = new SimpleBooleanProperty();
-        public SimpleBooleanProperty propertyBit3 = new SimpleBooleanProperty();
+        public SimpleBooleanProperty isUndead = new SimpleBooleanProperty();
         public SimpleBooleanProperty propertyBit4 = new SimpleBooleanProperty();
         public SimpleBooleanProperty propertyBit5 = new SimpleBooleanProperty();
         public SimpleBooleanProperty canAlwaysUseItems = new SimpleBooleanProperty();
@@ -110,7 +114,7 @@ public class JobData {
             propertyBit0.setValue(flags.get(0));
             propertyBit1.setValue(flags.get(1));
             canChangeJobs.setValue(flags.get(2));
-            propertyBit3.setValue(flags.get(3));
+            isUndead.setValue(flags.get(3));
             propertyBit4.setValue(flags.get(4));
             propertyBit5.setValue(flags.get(5));
             canAlwaysUseItems.setValue(flags.get(6));
@@ -121,7 +125,7 @@ public class JobData {
             flags.set(0, propertyBit0.getValue());
             flags.set(1, propertyBit1.getValue());
             flags.set(2, canChangeJobs.getValue());
-            flags.set(3, propertyBit3.getValue());
+            flags.set(3, isUndead.getValue());
             flags.set(4, propertyBit4.getValue());
             flags.set(5, propertyBit5.getValue());
             flags.set(6, canAlwaysUseItems.getValue());
@@ -297,8 +301,8 @@ public class JobData {
         }
         this.id = id;
 
-        unitPortrait.set(bytes.getShort());
-        enemyPortrait.set(bytes.getShort());
+        unitPortrait.set(App.unitFaces.get(Short.toUnsignedInt(bytes.getShort())));
+        enemyPortrait.set(App.unitFaces.get(Short.toUnsignedInt(bytes.getShort())));
 
         short spriteIndex = bytes.getShort();
         unitSprite.set(spriteIndex != -1 ? App.unitSprites.get(spriteIndex) : null);
@@ -362,11 +366,20 @@ public class JobData {
         _0x39.set(bytes.get());
         _0x3a.set(bytes.get());
         _0x3b.set(bytes.get());
-        _0x3c.set(bytes.get());
-        _0x3d.set(bytes.get());
-        _0x3e.set(bytes.get());
-        unitTopSprite.set(bytes.get());
-        enemyTopSprite.set(bytes.get());
+        if (patchedTopSprite) {
+            unitTopSprite.set(App.topSprites.get(Short.toUnsignedInt(bytes.getShort())));
+            enemyTopSprite.set(App.topSprites.get(Short.toUnsignedInt(bytes.getShort())));
+            _0x3e.set(bytes.get()); // 0x3e -> 0x40
+            
+            _0x3c.set((byte)0);
+            _0x3d.set((byte)0);
+        } else {
+            _0x3c.set(bytes.get());
+            _0x3d.set(bytes.get());
+            _0x3e.set(bytes.get());
+            unitTopSprite.set(App.topSprites.get(Byte.toUnsignedInt(bytes.get())));
+            enemyTopSprite.set(App.topSprites.get(Byte.toUnsignedInt(bytes.get())));
+        }
         _0x41.set(bytes.get());
 
         propertyFlags = new PropertyFlags(new byte[]{bytes.get()});
@@ -388,8 +401,8 @@ public class JobData {
         }
         this.id = id;
 
-        unitPortrait.set((short)0);
-        enemyPortrait.set((short)0);
+        unitPortrait.set(App.unitFaces.get(0));
+        enemyPortrait.set(App.unitFaces.get(0));
 
         unitSprite.set(null);
 
@@ -452,8 +465,8 @@ public class JobData {
         _0x3c.set((byte)0);
         _0x3d.set((byte)0);
         _0x3e.set((byte)0);
-        unitTopSprite.set((byte)0);
-        enemyTopSprite.set((byte)0);
+        unitTopSprite.set(App.topSprites.get(0));
+        enemyTopSprite.set(App.topSprites.get(0));
         _0x41.set((byte)0);
 
         propertyFlags = new PropertyFlags();
@@ -463,8 +476,8 @@ public class JobData {
     public byte[] toBytes() {
         ByteBuffer buffer = ByteBuffer.allocate(0x48).order(ByteOrder.LITTLE_ENDIAN);
 
-        buffer.putShort(unitPortrait.getValue());
-        buffer.putShort(enemyPortrait.getValue());
+        buffer.putShort((short)unitPortrait.getValue().id);
+        buffer.putShort((short)enemyPortrait.getValue().id);
 
         short unitIndex = unitSprite.getValue() == null ? -1 : (short)unitSprite.getValue().unitIndex;
         buffer.putShort(unitIndex);
@@ -525,11 +538,17 @@ public class JobData {
         buffer.put(_0x39.getValue());
         buffer.put(_0x3a.getValue());
         buffer.put(_0x3b.getValue());
-        buffer.put(_0x3c.getValue());
-        buffer.put(_0x3d.getValue());
-        buffer.put(_0x3e.getValue());
-        buffer.put(unitTopSprite.getValue());
-        buffer.put(enemyTopSprite.getValue());
+        if (patchedTopSprite) {
+            buffer.putShort((short)unitTopSprite.getValue().id);
+            buffer.putShort((short)enemyTopSprite.getValue().id);
+            buffer.put(_0x3e.getValue()); // 0x3e -> 0x40
+        } else {
+            buffer.put(_0x3c.getValue());
+            buffer.put(_0x3d.getValue());
+            buffer.put(_0x3e.getValue());
+            buffer.put((byte)unitTopSprite.getValue().id);
+            buffer.put((byte)enemyTopSprite.getValue().id);
+        }
         buffer.put(_0x41.getValue());
 
         buffer.put(propertyFlags.toBytes());

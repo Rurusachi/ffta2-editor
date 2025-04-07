@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import org.ruru.ffta2editor.AbilityController.AbilityCell;
+import org.ruru.ffta2editor.SpritesController.FaceCell;
+import org.ruru.ffta2editor.SpritesController.TopSpriteCell;
 import org.ruru.ffta2editor.model.Race;
 import org.ruru.ffta2editor.model.ability.ActiveAbilityData;
 import org.ruru.ffta2editor.model.job.AbilitySet;
@@ -14,6 +16,8 @@ import org.ruru.ffta2editor.model.job.JobData;
 import org.ruru.ffta2editor.model.job.JobElementalResistance;
 import org.ruru.ffta2editor.model.job.JobGender;
 import org.ruru.ffta2editor.model.job.JobMoveType;
+import org.ruru.ffta2editor.model.topSprite.TopSprite;
+import org.ruru.ffta2editor.model.unitFace.UnitFace;
 import org.ruru.ffta2editor.utility.ByteChangeListener;
 import org.ruru.ffta2editor.utility.ShortChangeListener;
 import org.ruru.ffta2editor.utility.UnitSprite;
@@ -187,7 +191,7 @@ public class JobController {
     @FXML CheckBox propertyBit0;
     @FXML CheckBox propertyBit1;
     @FXML CheckBox canChangeJobs;
-    @FXML CheckBox propertyBit3;
+    @FXML CheckBox isUndead;
     @FXML CheckBox propertyBit4;
     @FXML CheckBox propertyBit5;
     @FXML CheckBox canAlwaysUseItems;
@@ -245,11 +249,10 @@ public class JobController {
     @FXML TextField _0x3e;
     @FXML TextField _0x41;
 
-    // TODO: Show portrait images instead of textfield
-    @FXML TextField unitPortrait;
-    @FXML TextField enemyPortrait;
-    @FXML TextField unitTopSprite;
-    @FXML TextField enemyTopSprite;
+    @FXML ComboBox<UnitFace> unitPortrait;
+    @FXML ComboBox<UnitFace> enemyPortrait;
+    @FXML ComboBox<TopSprite> unitTopSprite;
+    @FXML ComboBox<TopSprite> enemyTopSprite;
 
     @FXML ComboBox<UnitSprite> unitSprite;
     @FXML ComboBox<UnitSprite> unitAlternateSprite;
@@ -449,11 +452,8 @@ public class JobController {
         _0x3e.textProperty().addListener(new ByteChangeListener(_0x3e));
         _0x41.textProperty().addListener(new ByteChangeListener(_0x41));
         
-        unitTopSprite.textProperty().addListener(new ByteChangeListener(unitTopSprite));
-        enemyTopSprite.textProperty().addListener(new ByteChangeListener(enemyTopSprite));
-        
-        unitPortrait.textProperty().addListener(new ShortChangeListener(unitPortrait));
-        enemyPortrait.textProperty().addListener(new ShortChangeListener(enemyPortrait));
+        //unitPortrait.textProperty().addListener(new ShortChangeListener(unitPortrait));
+        //enemyPortrait.textProperty().addListener(new ShortChangeListener(enemyPortrait));
 
         maxAP.textProperty().addListener(new ByteChangeListener(maxAP));
         abilityAnimation.textProperty().addListener(new ByteChangeListener(abilityAnimation));
@@ -512,7 +512,7 @@ public class JobController {
         propertyBit0.selectedProperty().unbindBidirectional(jobProperty.getValue().propertyFlags.propertyBit0);
         propertyBit1.selectedProperty().unbindBidirectional(jobProperty.getValue().propertyFlags.propertyBit1);
         canChangeJobs.selectedProperty().unbindBidirectional(jobProperty.getValue().propertyFlags.canChangeJobs);
-        propertyBit3.selectedProperty().unbindBidirectional(jobProperty.getValue().propertyFlags.propertyBit3);
+        isUndead.selectedProperty().unbindBidirectional(jobProperty.getValue().propertyFlags.isUndead);
         propertyBit4.selectedProperty().unbindBidirectional(jobProperty.getValue().propertyFlags.propertyBit4);
         propertyBit5.selectedProperty().unbindBidirectional(jobProperty.getValue().propertyFlags.propertyBit5);
         canAlwaysUseItems.selectedProperty().unbindBidirectional(jobProperty.getValue().propertyFlags.canAlwaysUseItems);
@@ -569,10 +569,10 @@ public class JobController {
         _0x3e.textProperty().unbindBidirectional(jobProperty.getValue()._0x3e);
         _0x41.textProperty().unbindBidirectional(jobProperty.getValue()._0x41);
         
-        unitPortrait.textProperty().unbindBidirectional(jobProperty.getValue().unitPortrait);
-        enemyPortrait.textProperty().unbindBidirectional(jobProperty.getValue().enemyPortrait);
-        unitTopSprite.textProperty().unbindBidirectional(jobProperty.getValue().unitTopSprite);
-        enemyTopSprite.textProperty().unbindBidirectional(jobProperty.getValue().enemyTopSprite);
+        unitPortrait.valueProperty().unbindBidirectional(jobProperty.getValue().unitPortrait);
+        enemyPortrait.valueProperty().unbindBidirectional(jobProperty.getValue().enemyPortrait);
+        unitTopSprite.valueProperty().unbindBidirectional(jobProperty.getValue().unitTopSprite);
+        enemyTopSprite.valueProperty().unbindBidirectional(jobProperty.getValue().enemyTopSprite);
         
         unitSprite.valueProperty().unbindBidirectional(jobProperty.getValue().unitSprite);
         unitAlternateSprite.valueProperty().unbindBidirectional(jobProperty.getValue().unitAlternateSprite);
@@ -632,7 +632,7 @@ public class JobController {
         propertyBit0.selectedProperty().bindBidirectional(jobProperty.getValue().propertyFlags.propertyBit0);
         propertyBit1.selectedProperty().bindBidirectional(jobProperty.getValue().propertyFlags.propertyBit1);
         canChangeJobs.selectedProperty().bindBidirectional(jobProperty.getValue().propertyFlags.canChangeJobs);
-        propertyBit3.selectedProperty().bindBidirectional(jobProperty.getValue().propertyFlags.propertyBit3);
+        isUndead.selectedProperty().bindBidirectional(jobProperty.getValue().propertyFlags.isUndead);
         propertyBit4.selectedProperty().bindBidirectional(jobProperty.getValue().propertyFlags.propertyBit4);
         propertyBit5.selectedProperty().bindBidirectional(jobProperty.getValue().propertyFlags.propertyBit5);
         canAlwaysUseItems.selectedProperty().bindBidirectional(jobProperty.getValue().propertyFlags.canAlwaysUseItems);
@@ -690,12 +690,9 @@ public class JobController {
         Bindings.bindBidirectional(_0x3e.textProperty(), jobProperty.getValue()._0x3e, unsignedByteConverter);
         Bindings.bindBidirectional(_0x41.textProperty(), jobProperty.getValue()._0x41, unsignedByteConverter);
 
-        Bindings.bindBidirectional(unitTopSprite.textProperty(), jobProperty.getValue().unitTopSprite, unsignedByteConverter);
-        Bindings.bindBidirectional(enemyTopSprite.textProperty(), jobProperty.getValue().enemyTopSprite, unsignedByteConverter);
-
-        StringConverter<Short> unsignedShortConverter = new UnsignedShortStringConverter();
-        Bindings.bindBidirectional(unitPortrait.textProperty(), jobProperty.getValue().unitPortrait, unsignedShortConverter);
-        Bindings.bindBidirectional(enemyPortrait.textProperty(), jobProperty.getValue().enemyPortrait, unsignedShortConverter);
+        //StringConverter<Short> unsignedShortConverter = new UnsignedShortStringConverter();
+        //Bindings.bindBidirectional(unitPortrait.textProperty(), jobProperty.getValue().unitPortrait, unsignedShortConverter);
+        //Bindings.bindBidirectional(enemyPortrait.textProperty(), jobProperty.getValue().enemyPortrait, unsignedShortConverter);
         
 
 
@@ -715,6 +712,12 @@ public class JobController {
         enemySprite.setCellFactory(x -> new JobSpriteCell(0, jobProperty.getValue().enemyPalette.getValue(), 2));
         enemyAlternateSprite.setButtonCell(new JobSpriteCell(0, jobProperty.getValue().enemyPalette.getValue(), 2));
         enemyAlternateSprite.setCellFactory(x -> new JobSpriteCell(0, jobProperty.getValue().enemyPalette.getValue(), 2));
+        
+        unitPortrait.valueProperty().bindBidirectional(jobProperty.getValue().unitPortrait);
+        enemyPortrait.valueProperty().bindBidirectional(jobProperty.getValue().enemyPortrait);
+        
+        unitTopSprite.valueProperty().bindBidirectional(jobProperty.getValue().unitTopSprite);
+        enemyTopSprite.valueProperty().bindBidirectional(jobProperty.getValue().enemyTopSprite);
         
         abilitySetList.valueProperty().bindBidirectional(jobProperty.getValue().abilitySet);
         
@@ -994,8 +997,21 @@ public class JobController {
             enemyAlternateSprite.setCellFactory(x -> new JobSpriteCell(0, 0, 2));
             enemyAlternateSprite.setItems(App.unitSprites);
 
+            unitTopSprite.setButtonCell(new TopSpriteCell(0, 2));
+            unitTopSprite.setCellFactory(x -> new TopSpriteCell(0, 2));
+            unitTopSprite.setItems(App.topSprites);
             
-
+            enemyTopSprite.setButtonCell(new TopSpriteCell(0, 2));
+            enemyTopSprite.setCellFactory(x -> new TopSpriteCell(0, 2));
+            enemyTopSprite.setItems(App.topSprites);
+            
+            unitPortrait.setButtonCell(new FaceCell());
+            unitPortrait.setCellFactory(x -> new FaceCell());
+            unitPortrait.setItems(App.unitFaces);
+            
+            enemyPortrait.setButtonCell(new FaceCell());
+            enemyPortrait.setCellFactory(x -> new FaceCell());
+            enemyPortrait.setItems(App.unitFaces);
         }
     }
 
