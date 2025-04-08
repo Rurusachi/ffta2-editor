@@ -24,7 +24,7 @@ public class QuestData {
     
     public StringProperty locationString = new SimpleStringProperty();;
 
-    public ObjectProperty<Byte> type = new SimpleObjectProperty<>();
+    public ObjectProperty<Byte> type = new SimpleObjectProperty<>(); // 1 = story quest (in pub), 2 = side quest (in pub), 3 = encounter on overworld, 4 = Clan Trial?, 5 = directly after other quest/event?
     public ObjectProperty<Byte> questGroup = new SimpleObjectProperty<>();
     public ObjectProperty<Byte> rank = new SimpleObjectProperty<>();
     // Region
@@ -151,14 +151,14 @@ public class QuestData {
     public class RegionFlags {
         private BitSet flags;
         private int length;
-        public SimpleBooleanProperty regionBit0 = new SimpleBooleanProperty();
+        public SimpleBooleanProperty regionBit0 = new SimpleBooleanProperty(); // Set on most non-trial quests?
         public SimpleBooleanProperty targ = new SimpleBooleanProperty();
         public SimpleBooleanProperty camoa = new SimpleBooleanProperty();
         public SimpleBooleanProperty graszton = new SimpleBooleanProperty();
         public SimpleBooleanProperty moorabella = new SimpleBooleanProperty();
         public SimpleBooleanProperty fluorgis = new SimpleBooleanProperty();
         public SimpleBooleanProperty goug = new SimpleBooleanProperty();
-        public SimpleBooleanProperty regionBit7 = new SimpleBooleanProperty();
+        public SimpleBooleanProperty regionBit7 = new SimpleBooleanProperty(); // Story Quest?
 
         public RegionFlags() {
             flags = new BitSet(1*8);
