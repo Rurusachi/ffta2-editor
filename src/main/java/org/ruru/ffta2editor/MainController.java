@@ -9,10 +9,13 @@ import java.nio.ByteOrder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.FutureTask;
 import java.util.stream.IntStream;
 
+import org.ruru.ffta2editor.model.ability.AbilityData;
 import org.ruru.ffta2editor.model.character.CharacterData;
 import org.ruru.ffta2editor.model.job.JobData;
 import org.ruru.ffta2editor.model.unitFace.UnitFace;
@@ -108,6 +111,47 @@ public class MainController {
         //        Platform.runLater(() -> loadAlert.setContentText("Failed to load"));
         //    }
         //});
+
+        /*
+        HashSet<AbilityData> usedAbilities = new HashSet<>();
+        for (var formation : App.formationList) {
+            for (var unit : formation.units) {
+                usedAbilities.add(unit.primaryAbility1.getValue());
+                usedAbilities.add(unit.primaryAbility2.getValue());
+                usedAbilities.add(unit.primaryAbility3.getValue());
+                usedAbilities.add(unit.primaryAbility4.getValue());
+                usedAbilities.add(unit.primaryAbility5.getValue());
+                usedAbilities.add(unit.primaryAbility6.getValue());
+                usedAbilities.add(unit.secondaryAbility1.getValue());
+                usedAbilities.add(unit.secondaryAbility2.getValue());
+                usedAbilities.add(unit.secondaryAbility3.getValue());
+                usedAbilities.add(unit.secondaryAbility4.getValue());
+            }
+        }
+        for (var abilitySet : App.abilitySetList) {
+            for (var ability : abilitySet.abilities) {
+                usedAbilities.add(ability.ability.getValue());
+            }
+        }
+        for (var item : App.equipmentList) {
+            usedAbilities.add(item.ability1.getValue());
+            usedAbilities.add(item.ability2.getValue());
+            usedAbilities.add(item.ability3.getValue());
+        }
+        for (var item : App.consumableList) {
+            usedAbilities.add(item.ability.getValue());
+        }
+
+        HashSet<AbilityData> unusedAbilities = new HashSet<>(App.activeAbilityList);
+        unusedAbilities.removeAll(usedAbilities);
+        System.out.println("Unused ability ids:");
+        unusedAbilities.stream().sorted(Comparator.comparingInt(ability -> ability.id)).forEachOrdered(ability -> System.out.println(String.format("%X: %s", ability.id, ability.name.getValue())));
+        */
+
+        //for (AbilityData ability : unusedAbilities) {
+        //    System.out.println(String.format("%X: %s", ability.id, ability.name.getValue()));
+        //}
+
         
         /*
         int oldMinPieces = App.faceSprites.stream().skip(1).mapToInt(x -> x.pieces.length).min().getAsInt();
@@ -302,8 +346,8 @@ public class MainController {
             spritesTabController.loadSprites();
             jobTabController.loadJobs();
             characterTabController.loadCharacters();
-            jobRequirementTabController.loadJobRequirements();
             jobGroupTabController.loadJobGroups();
+            jobRequirementTabController.loadJobRequirements();
             equipmentTabController.loadEquipment();
             formationTabController.loadFormations();
             questTabController.loadQuests();
@@ -394,8 +438,8 @@ public class MainController {
             jobTabController.saveJobs();
             spritesTabController.saveSprites();
             characterTabController.saveCharacters();
-            jobRequirementTabController.saveJobRequirements();
             jobGroupTabController.saveJobGroups();
+            jobRequirementTabController.saveJobRequirements();
             equipmentTabController.saveEquipment();
             formationTabController.saveFormations();
             questTabController.saveQuests();
