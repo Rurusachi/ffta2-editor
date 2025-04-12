@@ -447,9 +447,9 @@ public class MainController {
             auctionTabController.saveAuctions();
 
             // Repack sub-archives
-            Pair<ByteBuffer, ByteBuffer> idxPak = App.sysdata.repack();
-            App.archive.setFile("system/rom/sysdata_rom.idx", idxPak.getKey());
-            App.archive.setFile("system/rom/sysdata.pak", idxPak.getValue());
+            Pair<ByteBuffer, ByteBuffer> sysdataIdxPak = App.sysdata.repack();
+            App.archive.setFile("system/rom/sysdata_rom.idx", sysdataIdxPak.getKey());
+            App.archive.setFile("system/rom/sysdata.pak", sysdataIdxPak.getValue());
 
             Pair<ByteBuffer, ByteBuffer> sstIdxPak = App.unitSsts.repack();
             App.archive.setFile("char/rom/rom_idx/UnitSst.rom_idx", sstIdxPak.getKey());

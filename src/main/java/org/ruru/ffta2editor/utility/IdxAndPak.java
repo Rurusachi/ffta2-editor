@@ -76,8 +76,13 @@ public class IdxAndPak {
 
     public Pair<ByteBuffer, ByteBuffer> repack() {
 
-        ByteBuffer newIdx = ByteBuffer.allocate(1024*1024).order(ByteOrder.LITTLE_ENDIAN);
-        ByteBuffer newPak = ByteBuffer.allocate(256*1024*1024).order(ByteOrder.LITTLE_ENDIAN);
+        int newIdxSize = 4 + 4 + 6*files.size();
+        ByteBuffer newIdx = ByteBuffer.allocate(newIdxSize).order(ByteOrder.LITTLE_ENDIAN);
+        int newPakSize = files.stream().filter(f -> f != null).mapToInt(f -> {
+            f.rewind();
+            return  align16(f.remaining());
+        }).sum();
+        ByteBuffer newPak = ByteBuffer.allocate(newPakSize).order(ByteOrder.LITTLE_ENDIAN);
         byte[] zeroes = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
         newIdx.putInt(0);
