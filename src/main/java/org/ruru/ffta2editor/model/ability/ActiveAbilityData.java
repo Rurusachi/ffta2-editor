@@ -158,8 +158,8 @@ public class ActiveAbilityData extends AbilityData {
             activatesBonecrusher_Maybe.setValue(flags.get(8 + 3));
             magickCounterable.setValue(flags.get(8 + 4));
             throwsItem.setValue(flags.get(8 + 5));
-            caughtByStickyFingers.setValue(flags.get(8 + 6));
-            activatesAbsorbMP.setValue(flags.get(8 + 7));
+            activatesAbsorbMP.setValue(flags.get(8 + 6));
+            caughtByStickyFingers.setValue(flags.get(8 + 7));
             usableWithMix.setValue(flags.get(16 + 0));
             mirrorItem.setValue(flags.get(16 + 1));
             antiCounter.setValue(flags.get(16 + 2));

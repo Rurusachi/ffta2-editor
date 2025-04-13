@@ -105,7 +105,6 @@ public class PatchesController {
             entryLength = Short.toUnsignedInt(App.naUnitAnimTable.getShort(2)) + 1;
             int numUnits = 70;
             for (int i = 0; i < numUnits; i++) {
-                // TODO: Port other missing animations to Illua
                 portAnimations(i, compressedLandAnimations, landAnimationSources);
             }
             portAnimations(102, compressedLandAnimations, landAnimationSources); // Frimelda
@@ -113,7 +112,6 @@ public class PatchesController {
             // In water
             numUnits = 48;
             for (int i = 249; i < 249+numUnits; i++) {
-                // TODO: Port other missing animations to Illua
                 portAnimations(i, compressedWaterAnimations, waterAnimationSources);
             }
             portAnimations(298, compressedWaterAnimations, waterAnimationSources);
