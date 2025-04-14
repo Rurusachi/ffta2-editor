@@ -538,11 +538,6 @@ public class AbilityEffect {
         }
     }
 
-    //Targets targets;
-    //Effect effect;
-    //Accuracy accuracy;
-    //Modifier modifier;
-
     public SimpleObjectProperty<Targets> targetsProperty = new SimpleObjectProperty<>();
     public SimpleObjectProperty<Effect> effectProperty = new SimpleObjectProperty<>();
     public SimpleObjectProperty<Accuracy> accuracyProperty = new SimpleObjectProperty<>();
@@ -553,10 +548,6 @@ public class AbilityEffect {
         effectProperty.setValue(effect);
         accuracyProperty.setValue(accuracy);
         modifierProperty.setValue(modifier);
-        ///this.targets = targets;
-        ///this.effect = effect;
-        ///this.accuracy = accuracy;
-        ///this.modifier = modifier;
     }
 
     public byte[] toBytes() {
