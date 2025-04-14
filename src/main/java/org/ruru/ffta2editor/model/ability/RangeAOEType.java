@@ -4,6 +4,7 @@ public enum RangeAOEType {
     NONE(0x00),
     INFINITE_LINE(0x01),
     LINE(0x02),
+    _0x03(0x03),
     SURROUNDING_CROSS(0x04),
     ALL_UNITS(0x05),
     CONE(0x06),
@@ -31,10 +32,11 @@ public enum RangeAOEType {
     private static RangeAOEType[] values = RangeAOEType.values();
     public static RangeAOEType fromInteger(int value) {
         for (RangeAOEType e : values) {
-            if (e.value == value) {
+            if (e.value == (byte)value) {
                 return e;
             }
         }
+        System.err.println(String.format("Unknown RangeAOEType: %02X", value));
         return RangeAOEType.NONE;
     }
 

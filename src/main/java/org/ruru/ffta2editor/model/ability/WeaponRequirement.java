@@ -55,10 +55,11 @@ public enum WeaponRequirement {
     private static WeaponRequirement[] values = WeaponRequirement.values();
     public static WeaponRequirement fromInteger(int value) {
         for (WeaponRequirement e : values) {
-            if (e.value == value) {
+            if (e.value == (byte)value) {
                 return e;
             }
         }
+        System.err.println(String.format("Unknown WeaponRequirement: %02X", value));
         return WeaponRequirement.NONE;
     }
 

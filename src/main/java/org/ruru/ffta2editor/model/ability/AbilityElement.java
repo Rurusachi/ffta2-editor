@@ -20,10 +20,11 @@ public enum AbilityElement {
     private static AbilityElement[] values = AbilityElement.values();
     public static AbilityElement fromInteger(int value) {
         for (AbilityElement e : values) {
-            if (e.value == value) {
+            if (e.value == (byte)value) {
                 return e;
             }
         }
+        System.err.println(String.format("Unknown AbilityElement: %02X", value));
         return AbilityElement.NONE;
     }
 

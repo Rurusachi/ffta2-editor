@@ -6,6 +6,7 @@ public enum AbilityMenuRoutine {
     MAGICK_FRENZY(0x2),
     NATURAL_SELECTION(0x3),
     MIX_MAYBE(0x4),
+    _0x5(0x5),
     THROW_ITEM(0x6),
     GIL_TOSS(0x7),
     MIRROR_ITEM(0x8),
@@ -21,10 +22,11 @@ public enum AbilityMenuRoutine {
     private static AbilityMenuRoutine[] values = AbilityMenuRoutine.values();
     public static AbilityMenuRoutine fromInteger(int value) {
         for (AbilityMenuRoutine e : values) {
-            if (e.value == value) {
+            if (e.value == (byte)value) {
                 return e;
             }
         }
+        System.err.println(String.format("Unknown AbilityMenuRoutine: %02X", value));
         return AbilityMenuRoutine.NONE;
     }
 

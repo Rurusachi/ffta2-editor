@@ -24,10 +24,11 @@ public enum FFTA2Month {
     private static FFTA2Month[] values = FFTA2Month.values();
     public static FFTA2Month fromInteger(int value) {
         for (FFTA2Month e : values) {
-            if (e.value == value) {
+            if (e.value == (byte)value) {
                 return e;
             }
         }
+        System.err.println(String.format("Unknown FFTA2Month: %02X", value));
         return FFTA2Month.NONE;
     }
 

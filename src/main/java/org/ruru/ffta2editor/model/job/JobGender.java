@@ -14,10 +14,11 @@ public enum JobGender {
     private static JobGender[] values = JobGender.values();
     public static JobGender fromInteger(int value) {
         for (JobGender e : values) {
-            if (e.value == value) {
+            if (e.value == (byte)value) {
                 return e;
             }
         }
+        System.err.println(String.format("Unknown JobGender: %02X", value));
         return JobGender.MALE;
     }
 

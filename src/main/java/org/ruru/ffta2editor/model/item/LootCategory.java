@@ -20,10 +20,11 @@ public enum LootCategory {
     private static LootCategory[] values = LootCategory.values();
     public static LootCategory fromInteger(int value) {
         for (LootCategory e : values) {
-            if (e.value == value) {
+            if (e.value == (byte)value) {
                 return e;
             }
         }
+        System.err.println(String.format("Unknown LootCategory: %02X", value));
         return LootCategory.NONE;
     }
 

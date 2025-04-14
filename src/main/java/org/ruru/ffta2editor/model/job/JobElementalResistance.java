@@ -16,10 +16,11 @@ public enum JobElementalResistance {
     private static JobElementalResistance[] values = JobElementalResistance.values();
     public static JobElementalResistance fromInteger(int value) {
         for (JobElementalResistance e : values) {
-            if (e.value == value) {
+            if (e.value == (byte)value) {
                 return e;
             }
         }
+        System.err.println(String.format("Unknown JobElementalResistance: %02X", value));
         return JobElementalResistance.NEUTRAL;
     }
 

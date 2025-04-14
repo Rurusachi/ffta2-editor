@@ -15,10 +15,11 @@ public enum JobMoveType {
     private static JobMoveType[] values = JobMoveType.values();
     public static JobMoveType fromInteger(int value) {
         for (JobMoveType e : values) {
-            if (e.value == value) {
+            if (e.value == (byte)value) {
                 return e;
             }
         }
+        System.err.println(String.format("Unknown JobMoveType: %02X", value));
         return JobMoveType.NONE;
     }
 

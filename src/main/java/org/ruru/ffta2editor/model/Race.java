@@ -52,10 +52,11 @@ public enum Race {
     private static Race[] values = Race.values();
     public static Race fromInteger(int value) {
         for (Race e : values) {
-            if (e.value == value) {
+            if (e.value == (byte)value) {
                 return e;
             }
         }
+        System.err.println(String.format("Unknown Race: %02X", value));
         return Race.NONE;
     }
 

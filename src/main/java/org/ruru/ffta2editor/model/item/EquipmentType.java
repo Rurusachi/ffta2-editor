@@ -47,10 +47,11 @@ public enum EquipmentType {
     private static EquipmentType[] values = EquipmentType.values();
     public static EquipmentType fromInteger(int value) {
         for (EquipmentType e : values) {
-            if (e.value == value) {
+            if (e.value == (byte)value) {
                 return e;
             }
         }
+        System.err.println(String.format("Unknown EquipmentType: %02X", value));
         return EquipmentType.NONE;
     }
 

@@ -18,10 +18,11 @@ public enum EquipmentLocation {
     private static EquipmentLocation[] values = EquipmentLocation.values();
     public static EquipmentLocation fromInteger(int value) {
         for (EquipmentLocation e : values) {
-            if (e.value == value) {
+            if (e.value == (byte)value) {
                 return e;
             }
         }
+        System.err.println(String.format("Unknown EquipmentLocation: %02X", value));
         return EquipmentLocation.NONE;
     }
 
