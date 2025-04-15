@@ -31,6 +31,7 @@ import javafx.scene.control.DialogPane;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Region;
 import javafx.stage.FileChooser;
 import javafx.util.Pair;
 
@@ -382,12 +383,8 @@ public class MainController {
     private void saveFileSelector() {
         if (romFile == null) return;
         setDim(true);
-        //DirectoryChooser chooser = new DirectoryChooser();
-        //chooser.setTitle("Open Directory");
-        //File savePath = chooser.showDialog(abilityTab.getScene().getWindow());
         FileChooser chooser = new FileChooser();
         chooser.setTitle("Save as");
-        //chooser.setInitialDirectory(romFile.getParent());
         chooser.setInitialFileName(romFile.getName());
         File savePath = chooser.showSaveDialog(abilityTab.getScene().getWindow());
         if (savePath == null) {
@@ -397,40 +394,29 @@ public class MainController {
         Alert saveAlert = new Alert(AlertType.NONE);
         saveAlert.setTitle("Saving");
         saveAlert.setHeaderText("Saving. Please wait.");
-        //saveAlert.setDialogPane(new DialogPane());
         saveAlert.show();
-        CompletableFuture.supplyAsync(() -> save(savePath)).thenAccept(success -> {
-            if (success) {
+        CompletableFuture.runAsync(() -> {
+            try {
+                save(savePath);
+            } catch (Exception e) {
                 Platform.runLater(() -> {
-                    saveAlert.setAlertType(AlertType.INFORMATION);
-                    saveAlert.setHeaderText("Saved");
-                });
-            } else {
-                Platform.runLater(() -> {
+                    setDim(false);
                     saveAlert.setAlertType(AlertType.ERROR);
                     saveAlert.setHeaderText("Failed to save");
+                    saveAlert.setContentText(e.getMessage());
+                    saveAlert.getDialogPane().getScene().getWindow().sizeToScene();
                 });
+                return;
             }
+            Platform.runLater(() -> {
+                setDim(false);
+                saveAlert.setAlertType(AlertType.INFORMATION);
+                saveAlert.setHeaderText("Saved");
+            });
         });
-
-        //FutureTask<Boolean> f = new FutureTask<>(() -> save(savePath));
-        //f.run();
-        //try {
-        //    if (f.get()) {
-        //        saveAlert.setContentText("Saved");
-        //    } else {
-        //        saveAlert.setContentText("Failed to save");
-        //    }
-        //} catch (Exception e) {
-        //    Alert errorAlert = new Alert(AlertType.ERROR);
-        //    errorAlert.setTitle("Error");
-        //    errorAlert.setHeaderText(null);
-        //    errorAlert.setContentText(e.getMessage());
-        //    errorAlert.showAndWait();
-        //}
     }
 
-    private boolean save(File savePath) {
+    private void save(File savePath) throws Exception {
         try {
             patchesTabController.applyPatches();
             textTabController.saveMessages();
@@ -548,11 +534,8 @@ public class MainController {
             ndsTool.start().waitFor();
         } catch (Exception e) {
             System.err.println(e);
-            return false;
-        } finally {
-            setDim(false);
+            throw e;
         }
-        return true;
     }
 
 }

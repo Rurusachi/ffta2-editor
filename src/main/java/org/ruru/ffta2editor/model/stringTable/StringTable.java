@@ -56,7 +56,7 @@ public class StringTable {
         strings.set(stringList);
     }
 
-    public byte[] toBytes() {
+    public byte[] toBytes() throws Exception {
         List<String> stringList = strings.getValue().stream().map(x -> x.getValue()).toList();
         if (stringList.isEmpty()) return new byte[0];
         ByteBuffer tableBytes = ByteBuffer.allocate(stringList.stream().mapToInt(x -> (x.length()+1)*2).sum() + 2 + stringList.size()*10).order(ByteOrder.LITTLE_ENDIAN);
@@ -93,13 +93,7 @@ public class StringTable {
                 tableBytes.put(offset, bytes);
                 offset += bytes.length;
             } catch (Exception e) {
-                Alert alert = new Alert(AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText(String.format("%x: %s", id, name.getValue()));
-                alert.setContentText(e.getMessage());
-                alert.showAndWait();
-                System.err.println(e);
-                return null;
+                throw new Exception(String.format("%x: %s\n%s", id, name.getValue(), e.getMessage()), e.getCause());
             }
         }
         return Arrays.copyOf(tableBytes.array(), offset);

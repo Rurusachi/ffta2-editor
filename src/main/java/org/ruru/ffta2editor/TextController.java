@@ -388,7 +388,7 @@ public class TextController {
         }
     }
 
-    public void saveMessages() {
+    public void saveMessages() throws Exception {
         List<StringTable> messages = messageList.getItems();
         //ArrayList<byte[]> encodedMessages = new ArrayList<>();
         for (StringTable table : messages) {

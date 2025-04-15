@@ -52,7 +52,7 @@ public class StringSingle {
         }
     }
 
-    public byte[] toBytes() {
+    public byte[] toBytes() throws Exception {
         ByteBuffer stringBytes = ByteBuffer.allocate(0xe + (text.getValue().length()+1)*2).order(ByteOrder.LITTLE_ENDIAN);
         stringBytes.position(0xe);
         int endPosition;
@@ -84,13 +84,7 @@ public class StringSingle {
             stringBytes.put(bytes);
             endPosition = stringBytes.position();
         } catch (Exception e) {
-            Alert alert = new Alert(AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText(String.format("%x: %s", id, name.getValue()));
-            alert.setContentText(e.getMessage());
-            alert.showAndWait();
-            System.err.println(e);
-            return null;
+            throw new Exception(String.format("%x: %s\n%s", id, name.getValue(), e.getMessage()), e.getCause());
         }
         stringBytes.rewind();
         stringBytes.putShort(_0x00.getValue());
