@@ -180,7 +180,7 @@ public class EquipmentData extends ItemData {
         if (id < App.itemDescriptions.size()) {
             this.description = App.itemDescriptions.get(id);
         } else {
-            this.description = new SimpleStringProperty("\\var2:000\\\\end\\");
+            this.description = new SimpleStringProperty("\\var2:00\\\\end\\");
         }
         this.id = id;
 
@@ -228,7 +228,7 @@ public class EquipmentData extends ItemData {
         if (id < App.itemDescriptions.size()) {
             this.description = App.itemDescriptions.get(id);
         } else {
-            this.description = new SimpleStringProperty("\\var2:000\\\\end\\");
+            this.description = new SimpleStringProperty("\\var2:00\\\\end\\");
             App.itemDescriptions.add(this.description);
         }
         this.id = id;

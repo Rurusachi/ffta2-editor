@@ -25,7 +25,7 @@ public class Quest {
         if (id < App.questDescriptions.size()) {
             this.description = App.questDescriptions.get(id);
         } else {
-            this.description = new SimpleStringProperty("\\var2:000\\\\end\\");
+            this.description = new SimpleStringProperty("\\var2:00\\\\end\\");
         }
         this.id = id;
 
@@ -43,7 +43,7 @@ public class Quest {
         if (id < App.questDescriptions.size()) {
             this.description = App.questDescriptions.get(id);
         } else {
-            this.description = new SimpleStringProperty("\\var2:000\\\\end\\");
+            this.description = new SimpleStringProperty("\\var2:00\\\\end\\");
             App.questDescriptions.add(this.description);
         }
         this.id = id;

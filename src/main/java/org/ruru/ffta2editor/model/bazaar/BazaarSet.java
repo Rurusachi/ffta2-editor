@@ -76,7 +76,7 @@ public class BazaarSet {
         if (id < App.bazaarSetDescriptions.size()) {
             this.description = App.bazaarSetDescriptions.get(id);
         } else {
-            this.description = new SimpleStringProperty("\\var2:000\\\\end\\");
+            this.description = new SimpleStringProperty("\\var2:00\\\\end\\");
         }
         this.id = id;
 
@@ -101,7 +101,7 @@ public class BazaarSet {
         if (id < App.bazaarSetDescriptions.size()) {
             this.description = App.bazaarSetDescriptions.get(id);
         } else {
-            this.description = new SimpleStringProperty("\\var2:000\\\\end\\");
+            this.description = new SimpleStringProperty("\\var2:00\\\\end\\");
             App.bazaarSetDescriptions.add(this.description);
         }
         this.id = id;

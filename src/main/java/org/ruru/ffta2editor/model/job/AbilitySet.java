@@ -208,7 +208,7 @@ public class AbilitySet {
         if (id < App.abilitySetDescriptions.size()) {
             this.description = App.abilitySetDescriptions.get(id);
         } else {
-            this.description = new SimpleStringProperty("\\var2:000\\\\end\\");
+            this.description = new SimpleStringProperty("\\var2:00\\\\end\\");
         }
         this.id = id;
         
@@ -238,7 +238,7 @@ public class AbilitySet {
         if (id < App.abilitySetDescriptions.size()) {
             this.description = App.abilitySetDescriptions.get(id);
         } else {
-            this.description = new SimpleStringProperty("\\var2:000\\\\end\\");
+            this.description = new SimpleStringProperty("\\var2:00\\\\end\\");
             App.abilitySetDescriptions.add(this.description);
         }
         this.id = id;

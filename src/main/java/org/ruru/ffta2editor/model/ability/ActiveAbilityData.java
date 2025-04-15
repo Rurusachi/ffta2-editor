@@ -231,7 +231,7 @@ public class ActiveAbilityData extends AbilityData {
         if (id < App.abilityDescriptions.size()) {
             this.description = App.abilityDescriptions.get(id);
         } else {
-            this.description = new SimpleStringProperty("\\var2:000\\\\end\\");
+            this.description = new SimpleStringProperty("\\var2:00\\\\end\\");
         }
         this.id = id;
         _0x0.set(bytes.getShort()); 
@@ -289,7 +289,7 @@ public class ActiveAbilityData extends AbilityData {
         if (id < App.abilityDescriptions.size()) {
             this.description = App.abilityDescriptions.get(id);
         } else {
-            this.description = new SimpleStringProperty("\\var2:000\\\\end\\");
+            this.description = new SimpleStringProperty("\\var2:00\\\\end\\");
             App.abilityDescriptions.add(this.description);
         }
         this.id = id;

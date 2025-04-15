@@ -297,7 +297,7 @@ public class JobData {
         if (id < App.jobDescriptions.size()) {
             this.description = App.jobDescriptions.get(id);
         } else {
-            this.description = new SimpleStringProperty("\\var2:000\\\\end\\");
+            this.description = new SimpleStringProperty("\\var2:00\\\\end\\");
         }
         this.id = id;
 
@@ -396,7 +396,7 @@ public class JobData {
         if (id < App.jobDescriptions.size()) {
             this.description = App.jobDescriptions.get(id);
         } else {
-            this.description = new SimpleStringProperty("\\var2:000\\\\end\\");
+            this.description = new SimpleStringProperty("\\var2:00\\\\end\\");
             App.jobDescriptions.add(this.description);
         }
         this.id = id;
