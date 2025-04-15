@@ -514,6 +514,12 @@
                                           </VBox>
                                        </children>
                                     </HBox>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="Ability Set Description" />
+                                          <TextArea fx:id="abilitySetDescription" prefHeight="200.0" prefWidth="200.0" />
+                                       </children>
+                                    </VBox>
                                  </children>
                               </VBox>
                               <VBox alignment="TOP_CENTER" spacing="20.0">
@@ -672,13 +678,13 @@
                                     <VBox alignment="TOP_CENTER" spacing="20.0">
                                        <children>
                                           <Label text="0x3C" />
-                                          <TextField disable="true" fx:id="_0x3c" />
+                                          <TextField fx:id="_0x3c" disable="true" />
                                        </children>
                                     </VBox>
                                     <VBox alignment="TOP_CENTER" spacing="20.0">
                                        <children>
                                           <Label text="0x3D" />
-                                          <TextField disable="true" fx:id="_0x3d" />
+                                          <TextField fx:id="_0x3d" disable="true" />
                                        </children>
                                     </VBox>
                                     <VBox alignment="TOP_CENTER" spacing="20.0">
