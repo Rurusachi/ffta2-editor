@@ -62,6 +62,16 @@ public enum SpecialRequirement {
     }
         
     private static SpecialRequirement[] values = SpecialRequirement.values();
+
+    public static SpecialRequirement fromInteger(byte value) {
+        return fromInteger(Byte.toUnsignedInt(value));
+    }
+
+    public static SpecialRequirement fromInteger(short value) {
+        return fromInteger(Short.toUnsignedInt(value));
+        
+    }
+
     public static SpecialRequirement fromInteger(int value) {
         for (SpecialRequirement e : values) {
             if (e.value == (byte)value) {

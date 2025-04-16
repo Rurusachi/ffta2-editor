@@ -45,6 +45,16 @@ public enum EquipmentType {
     }
         
     private static EquipmentType[] values = EquipmentType.values();
+
+    public static EquipmentType fromInteger(byte value) {
+        return fromInteger(Byte.toUnsignedInt(value));
+    }
+
+    public static EquipmentType fromInteger(short value) {
+        return fromInteger(Short.toUnsignedInt(value));
+        
+    }
+
     public static EquipmentType fromInteger(int value) {
         for (EquipmentType e : values) {
             if (e.value == (byte)value) {

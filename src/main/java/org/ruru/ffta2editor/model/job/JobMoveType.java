@@ -13,6 +13,16 @@ public enum JobMoveType {
     }
         
     private static JobMoveType[] values = JobMoveType.values();
+
+    public static JobMoveType fromInteger(byte value) {
+        return fromInteger(Byte.toUnsignedInt(value));
+    }
+
+    public static JobMoveType fromInteger(short value) {
+        return fromInteger(Short.toUnsignedInt(value));
+        
+    }
+
     public static JobMoveType fromInteger(int value) {
         for (JobMoveType e : values) {
             if (e.value == (byte)value) {

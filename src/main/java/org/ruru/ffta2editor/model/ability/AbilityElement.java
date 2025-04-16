@@ -18,6 +18,16 @@ public enum AbilityElement {
     }
         
     private static AbilityElement[] values = AbilityElement.values();
+
+    public static AbilityElement fromInteger(byte value) {
+        return fromInteger(Byte.toUnsignedInt(value));
+    }
+
+    public static AbilityElement fromInteger(short value) {
+        return fromInteger(Short.toUnsignedInt(value));
+        
+    }
+
     public static AbilityElement fromInteger(int value) {
         for (AbilityElement e : values) {
             if (e.value == (byte)value) {

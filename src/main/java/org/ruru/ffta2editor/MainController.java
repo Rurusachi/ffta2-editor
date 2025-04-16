@@ -8,30 +8,20 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashSet;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.FutureTask;
-import java.util.stream.IntStream;
 
-import org.ruru.ffta2editor.model.ability.AbilityData;
 import org.ruru.ffta2editor.model.character.CharacterData;
 import org.ruru.ffta2editor.model.job.JobData;
-import org.ruru.ffta2editor.model.unitFace.UnitFace;
 import org.ruru.ffta2editor.utility.Archive;
 import org.ruru.ffta2editor.utility.IdxAndPak;
 import org.ruru.ffta2editor.utility.LZSS;
 
 import javafx.application.Platform;
-import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
-import javafx.scene.control.DialogPane;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Region;
 import javafx.stage.FileChooser;
 import javafx.util.Pair;
 

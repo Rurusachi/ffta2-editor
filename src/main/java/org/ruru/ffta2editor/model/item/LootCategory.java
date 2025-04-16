@@ -18,6 +18,16 @@ public enum LootCategory {
     }
         
     private static LootCategory[] values = LootCategory.values();
+
+    public static LootCategory fromInteger(byte value) {
+        return fromInteger(Byte.toUnsignedInt(value));
+    }
+
+    public static LootCategory fromInteger(short value) {
+        return fromInteger(Short.toUnsignedInt(value));
+        
+    }
+
     public static LootCategory fromInteger(int value) {
         for (LootCategory e : values) {
             if (e.value == (byte)value) {

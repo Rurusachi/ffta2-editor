@@ -50,6 +50,16 @@ public enum Race {
     }
         
     private static Race[] values = Race.values();
+
+    public static Race fromInteger(byte value) {
+        return fromInteger(Byte.toUnsignedInt(value));
+    }
+
+    public static Race fromInteger(short value) {
+        return fromInteger(Short.toUnsignedInt(value));
+        
+    }
+    
     public static Race fromInteger(int value) {
         for (Race e : values) {
             if (e.value == (byte)value) {

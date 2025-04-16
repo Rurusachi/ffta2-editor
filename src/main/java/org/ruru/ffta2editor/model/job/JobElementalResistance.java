@@ -14,6 +14,16 @@ public enum JobElementalResistance {
     }
         
     private static JobElementalResistance[] values = JobElementalResistance.values();
+
+    public static JobElementalResistance fromInteger(byte value) {
+        return fromInteger(Byte.toUnsignedInt(value));
+    }
+
+    public static JobElementalResistance fromInteger(short value) {
+        return fromInteger(Short.toUnsignedInt(value));
+        
+    }
+
     public static JobElementalResistance fromInteger(int value) {
         for (JobElementalResistance e : values) {
             if (e.value == (byte)value) {

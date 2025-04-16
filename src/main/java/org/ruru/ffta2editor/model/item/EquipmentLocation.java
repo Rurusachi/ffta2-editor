@@ -16,6 +16,16 @@ public enum EquipmentLocation {
     }
         
     private static EquipmentLocation[] values = EquipmentLocation.values();
+
+    public static EquipmentLocation fromInteger(byte value) {
+        return fromInteger(Byte.toUnsignedInt(value));
+    }
+
+    public static EquipmentLocation fromInteger(short value) {
+        return fromInteger(Short.toUnsignedInt(value));
+        
+    }
+
     public static EquipmentLocation fromInteger(int value) {
         for (EquipmentLocation e : values) {
             if (e.value == (byte)value) {

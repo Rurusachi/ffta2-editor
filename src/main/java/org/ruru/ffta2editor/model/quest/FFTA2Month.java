@@ -22,6 +22,16 @@ public enum FFTA2Month {
     }
         
     private static FFTA2Month[] values = FFTA2Month.values();
+
+    public static FFTA2Month fromInteger(byte value) {
+        return fromInteger(Byte.toUnsignedInt(value));
+    }
+
+    public static FFTA2Month fromInteger(short value) {
+        return fromInteger(Short.toUnsignedInt(value));
+        
+    }
+
     public static FFTA2Month fromInteger(int value) {
         for (FFTA2Month e : values) {
             if (e.value == (byte)value) {

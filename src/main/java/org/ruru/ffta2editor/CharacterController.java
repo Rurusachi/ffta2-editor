@@ -16,10 +16,8 @@ import org.ruru.ffta2editor.model.job.JobGender;
 import org.ruru.ffta2editor.model.topSprite.TopSprite;
 import org.ruru.ffta2editor.model.unitFace.UnitFace;
 import org.ruru.ffta2editor.utility.ByteChangeListener;
-import org.ruru.ffta2editor.utility.ShortChangeListener;
 import org.ruru.ffta2editor.utility.UnitSprite;
 import org.ruru.ffta2editor.utility.UnsignedByteStringConverter;
-import org.ruru.ffta2editor.utility.UnsignedShortStringConverter;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.ObjectBinding;

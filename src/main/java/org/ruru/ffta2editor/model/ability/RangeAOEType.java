@@ -30,6 +30,16 @@ public enum RangeAOEType {
     }
         
     private static RangeAOEType[] values = RangeAOEType.values();
+
+    public static RangeAOEType fromInteger(byte value) {
+        return fromInteger(Byte.toUnsignedInt(value));
+    }
+
+    public static RangeAOEType fromInteger(short value) {
+        return fromInteger(Short.toUnsignedInt(value));
+        
+    }
+
     public static RangeAOEType fromInteger(int value) {
         for (RangeAOEType e : values) {
             if (e.value == (byte)value) {

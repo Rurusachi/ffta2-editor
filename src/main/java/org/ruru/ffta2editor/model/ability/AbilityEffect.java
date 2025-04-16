@@ -114,6 +114,16 @@ public class AbilityEffect {
         }
 
         private static Targets[] values = Targets.values();
+
+        public static Targets fromInteger(byte value) {
+            return fromInteger(Byte.toUnsignedInt(value));
+        }
+
+        public static Targets fromInteger(short value) {
+            return fromInteger(Short.toUnsignedInt(value));
+
+        }
+
         public static Targets fromInteger(int value) {
             for (Targets e : values) {
                 if (e.value == (byte)value) {
@@ -233,7 +243,7 @@ public class AbilityEffect {
         FORESIGHT(0x64),
         BUCKSHOT(0x65),
         SCOPE(0x66),
-        PRIME1(0x67),
+        PRIME_CANNONEER(0x67),
         _0x68(0x68),
         _0x69(0x69),
         _0x6A(0x6A),
@@ -289,7 +299,7 @@ public class AbilityEffect {
         NULLIFY_EVASION__1_TURN(0x9C),
         _0x9D(0x9D),
         IMMOBILE_NEXT_TURN(0x9E),
-        PRIME2(0x9F),
+        PRIME_FLINTLOCK(0x9F),
         REVEAL_UNITS(0xA0),
         EXTEND_BUFFS_AND_DEBUFFS(0xA1),
         COVER(0xA2),
@@ -318,6 +328,16 @@ public class AbilityEffect {
         }
 
         private static Effect[] values = Effect.values();
+
+        public static Effect fromInteger(byte value) {
+            return fromInteger(Byte.toUnsignedInt(value));
+        }
+
+        public static Effect fromInteger(short value) {
+            return fromInteger(Short.toUnsignedInt(value));
+
+        }
+
         public static Effect fromInteger(int value) {
             for (Effect e : values) {
                 if (e.value == (byte)value) {
@@ -399,6 +419,16 @@ public class AbilityEffect {
         }
         
         private static Accuracy[] values = Accuracy.values();
+
+        public static Accuracy fromInteger(byte value) {
+            return fromInteger(Byte.toUnsignedInt(value));
+        }
+
+        public static Accuracy fromInteger(short value) {
+            return fromInteger(Short.toUnsignedInt(value));
+
+        }
+
         public static Accuracy fromInteger(int value) {
             for (Accuracy e : values) {
                 if (e.value == (byte)value) {
@@ -523,6 +553,16 @@ public class AbilityEffect {
         }
         
         private static Modifier[] values = Modifier.values();
+
+        public static Modifier fromInteger(byte value) {
+            return fromInteger(Byte.toUnsignedInt(value));
+        }
+
+        public static Modifier fromInteger(short value) {
+            return fromInteger(Short.toUnsignedInt(value));
+
+        }
+
         public static Modifier fromInteger(int value) {
             for (Modifier e : values) {
                 if (e.value == (byte)value) {

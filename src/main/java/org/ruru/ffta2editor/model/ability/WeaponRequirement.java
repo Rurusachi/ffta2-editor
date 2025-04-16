@@ -46,16 +46,26 @@ public enum WeaponRequirement {
     INSTRUMENT_BOOK(0x86),
     ESPER_ACCESSORY(0x87);
     
-    public final byte value;
+    public final short value;
 
     WeaponRequirement(int value) {
-        this.value = (byte)value;
+        this.value = (short)value;
     }
         
     private static WeaponRequirement[] values = WeaponRequirement.values();
+
+    public static WeaponRequirement fromInteger(byte value) {
+        return fromInteger(Byte.toUnsignedInt(value));
+    }
+
+    public static WeaponRequirement fromInteger(short value) {
+        return fromInteger(Short.toUnsignedInt(value));
+        
+    }
+
     public static WeaponRequirement fromInteger(int value) {
         for (WeaponRequirement e : values) {
-            if (e.value == (byte)value) {
+            if (e.value == (short)value) {
                 return e;
             }
         }

@@ -20,6 +20,16 @@ public enum AbilityMenuRoutine {
     }
         
     private static AbilityMenuRoutine[] values = AbilityMenuRoutine.values();
+
+    public static AbilityMenuRoutine fromInteger(byte value) {
+        return fromInteger(Byte.toUnsignedInt(value));
+    }
+
+    public static AbilityMenuRoutine fromInteger(short value) {
+        return fromInteger(Short.toUnsignedInt(value));
+        
+    }
+
     public static AbilityMenuRoutine fromInteger(int value) {
         for (AbilityMenuRoutine e : values) {
             if (e.value == (byte)value) {

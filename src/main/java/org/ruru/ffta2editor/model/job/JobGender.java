@@ -12,6 +12,16 @@ public enum JobGender {
     }
         
     private static JobGender[] values = JobGender.values();
+
+    public static JobGender fromInteger(byte value) {
+        return fromInteger(Byte.toUnsignedInt(value));
+    }
+
+    public static JobGender fromInteger(short value) {
+        return fromInteger(Short.toUnsignedInt(value));
+        
+    }
+
     public static JobGender fromInteger(int value) {
         for (JobGender e : values) {
             if (e.value == (byte)value) {
