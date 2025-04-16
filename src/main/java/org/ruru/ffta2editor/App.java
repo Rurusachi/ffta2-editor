@@ -3,6 +3,7 @@ package org.ruru.ffta2editor;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Map;
+import java.util.Properties;
 
 import org.ruru.ffta2editor.model.ability.AbilityData;
 import org.ruru.ffta2editor.model.ability.ActiveAbilityData;
@@ -102,13 +103,15 @@ public class App extends Application {
     public static Map<Integer, StringProperty> evMsgNames;
     
 
-
+    final Properties properties = new Properties();
 
     @Override
     public void start(Stage stage) throws IOException {
+        properties.load(this.getClass().getClassLoader().getResourceAsStream("project.properties"));
+        
         scene = new Scene(loadFXML("main"), 1280, 720);
         stage.setScene(scene);
-        stage.setTitle("FFTA2 Editor");
+        stage.setTitle(String.format("FFTA2 Editor %s", properties.getProperty("version")));
         stage.show();
     }
 
