@@ -3,6 +3,8 @@ package org.ruru.ffta2editor;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.IntStream;
 
 import org.ruru.ffta2editor.JobController.JobCell;
@@ -35,6 +37,8 @@ import javafx.scene.control.TextField;
 import javafx.util.StringConverter;
 
 public class CharacterController {
+    
+    private static Logger logger = Logger.getLogger("org.ruru.ffta2editor");
     
     public static class CharacterCell extends ListCell<CharacterData> {
         Label label = new Label();
@@ -268,25 +272,30 @@ public class CharacterController {
         }
     }
 
-    public void loadCharacters() {
+    public void loadCharacters() throws Exception {
         if (App.archive != null) {
 
             ByteBuffer characterDataBytes = App.sysdata.getFile(0);
 
             if (characterDataBytes == null) {
                 System.err.println("IdxAndPak null file error");
-                return;
+                throw new Exception("Characters are null");
             }
             characterDataBytes.rewind();
 
             ObservableList<CharacterData> characterDataList = FXCollections.observableArrayList();
 
 
-            //int numAbilitysets = abilitySetBytes.remaining() / 0xc;
+            logger.info("Loading Characters");
             int numCharacters = Byte.toUnsignedInt(App.arm9.get(0x000cb018))+1;
             for (int i = 0; i < numCharacters; i++) {
-                CharacterData character = new CharacterData(characterDataBytes, i);
-                characterDataList.add(character);
+                try {
+                    CharacterData character = new CharacterData(characterDataBytes, i);
+                    characterDataList.add(character);
+                } catch (Exception e) {
+                    logger.log(Level.SEVERE, String.format("Failed to load Character %d", i));
+                    throw e;
+                }
             }
             App.characterList = characterDataList;
             characterDataBytes.rewind();
@@ -349,8 +358,14 @@ public class CharacterController {
         List<CharacterData> characters = characterList.getItems();
         ByteBuffer newCharacterDataBytes = ByteBuffer.allocate(characters.size()*0x1C).order(ByteOrder.LITTLE_ENDIAN);
 
+        logger.info("Saving Characters");
         for (int i = 0; i < characters.size(); i++) {
-            newCharacterDataBytes.put(characters.get(i).toBytes());
+            try {
+                newCharacterDataBytes.put(characters.get(i).toBytes());
+            } catch (Exception e) {
+                logger.log(Level.SEVERE, String.format("Failed to save Character %d", i));
+                throw e;
+            }
         }
         newCharacterDataBytes.rewind();
         App.sysdata.setFile(0, newCharacterDataBytes);

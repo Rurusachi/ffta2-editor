@@ -538,14 +538,8 @@
                                     </VBox>
                                     <VBox alignment="TOP_CENTER">
                                        <children>
-                                          <Label text="Animation" />
-                                          <TextField fx:id="abilityAnimation" />
-                                       </children>
-                                    </VBox>
-                                    <VBox alignment="TOP_CENTER">
-                                       <children>
-                                          <Label text="Weapon Animation?" />
-                                          <TextField fx:id="weaponAnimation" />
+                                          <Label text="Cast Animation" />
+                                          <TextField fx:id="castAnimation" />
                                        </children>
                                     </VBox>
                                     <VBox alignment="TOP_CENTER">

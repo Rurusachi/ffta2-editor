@@ -3,6 +3,8 @@ package org.ruru.ffta2editor;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.IntStream;
 
 import org.ruru.ffta2editor.AbilityController.AbilityCell;
@@ -19,8 +21,10 @@ import org.ruru.ffta2editor.model.job.JobMoveType;
 import org.ruru.ffta2editor.model.topSprite.TopSprite;
 import org.ruru.ffta2editor.model.unitFace.UnitFace;
 import org.ruru.ffta2editor.utility.ByteChangeListener;
+import org.ruru.ffta2editor.utility.ShortChangeListener;
 import org.ruru.ffta2editor.utility.UnitSprite;
 import org.ruru.ffta2editor.utility.UnsignedByteStringConverter;
+import org.ruru.ffta2editor.utility.UnsignedShortStringConverter;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
@@ -41,6 +45,8 @@ import javafx.util.Pair;
 import javafx.util.StringConverter;
 
 public class JobController {
+    
+    private static Logger logger = Logger.getLogger("org.ruru.ffta2editor");
     
     public static class JobCell extends ListCell<JobData> {
         Label label = new Label();
@@ -271,8 +277,7 @@ public class JobController {
 
     @FXML ComboBox<ActiveAbilityData> abilitySetAbilityData;
     @FXML TextField maxAP;
-    @FXML TextField abilityAnimation;
-    @FXML TextField weaponAnimation;
+    @FXML TextField castAnimation;
     @FXML TextField ability_0x4;
     @FXML TextField ability_0x5;
     @FXML TextField ability_0x6;
@@ -455,8 +460,7 @@ public class JobController {
         //enemyPortrait.textProperty().addListener(new ShortChangeListener(enemyPortrait));
 
         maxAP.textProperty().addListener(new ByteChangeListener(maxAP));
-        abilityAnimation.textProperty().addListener(new ByteChangeListener(abilityAnimation));
-        weaponAnimation.textProperty().addListener(new ByteChangeListener(weaponAnimation));
+        castAnimation.textProperty().addListener(new ShortChangeListener(castAnimation));
         ability_0x4.textProperty().addListener(new ByteChangeListener(ability_0x4));
         ability_0x5.textProperty().addListener(new ByteChangeListener(ability_0x5));
         ability_0x6.textProperty().addListener(new ByteChangeListener(ability_0x6));
@@ -838,8 +842,7 @@ public class JobController {
 
     public void unbindAbilitySetAbilityData() {
         maxAP.textProperty().unbindBidirectional(abilitySetAbilityProperty.getValue().maxAP);
-        abilityAnimation.textProperty().unbindBidirectional(abilitySetAbilityProperty.getValue().abilityAnimation);
-        weaponAnimation.textProperty().unbindBidirectional(abilitySetAbilityProperty.getValue().weaponAnimation);
+        castAnimation.textProperty().unbindBidirectional(abilitySetAbilityProperty.getValue().castAnimation);
         ability_0x4.textProperty().unbindBidirectional(abilitySetAbilityProperty.getValue().ability_0x4);
         ability_0x5.textProperty().unbindBidirectional(abilitySetAbilityProperty.getValue().ability_0x5);
         ability_0x6.textProperty().unbindBidirectional(abilitySetAbilityProperty.getValue().ability_0x6);
@@ -853,9 +856,9 @@ public class JobController {
 
     public void bindAbilitySetAbilityData() {
         StringConverter<Byte> unsignedByteConverter = new UnsignedByteStringConverter();
+        StringConverter<Short> unsignedShortConverter = new UnsignedShortStringConverter();
         Bindings.bindBidirectional(maxAP.textProperty(), abilitySetAbilityProperty.getValue().maxAP, unsignedByteConverter);
-        Bindings.bindBidirectional(abilityAnimation.textProperty(), abilitySetAbilityProperty.getValue().abilityAnimation, unsignedByteConverter);
-        Bindings.bindBidirectional(weaponAnimation.textProperty(), abilitySetAbilityProperty.getValue().weaponAnimation, unsignedByteConverter);
+        Bindings.bindBidirectional(castAnimation.textProperty(), abilitySetAbilityProperty.getValue().castAnimation, unsignedShortConverter);
         Bindings.bindBidirectional(ability_0x4.textProperty(), abilitySetAbilityProperty.getValue().ability_0x4, unsignedByteConverter);
         Bindings.bindBidirectional(ability_0x5.textProperty(), abilitySetAbilityProperty.getValue().ability_0x5, unsignedByteConverter);
         Bindings.bindBidirectional(ability_0x6.textProperty(), abilitySetAbilityProperty.getValue().ability_0x6, unsignedByteConverter);
@@ -920,15 +923,19 @@ public class JobController {
     }
 
 
-    public void loadJobs() {
+    public void loadJobs() throws Exception {
         if (App.archive != null) {
 
             ByteBuffer abilitySetBytes = App.sysdata.getFile(2);
             ByteBuffer abilitySetAbilityBytes = App.sysdata.getFile(3);
 
-            if (abilitySetBytes == null || abilitySetAbilityBytes == null) {
+            if (abilitySetBytes == null) {
                 System.err.println("IdxAndPak null file error");
-                return;
+                throw new Exception("Ability Sets are null");
+            }
+            if (abilitySetAbilityBytes == null) {
+                System.err.println("IdxAndPak null file error");
+                throw new Exception("Ability Set Abilities are null");
             }
             abilitySetBytes.rewind();
             abilitySetAbilityBytes.rewind();
@@ -936,11 +943,17 @@ public class JobController {
             ObservableList<AbilitySet> abilitySetDataList = FXCollections.observableArrayList();
 
 
+            logger.info("Loading Ability Sets");
             //int numAbilitysets = abilitySetBytes.remaining() / 0xc;
             int numAbilitysets = Byte.toUnsignedInt(App.arm9.get(0x000cb054))+1;
             for (int i = 0; i < numAbilitysets; i++) {
-                AbilitySet abilitySet = new AbilitySet(abilitySetBytes, abilitySetAbilityBytes, i);
-                abilitySetDataList.add(abilitySet);
+                try {
+                    AbilitySet abilitySet = new AbilitySet(abilitySetBytes, abilitySetAbilityBytes, i);
+                    abilitySetDataList.add(abilitySet);
+                } catch (Exception e) {
+                    logger.log(Level.SEVERE, String.format("Failed to load Ability Set %d \"%s\"", i, App.abilitySetNames.size() > i ? App.abilitySetNames.get(i).getValue() : ""));
+                    throw e;
+                }
             }
             //abilitySetList.setCellFactory(x -> new JobCell());
             App.abilitySetList = abilitySetDataList;
@@ -963,18 +976,23 @@ public class JobController {
 
             if (jobDataBytes == null) {
                 System.err.println("IdxAndPak null file error");
-                return;
+                throw new Exception("Jobs are null");
             }
             jobDataBytes.rewind();
 
             ObservableList<JobData> jobDataList = FXCollections.observableArrayList();
 
+            logger.info("Loading Jobs");
             //int numJobs = jobDataBytes.remaining() / 0x48;
             int numJobs = Byte.toUnsignedInt(App.arm9.get(0x000cafdc))+1;
             for (int i = 0; i < numJobs; i++) {
-                //JobData abilityData = new JobData(jobDataBytes, JobId.jobNames[i], i);
-                JobData abilityData = new JobData(jobDataBytes, i);
-                jobDataList.add(abilityData);
+                try {
+                    JobData abilityData = new JobData(jobDataBytes, i);
+                    jobDataList.add(abilityData);
+                } catch (Exception e) {
+                    logger.log(Level.SEVERE, String.format("Failed to load Job %d \"%s\"", i, App.jobNames.size() > i ? App.jobNames.get(i).getValue() : ""));
+                    throw e;
+                }
             }
             jobList.setCellFactory(x -> new JobCell());
             jobList.setItems(jobDataList);
@@ -1021,8 +1039,14 @@ public class JobController {
         List<JobData> jobs = jobList.getItems();
         ByteBuffer newJobDatabytes = ByteBuffer.allocate(jobs.size()*0x48).order(ByteOrder.LITTLE_ENDIAN);
 
+        logger.info("Saving Jobs");
         for (int i = 0; i < jobs.size(); i++) {
-            newJobDatabytes.put(jobs.get(i).toBytes());
+            try {
+                newJobDatabytes.put(jobs.get(i).toBytes());
+            } catch (Exception e) {
+                logger.log(Level.SEVERE, String.format("Failed to save Job %d \"%s\"", i, jobs.get(i).name.getValue()));
+                throw e;
+            }
         }
         newJobDatabytes.rewind();
         App.sysdata.setFile(1, newJobDatabytes);
@@ -1039,13 +1063,19 @@ public class JobController {
         ByteBuffer newAbilitySetbytes = ByteBuffer.allocate(abilitySets.size()*0xc).order(ByteOrder.LITTLE_ENDIAN);
         ByteBuffer newAbilitySetAbilitybytes = ByteBuffer.allocate(abilitySets.stream().mapToInt(x -> x.abilities.size()).sum() * 0xc).order(ByteOrder.LITTLE_ENDIAN);
         //newAbilitySetAbilitybytes.put(abilitySetAbilityBytes.slice(0, 0xc*1)); // Copy the empty ability
+        logger.info("Saving Ability Sets");
         for (AbilitySet abilitySet : abilitySets) {
             assert newAbilitySetAbilitybytes.position() / 0xc == firstAbilityIndex;
             //System.out.println(String.format("%s: %04x", abilitySet.name, firstAbilityIndex));
-            Pair<byte[], byte[]> abilitySetBytes = abilitySet.tobytes(firstAbilityIndex);
-            newAbilitySetbytes.put(abilitySetBytes.getKey());
-            newAbilitySetAbilitybytes.put(abilitySetBytes.getValue());
-            firstAbilityIndex += abilitySet.abilities.size();
+            try {
+                Pair<byte[], byte[]> abilitySetBytes = abilitySet.tobytes(firstAbilityIndex);
+                newAbilitySetbytes.put(abilitySetBytes.getKey());
+                newAbilitySetAbilitybytes.put(abilitySetBytes.getValue());
+                firstAbilityIndex += abilitySet.abilities.size();
+            } catch (Exception e) {
+                logger.log(Level.SEVERE, String.format("Failed to save Ability Set %d \"%s\"", abilitySet.id, abilitySet.name.getValue()));
+                throw e;
+            }
         }
         //System.out.println(newAbilitySetAbilitybytes.capacity() / 0xc);
         assert (newAbilitySetAbilitybytes.capacity() / 0xc) - 1 == firstAbilityIndex - 1;

@@ -3,6 +3,8 @@ package org.ruru.ffta2editor;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.ruru.ffta2editor.AbilityController.AbilityCell;
 import org.ruru.ffta2editor.EquipmentController.ItemCell;
@@ -29,8 +31,6 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -42,6 +42,8 @@ import javafx.util.Pair;
 import javafx.util.StringConverter;
 
 public class QuestController {
+    
+    private static Logger logger = Logger.getLogger("org.ruru.ffta2editor");
     
     public static class QuestCell extends ListCell<Quest> {
         Label label = new Label();
@@ -544,15 +546,19 @@ public class QuestController {
         }
     }
 
-    public void loadQuests() {
+    public void loadQuests() throws Exception {
         if (App.archive != null) {
 
             ByteBuffer questInfoBytes = App.sysdata.getFile(10);
             ByteBuffer questDataBytes = App.sysdata.getFile(11);
 
-            if (questInfoBytes == null || questDataBytes == null) {
+            if (questDataBytes == null) {
                 System.err.println("IdxAndPak null file error");
-                return;
+                throw new Exception("Quest data is null");
+            }
+            if (questInfoBytes == null) {
+                System.err.println("IdxAndPak null file error");
+                throw new Exception("Quest Info data is null");
             }
             questInfoBytes.rewind();
             questDataBytes.rewind();
@@ -561,14 +567,20 @@ public class QuestController {
 
             int numQuestInfo = Short.toUnsignedInt(App.arm9.getShort(0x000cb284))+1;
             int numQuestData = Short.toUnsignedInt(App.arm9.getShort(0x000cb2c8))+1;
-            if (numQuestData == numQuestInfo) {
-                for (int i = 0; i < numQuestInfo; i++) {
+            if (numQuestData != numQuestInfo) {
+                System.err.println("Quest info and Quest data don't match");
+                throw new Exception("Quest info and Quest data don't match");
+            }
+
+            logger.info("Loading Quests");
+            for (int i = 0; i < numQuestInfo; i++) {
+                try {
                     Quest quest = new Quest(questInfoBytes, questDataBytes, i);
                     questDataList.add(quest);
+                } catch (Exception e) {
+                    logger.log(Level.SEVERE, String.format("Failed to load Quest %d \"%s\"", i, App.questNames.size() > i ? App.questNames.get(i).getValue() : ""));
+                    throw e;
                 }
-            } else {
-                System.err.println("Quest info and Quest data don't match");
-                return;
             }
             questList.setItems(questDataList);
             questList.setCellFactory(x -> new QuestCell());
@@ -580,12 +592,9 @@ public class QuestController {
                 try {
                     App.evMsgNames.get(Short.toUnsignedInt(x.info.startEvent.getValue())).set(x.name.getValue());
                 } catch (Exception e) {
-                    Alert alert = new Alert(AlertType.ERROR);
-                    alert.setTitle("Error");
-                    alert.setHeaderText(null);
-                    alert.setContentText(e.getMessage());
-                    alert.showAndWait();
+                    logger.log(Level.SEVERE, String.format("Failed to set Event %d name from Quest %d name", x.id, x.info.startEvent));
                     System.err.println(e);
+                    throw e;
                 }
             });
 
@@ -637,10 +646,16 @@ public class QuestController {
         ByteBuffer newQuestInfobytes = ByteBuffer.allocate(quests.size()*0x8).order(ByteOrder.LITTLE_ENDIAN);
         ByteBuffer newQuestDatabytes = ByteBuffer.allocate(quests.size()*0x64).order(ByteOrder.LITTLE_ENDIAN);
 
+        logger.info("Saving Quests");
         for (int i = 0; i < quests.size(); i++) {
-            Pair<byte[], byte[]> currQuestBytes = quests.get(i).toBytes();
-            newQuestInfobytes.put(currQuestBytes.getKey());
-            newQuestDatabytes.put(currQuestBytes.getValue());
+            try {
+                Pair<byte[], byte[]> currQuestBytes = quests.get(i).toBytes();
+                newQuestInfobytes.put(currQuestBytes.getKey());
+                newQuestDatabytes.put(currQuestBytes.getValue());
+            } catch (Exception e) {
+                logger.log(Level.SEVERE, String.format("Failed to save Quest %d \"%s\"", i, quests.get(i).name.getValue()));
+                throw e;
+            }
         }
         newQuestInfobytes.rewind();
         newQuestDatabytes.rewind();

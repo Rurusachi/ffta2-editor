@@ -5,6 +5,8 @@ import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.IntStream;
 
 import org.ruru.ffta2editor.utility.FFTA2Charset;
@@ -14,16 +16,15 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 
 public class StringTable {
+    private static Logger logger = Logger.getLogger("org.ruru.ffta2editor");
     public StringProperty name;
     public int id;
 
     public SimpleListProperty<StringProperty> strings = new SimpleListProperty<>();
 
-    public StringTable(ByteBuffer bytes, StringProperty name, int id) {
+    public StringTable(ByteBuffer bytes, StringProperty name, int id) throws Exception {
         this.name = name;
         this.id = id;
         ObservableList<StringProperty> stringList = FXCollections.observableArrayList();
@@ -44,13 +45,9 @@ public class StringTable {
                 String s = FFTA2Charset.decode(bytes.slice(offset, stringLength));
                 stringList.add(new SimpleStringProperty(s));
             } catch (Exception e) {
-                Alert alert = new Alert(AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText(null);
-                alert.setContentText(e.getMessage());
-                alert.showAndWait();
+                logger.log(Level.SEVERE, String.format("Failed to decode entry %d in table \"%s\"", i, name));
                 System.err.println(e);
-                return;
+                throw e;
             }
         }
         strings.set(stringList);

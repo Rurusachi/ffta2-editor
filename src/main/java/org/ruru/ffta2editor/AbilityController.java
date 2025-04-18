@@ -5,6 +5,8 @@ import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -42,6 +44,8 @@ import javafx.scene.control.TextField;
 import javafx.util.StringConverter;
 
 public class AbilityController {
+    
+    private static Logger logger = Logger.getLogger("org.ruru.ffta2editor");
     
     public static class AbilityCell<T extends AbilityData> extends ListCell<T> {
         Label label = new Label();
@@ -206,8 +210,7 @@ public class AbilityController {
     @FXML TextField animation;
     @FXML TextField subtype;
     @FXML TextField start;
-    @FXML TextField first;
-    @FXML TextField untilSecond;
+    @FXML TextField unitAnimation;
     @FXML TextField second;
     @FXML TextField untilThird;
     @FXML TextField third;
@@ -215,15 +218,12 @@ public class AbilityController {
     @FXML TextField fourth;
     @FXML TextField untilEnd;
     @FXML TextField _0x0C;
-    @FXML TextField _0x0D;
     @FXML TextField flinch_Glee;
-    @FXML TextField _0x0F;
     @FXML TextField _0x10;
     @FXML TextField _0x11;
     @FXML TextField _0x12;
     @FXML TextField _0x13;
-    @FXML TextField _0x14;
-    @FXML TextField _0x15;
+    @FXML TextField targetState;
     @FXML TextField _0x16;
     @FXML TextField _0x17;
     
@@ -313,69 +313,7 @@ public class AbilityController {
         race4.getSelectionModel().selectedItemProperty().addListener(new ApRaceChangeListener(apIndex4));
         race5.getSelectionModel().selectedItemProperty().addListener(new ApRaceChangeListener(apIndex5));
         race6.getSelectionModel().selectedItemProperty().addListener(new ApRaceChangeListener(apIndex6));
-        
-        //apIndex1.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-        //    if (oldValue != null) raceAPSlots.get(race1.getSelectionModel().getSelectedItem().value)[Byte.toUnsignedInt(oldValue)].remove(abilityProperty.getValue());
-        //    if (newValue != null) raceAPSlots.get(race1.getSelectionModel().getSelectedItem().value)[Byte.toUnsignedInt(newValue)].add(abilityProperty.getValue());
-        //});
-        //
-        //apIndex2.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-        //    if (oldValue != null) raceAPSlots.get(race2.getSelectionModel().getSelectedItem().value)[Byte.toUnsignedInt(oldValue)].remove(abilityProperty.getValue());
-        //    if (newValue != null) raceAPSlots.get(race2.getSelectionModel().getSelectedItem().value)[Byte.toUnsignedInt(newValue)].add(abilityProperty.getValue());
-        //});
-        //
-        //apIndex3.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-        //    if (oldValue != null) raceAPSlots.get(race3.getSelectionModel().getSelectedItem().value)[Byte.toUnsignedInt(oldValue)].remove(abilityProperty.getValue());
-        //    if (newValue != null) raceAPSlots.get(race3.getSelectionModel().getSelectedItem().value)[Byte.toUnsignedInt(newValue)].add(abilityProperty.getValue());
-        //});
-        //
-        //apIndex4.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-        //    if (oldValue != null) raceAPSlots.get(race4.getSelectionModel().getSelectedItem().value)[Byte.toUnsignedInt(oldValue)].remove(abilityProperty.getValue());
-        //    if (newValue != null) raceAPSlots.get(race4.getSelectionModel().getSelectedItem().value)[Byte.toUnsignedInt(newValue)].add(abilityProperty.getValue());
-        //});
-        //
-        //apIndex5.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-        //    if (oldValue != null) raceAPSlots.get(race5.getSelectionModel().getSelectedItem().value)[Byte.toUnsignedInt(oldValue)].remove(abilityProperty.getValue());
-        //    if (newValue != null) raceAPSlots.get(race5.getSelectionModel().getSelectedItem().value)[Byte.toUnsignedInt(newValue)].add(abilityProperty.getValue());
-        //});
-        //
-        //apIndex6.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-        //    if (oldValue != null) raceAPSlots.get(race6.getSelectionModel().getSelectedItem().value)[Byte.toUnsignedInt(oldValue)].remove(abilityProperty.getValue());
-        //    if (newValue != null) raceAPSlots.get(race6.getSelectionModel().getSelectedItem().value)[Byte.toUnsignedInt(newValue)].add(abilityProperty.getValue());
-        //});
 
-        //race1.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-        //    if (oldValue != null && oldValue != Race.NONE) raceAPSlots.get(oldValue.value)[Byte.toUnsignedInt(apIndex1.getSelectionModel().getSelectedItem())].remove(abilityProperty.getValue());
-        //    if (newValue != null && newValue != Race.NONE) raceAPSlots.get(newValue.value)[Byte.toUnsignedInt(apIndex1.getSelectionModel().getSelectedItem())].add(abilityProperty.getValue());
-        //});
-        //
-        //race2.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-        //    if (oldValue != null && oldValue != Race.NONE) raceAPSlots.get(oldValue.value)[Byte.toUnsignedInt(apIndex2.getSelectionModel().getSelectedItem())].remove(abilityProperty.getValue());
-        //    if (newValue != null && newValue != Race.NONE) raceAPSlots.get(newValue.value)[Byte.toUnsignedInt(apIndex2.getSelectionModel().getSelectedItem())].add(abilityProperty.getValue());
-        //});
-        //
-        //race3.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-        //    if (oldValue != null && oldValue != Race.NONE) raceAPSlots.get(oldValue.value)[Byte.toUnsignedInt(apIndex3.getSelectionModel().getSelectedItem())].remove(abilityProperty.getValue());
-        //    if (newValue != null && newValue != Race.NONE) raceAPSlots.get(newValue.value)[Byte.toUnsignedInt(apIndex3.getSelectionModel().getSelectedItem())].add(abilityProperty.getValue());
-        //});
-        //
-        //race4.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-        //    if (oldValue != null && oldValue != Race.NONE) raceAPSlots.get(oldValue.value)[Byte.toUnsignedInt(apIndex4.getSelectionModel().getSelectedItem())].remove(abilityProperty.getValue());
-        //    if (newValue != null && newValue != Race.NONE) raceAPSlots.get(newValue.value)[Byte.toUnsignedInt(apIndex4.getSelectionModel().getSelectedItem())].add(abilityProperty.getValue());
-        //});
-        //
-        //race5.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-        //    if (oldValue != null && oldValue != Race.NONE) raceAPSlots.get(oldValue.value)[Byte.toUnsignedInt(apIndex5.getSelectionModel().getSelectedItem())].remove(abilityProperty.getValue());
-        //    if (newValue != null && newValue != Race.NONE) raceAPSlots.get(newValue.value)[Byte.toUnsignedInt(apIndex5.getSelectionModel().getSelectedItem())].add(abilityProperty.getValue());
-        //});
-        //
-        //race6.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-        //    if (oldValue != null && oldValue != Race.NONE) raceAPSlots.get(oldValue.value)[Byte.toUnsignedInt(apIndex6.getSelectionModel().getSelectedItem())].remove(abilityProperty.getValue());
-        //    if (newValue != null && newValue != Race.NONE) raceAPSlots.get(newValue.value)[Byte.toUnsignedInt(apIndex6.getSelectionModel().getSelectedItem())].add(abilityProperty.getValue());
-        //});
-
-
-        //abilityProperty.addListener((observable, oldValue, newValue) -> bindAbilityData());
         ObservableList<AbilityEffect.Targets> targetEnums = FXCollections.observableArrayList(AbilityEffect.Targets.values());
         targets1.setItems(targetEnums);
         targets2.setItems(targetEnums);
@@ -419,6 +357,34 @@ public class AbilityController {
         unknownByte30.textProperty().addListener(new ByteChangeListener(unknownByte30));
         unknownByte31.textProperty().addListener(new ByteChangeListener(unknownByte31));
 
+        power.textProperty().addListener(new ShortChangeListener(power));
+        mpCost.textProperty().addListener(new ByteChangeListener(mpCost));
+        range.textProperty().addListener(new ByteChangeListener(range));
+        radius.textProperty().addListener(new ByteChangeListener(radius));
+        heightDifference.textProperty().addListener(new ByteChangeListener(heightDifference));
+
+        animation.textProperty().addListener(new ShortChangeListener(animation));
+        subtype.textProperty().addListener(new ByteChangeListener(subtype));
+        start.textProperty().addListener(new ByteChangeListener(start));
+        unitAnimation.textProperty().addListener(new ShortChangeListener(unitAnimation));
+        second.textProperty().addListener(new ByteChangeListener(second));
+        untilThird.textProperty().addListener(new ByteChangeListener(untilThird));
+        third.textProperty().addListener(new ByteChangeListener(third));
+        untilFourth.textProperty().addListener(new ByteChangeListener(untilFourth));
+        fourth.textProperty().addListener(new ByteChangeListener(fourth));
+        untilEnd.textProperty().addListener(new ByteChangeListener(untilEnd));
+        _0x0C.textProperty().addListener(new ShortChangeListener(_0x0C));
+        flinch_Glee.textProperty().addListener(new ShortChangeListener(flinch_Glee));
+        _0x10.textProperty().addListener(new ByteChangeListener(_0x10));
+        _0x11.textProperty().addListener(new ByteChangeListener(_0x11));
+        _0x12.textProperty().addListener(new ByteChangeListener(_0x12));
+        _0x13.textProperty().addListener(new ByteChangeListener(_0x13));
+        targetState.textProperty().addListener(new ShortChangeListener(targetState));
+        _0x16.textProperty().addListener(new ByteChangeListener(_0x16));
+        _0x17.textProperty().addListener(new ByteChangeListener(_0x17));
+
+
+
 
         ObservableList<Race> raceEnums = FXCollections.observableArrayList(Race.values());
         race1.setItems(raceEnums);
@@ -427,12 +393,6 @@ public class AbilityController {
         race4.setItems(raceEnums);
         race5.setItems(raceEnums);
         race6.setItems(raceEnums);
-        //apIndex1.textProperty().addListener(new ByteChangeListener(apIndex1));
-        //apIndex2.textProperty().addListener(new ByteChangeListener(apIndex2));
-        //apIndex3.textProperty().addListener(new ByteChangeListener(apIndex3));
-        //apIndex4.textProperty().addListener(new ByteChangeListener(apIndex4));
-        //apIndex5.textProperty().addListener(new ByteChangeListener(apIndex5));
-        //apIndex6.textProperty().addListener(new ByteChangeListener(apIndex6));
 
         
         //ObservableList<String> abilityNameList = FXCollections.observableArrayList(AbilityData.abilityNames);
@@ -536,8 +496,7 @@ public class AbilityController {
         animation.textProperty().unbindBidirectional(abilityAnimationProperty.getValue().animation);
         subtype.textProperty().unbindBidirectional(abilityAnimationProperty.getValue().subtype);
         start.textProperty().unbindBidirectional(abilityAnimationProperty.getValue().start);
-        first.textProperty().unbindBidirectional(abilityAnimationProperty.getValue().first);
-        untilSecond.textProperty().unbindBidirectional(abilityAnimationProperty.getValue().untilSecond);
+        unitAnimation.textProperty().unbindBidirectional(abilityAnimationProperty.getValue().unitAnimation);
         second.textProperty().unbindBidirectional(abilityAnimationProperty.getValue().second);
         untilThird.textProperty().unbindBidirectional(abilityAnimationProperty.getValue().untilThird);
         third.textProperty().unbindBidirectional(abilityAnimationProperty.getValue().third);
@@ -545,15 +504,12 @@ public class AbilityController {
         fourth.textProperty().unbindBidirectional(abilityAnimationProperty.getValue().fourth);
         untilEnd.textProperty().unbindBidirectional(abilityAnimationProperty.getValue().untilEnd);
         _0x0C.textProperty().unbindBidirectional(abilityAnimationProperty.getValue()._0x0C);
-        _0x0D.textProperty().unbindBidirectional(abilityAnimationProperty.getValue()._0x0D);
         flinch_Glee.textProperty().unbindBidirectional(abilityAnimationProperty.getValue().flinch_Glee);
-        _0x0F.textProperty().unbindBidirectional(abilityAnimationProperty.getValue()._0x0F);
         _0x10.textProperty().unbindBidirectional(abilityAnimationProperty.getValue()._0x10);
         _0x11.textProperty().unbindBidirectional(abilityAnimationProperty.getValue()._0x11);
         _0x12.textProperty().unbindBidirectional(abilityAnimationProperty.getValue()._0x12);
         _0x13.textProperty().unbindBidirectional(abilityAnimationProperty.getValue()._0x13);
-        _0x14.textProperty().unbindBidirectional(abilityAnimationProperty.getValue()._0x14);
-        _0x15.textProperty().unbindBidirectional(abilityAnimationProperty.getValue()._0x15);
+        targetState.textProperty().unbindBidirectional(abilityAnimationProperty.getValue().targetState);
         _0x16.textProperty().unbindBidirectional(abilityAnimationProperty.getValue()._0x16);
         _0x17.textProperty().unbindBidirectional(abilityAnimationProperty.getValue()._0x17);
     }
@@ -686,24 +642,20 @@ public class AbilityController {
         Bindings.bindBidirectional(animation.textProperty(),abilityAnimationProperty.getValue().animation, unsignedShortConverter);
         Bindings.bindBidirectional(subtype.textProperty(),abilityAnimationProperty.getValue().subtype, unsignedByteConverter);
         Bindings.bindBidirectional(start.textProperty(),abilityAnimationProperty.getValue().start, unsignedByteConverter);
-        Bindings.bindBidirectional(first.textProperty(),abilityAnimationProperty.getValue().first, unsignedByteConverter);
-        Bindings.bindBidirectional(untilSecond.textProperty(),abilityAnimationProperty.getValue().untilSecond, unsignedByteConverter);
+        Bindings.bindBidirectional(unitAnimation.textProperty(),abilityAnimationProperty.getValue().unitAnimation, unsignedShortConverter);
         Bindings.bindBidirectional(second.textProperty(),abilityAnimationProperty.getValue().second, unsignedByteConverter);
         Bindings.bindBidirectional(untilThird.textProperty(),abilityAnimationProperty.getValue().untilThird, unsignedByteConverter);
         Bindings.bindBidirectional(third.textProperty(),abilityAnimationProperty.getValue().third, unsignedByteConverter);
         Bindings.bindBidirectional(untilFourth.textProperty(),abilityAnimationProperty.getValue().untilFourth, unsignedByteConverter);
         Bindings.bindBidirectional(fourth.textProperty(),abilityAnimationProperty.getValue().fourth, unsignedByteConverter);
         Bindings.bindBidirectional(untilEnd.textProperty(),abilityAnimationProperty.getValue().untilEnd, unsignedByteConverter);
-        Bindings.bindBidirectional(_0x0C.textProperty(),abilityAnimationProperty.getValue()._0x0C, unsignedByteConverter);
-        Bindings.bindBidirectional(_0x0D.textProperty(),abilityAnimationProperty.getValue()._0x0D, unsignedByteConverter);
-        Bindings.bindBidirectional(flinch_Glee.textProperty(),abilityAnimationProperty.getValue().flinch_Glee, unsignedByteConverter);
-        Bindings.bindBidirectional(_0x0F.textProperty(),abilityAnimationProperty.getValue()._0x0F, unsignedByteConverter);
+        Bindings.bindBidirectional(_0x0C.textProperty(),abilityAnimationProperty.getValue()._0x0C, unsignedShortConverter);
+        Bindings.bindBidirectional(flinch_Glee.textProperty(),abilityAnimationProperty.getValue().flinch_Glee, unsignedShortConverter);
         Bindings.bindBidirectional(_0x10.textProperty(),abilityAnimationProperty.getValue()._0x10, unsignedByteConverter);
         Bindings.bindBidirectional(_0x11.textProperty(),abilityAnimationProperty.getValue()._0x11, unsignedByteConverter);
         Bindings.bindBidirectional(_0x12.textProperty(),abilityAnimationProperty.getValue()._0x12, unsignedByteConverter);
         Bindings.bindBidirectional(_0x13.textProperty(),abilityAnimationProperty.getValue()._0x13, unsignedByteConverter);
-        Bindings.bindBidirectional(_0x14.textProperty(),abilityAnimationProperty.getValue()._0x14, unsignedByteConverter);
-        Bindings.bindBidirectional(_0x15.textProperty(),abilityAnimationProperty.getValue()._0x15, unsignedByteConverter);
+        Bindings.bindBidirectional(targetState.textProperty(),abilityAnimationProperty.getValue().targetState, unsignedShortConverter);
         Bindings.bindBidirectional(_0x16.textProperty(),abilityAnimationProperty.getValue()._0x16, unsignedByteConverter);
         Bindings.bindBidirectional(_0x17.textProperty(),abilityAnimationProperty.getValue()._0x17, unsignedByteConverter);
     }
@@ -746,23 +698,29 @@ public class AbilityController {
         //}
     }
 
-    public void loadAbilities() {
+    public void loadAbilities() throws Exception {
         if (App.archive != null) {
             // Active Abilities
             ByteBuffer activeAbilityDataBytes = App.sysdata.getFile(4);
 
             if (activeAbilityDataBytes == null) {
                 System.err.println("IdxAndPak null file error");
-                return;
+                throw new Exception("Active Abilities are null");
             }
             activeAbilityDataBytes.rewind();
 
             ObservableList<ActiveAbilityData> activeAbilityDataList = FXCollections.observableArrayList();
 
+            logger.info("Loading Active Abilities");
             for (int i = 0; i < 0x336; i++) {
                 //AbilityData abilityData = new AbilityData(abilityDataBytes, AbilityId.abilityNames[i], i);
-                ActiveAbilityData activeAbilityData = new ActiveAbilityData(activeAbilityDataBytes, i);
-                activeAbilityDataList.add(activeAbilityData);
+                try {
+                    ActiveAbilityData activeAbilityData = new ActiveAbilityData(activeAbilityDataBytes, i);
+                    activeAbilityDataList.add(activeAbilityData);
+                } catch (Exception e) {
+                    logger.log(Level.SEVERE, String.format("Failed to load Active Ability %d \"%s\"", i, App.abilityNames.size() > i ? App.abilityNames.get(i).getValue() : ""));
+                    throw e;
+                }
             }
             activeAbilityList.setCellFactory(x -> new AbilityCell<>());
             activeAbilityList.setItems(activeAbilityDataList);
@@ -775,16 +733,22 @@ public class AbilityController {
 
             if (reactionAbilityDataBytes == null) {
                 System.err.println("IdxAndPak null file error");
-                return;
+                throw new Exception("Reaction Abilities are null");
             }
             reactionAbilityDataBytes.rewind();
 
             ObservableList<SPAbilityData> reactionAbilityDataList = FXCollections.observableArrayList();
 
             reactionAbilityDataList.add(new SPAbilityData("", 0));
+            logger.info("Loading Reaction Abilities");
             for (int i = 0; i < 0x1D; i++) {
-                SPAbilityData reactionAbilityData = new SPAbilityData(reactionAbilityDataBytes, i + 0x336);
-                reactionAbilityDataList.add(reactionAbilityData);
+                try {
+                    SPAbilityData reactionAbilityData = new SPAbilityData(reactionAbilityDataBytes, i + 0x336);
+                    reactionAbilityDataList.add(reactionAbilityData);
+                } catch (Exception e) {
+                    logger.log(Level.SEVERE, String.format("Failed to load Reaction Ability %d \"%s\"", i + 0x336, App.abilityNames.size() > i ? App.abilityNames.get(i).getValue() : ""));
+                    throw e;
+                }
             }
             //supportAbilityList.setCellFactory(x -> new AbilityCell());
             //supportAbilityList.setItems(reactionAbilityDataList);
@@ -798,16 +762,22 @@ public class AbilityController {
 
             if (passiveAbilityDataBytes == null) {
                 System.err.println("IdxAndPak null file error");
-                return;
+                throw new Exception("Passive Abilities are null");
             }
             passiveAbilityDataBytes.rewind();
 
             ObservableList<SPAbilityData> passiveAbilityDataList = FXCollections.observableArrayList();
 
             passiveAbilityDataList.add(new SPAbilityData("", 0));
+            logger.info("Loading Passive Abilities");
             for (int i = 0; i < 0x28; i++) {
-                SPAbilityData passiveAbilityData = new SPAbilityData(passiveAbilityDataBytes, i + 0x353);
-                passiveAbilityDataList.add(passiveAbilityData);
+                try {
+                    SPAbilityData passiveAbilityData = new SPAbilityData(passiveAbilityDataBytes, i + 0x353);
+                    passiveAbilityDataList.add(passiveAbilityData);
+                } catch (Exception e) {
+                    logger.log(Level.SEVERE, String.format("Failed to load Passive Ability %d \"%s\"", i + 0x353, App.abilityNames.size() > i ? App.abilityNames.get(i).getValue() : ""));
+                    throw e;
+                }
             }
             //supportAbilityList.setCellFactory(x -> new AbilityCell());
             //supportAbilityList.setItems(supportAbilityDataList);
@@ -825,13 +795,19 @@ public class AbilityController {
             
             if (abilityAnimationBytes == null) {
                 System.err.println("IdxAndPak null file error");
-                return;
+                throw new Exception("Ability Animations are null");
             }
             abilityAnimationBytes.rewind();
             abilityAnimationList = new ArrayList<>();
+            logger.info("Loading Ability Animations");
             for (int i = 0; i < 0x336; i++) {
-                AbilityAnimation abilityAnimation = new AbilityAnimation(abilityAnimationBytes);
-                abilityAnimationList.add(abilityAnimation);
+                try {
+                    AbilityAnimation abilityAnimation = new AbilityAnimation(abilityAnimationBytes);
+                    abilityAnimationList.add(abilityAnimation);
+                } catch (Exception e) {
+                    logger.log(Level.SEVERE, String.format("Failed to load Ability Animation %d", i));
+                    throw e;
+                }
             }
             abilityAnimationBytes.rewind();
 
@@ -842,6 +818,7 @@ public class AbilityController {
             learnedAbility.setCellFactory(x -> new AbilityIdCell());
 
 
+            logger.info("Building race AP slot lists");
             for (Race r : Race.values()) {
                 raceAPSlots.add(new LinkedList[200]);
                 for (int i = 0; i < 200; i++) {
@@ -928,16 +905,28 @@ public class AbilityController {
         List<ActiveAbilityData> abilities = activeAbilityList.getItems();
         ByteBuffer newAbilityDatabytes = ByteBuffer.allocate(abilities.size()*0x34).order(ByteOrder.LITTLE_ENDIAN);
 
+        logger.info("Saving Active Abilities");
         for (int i = 0; i < abilities.size(); i++) {
-            newAbilityDatabytes.put(abilities.get(i).toBytes());
+            try {
+                newAbilityDatabytes.put(abilities.get(i).toBytes());
+            } catch (Exception e) {
+                logger.log(Level.SEVERE, String.format("Failed to save Active Ability %d \"%s\"", i, abilities.get(i).name.getValue()));
+                throw e;
+            }
         }
         newAbilityDatabytes.rewind();
         App.sysdata.setFile(4, newAbilityDatabytes);
 
         ByteBuffer newAbilityAnimationbytes = ByteBuffer.allocate(abilityAnimationList.size()*0x18).order(ByteOrder.LITTLE_ENDIAN);
 
+        logger.info("Saving Ability Animations");
         for (int i = 0; i < abilityAnimationList.size(); i++) {
-            newAbilityAnimationbytes.put(abilityAnimationList.get(i).toBytes());
+            try {
+                newAbilityAnimationbytes.put(abilityAnimationList.get(i).toBytes());
+            } catch (Exception e) {
+                logger.log(Level.SEVERE, String.format("Failed to save Ability Animation %d \"%s\"", i, abilities.get(i).name.getValue()));
+                throw e;
+            }
         }
         newAbilityAnimationbytes.rewind();
         App.sysdata.setFile(5, newAbilityAnimationbytes);

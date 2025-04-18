@@ -12,8 +12,7 @@ public class AbilitySetAbility {
     public int id;
 
     public SimpleObjectProperty<ActiveAbilityData> ability = new SimpleObjectProperty<>();
-    public SimpleObjectProperty<Byte> abilityAnimation = new SimpleObjectProperty<>();
-    public SimpleObjectProperty<Byte> weaponAnimation = new SimpleObjectProperty<>();
+    public SimpleObjectProperty<Short> castAnimation = new SimpleObjectProperty<>();
 
     public SimpleObjectProperty<Byte> ability_0x4 = new SimpleObjectProperty<>();
     public SimpleObjectProperty<Byte> ability_0x5 = new SimpleObjectProperty<>();
@@ -27,8 +26,7 @@ public class AbilitySetAbility {
 
     public AbilitySetAbility(ByteBuffer bytes) {
         ability.setValue(App.activeAbilityList.get(Short.toUnsignedInt(bytes.getShort())));
-        abilityAnimation.setValue(bytes.get());
-        weaponAnimation.setValue(bytes.get());
+        castAnimation.setValue(bytes.getShort());
         ability_0x4.setValue(bytes.get());
         ability_0x5.setValue(bytes.get());
         ability_0x6.setValue(bytes.get());
@@ -40,8 +38,7 @@ public class AbilitySetAbility {
     }
     public AbilitySetAbility() {
         ability.setValue(App.activeAbilityList.get(0));
-        abilityAnimation.setValue((byte)0);
-        weaponAnimation.setValue((byte)0);
+        castAnimation.setValue((short)0);
         ability_0x4.setValue((byte)0);
         ability_0x5.setValue((byte)0);
         ability_0x6.setValue((byte)0);
@@ -57,8 +54,7 @@ public class AbilitySetAbility {
         ByteBuffer buffer = ByteBuffer.allocate(0xc).order(ByteOrder.LITTLE_ENDIAN);
 
         buffer.putShort((short)ability.getValue().id);
-        buffer.put(abilityAnimation.getValue());
-        buffer.put(weaponAnimation.getValue());
+        buffer.putShort(castAnimation.getValue());
         buffer.put(ability_0x4.getValue());
         buffer.put(ability_0x5.getValue());
         buffer.put(ability_0x6.getValue());

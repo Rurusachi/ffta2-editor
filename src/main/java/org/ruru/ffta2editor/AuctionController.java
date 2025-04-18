@@ -3,6 +3,8 @@ package org.ruru.ffta2editor;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.ruru.ffta2editor.EquipmentController.ItemCell;
 import org.ruru.ffta2editor.TextController.StringPropertyCell;
@@ -31,6 +33,8 @@ import javafx.scene.control.TextField;
 import javafx.util.StringConverter;
 
 public class AuctionController {
+    
+    private static Logger logger = Logger.getLogger("org.ruru.ffta2editor");
     
     public static class AuctionInfoCell extends ListCell<AuctionInfo> {
         Label label = new Label();
@@ -267,7 +271,7 @@ public class AuctionController {
         Bindings.bindBidirectional(grandPrizeFlagRequirement.textProperty(), auctionGrandPrizeItemProperty.getValue().flagRequirement, unsignedShortConverter);
     }
 
-    public void loadAuctions() {
+    public void loadAuctions() throws Exception {
         if (App.archive != null) {
 
             // Prize Tables
@@ -275,16 +279,22 @@ public class AuctionController {
 
             if (auctionPrizeTableBytes == null) {
                 System.err.println("IdxAndPak null file error");
-                return;
+                throw new Exception("Auction Prize Table data is null");
             }
             auctionPrizeTableBytes.rewind();
 
             ObservableList<AuctionPrizeTable> auctionPrizeTableDataList = FXCollections.observableArrayList();
 
+            logger.info("Loading Auction Prize Tables");
             int numAuctionPrizeTables = Byte.toUnsignedInt(App.arm9.get(0x000cb808))+1;
             for (int i = 0; i < numAuctionPrizeTables; i++) {
-                AuctionPrizeTable auctionPrizeTableData = new AuctionPrizeTable(auctionPrizeTableBytes, i);
-                auctionPrizeTableDataList.add(auctionPrizeTableData);
+                try {
+                    AuctionPrizeTable auctionPrizeTableData = new AuctionPrizeTable(auctionPrizeTableBytes, i);
+                    auctionPrizeTableDataList.add(auctionPrizeTableData);
+                } catch (Exception e) {
+                    logger.log(Level.SEVERE, String.format("Failed to load Auction Prize Table %d", i));
+                    throw e;
+                }
             }
             App.auctionPrizeTableList = auctionPrizeTableDataList;
             auctionPrizeTableList.setItems(auctionPrizeTableDataList);
@@ -297,16 +307,22 @@ public class AuctionController {
 
             if (auctionGrandPrizeTableBytes == null) {
                 System.err.println("IdxAndPak null file error");
-                return;
+                throw new Exception("Auction Grand Prize Table data is null");
             }
             auctionGrandPrizeTableBytes.rewind();
 
             ObservableList<AuctionPrizeTable> auctionGrandPrizeTableDataList = FXCollections.observableArrayList();
 
+            logger.info("Loading Auction Grand Prize Tables");
             int numAuctionGrandPrizeTables = Byte.toUnsignedInt(App.arm9.get(0x000cb840))+1;
             for (int i = 0; i < numAuctionGrandPrizeTables; i++) {
-                AuctionPrizeTable auctionGrandPrizeTableData = new AuctionPrizeTable(auctionGrandPrizeTableBytes, i);
-                auctionGrandPrizeTableDataList.add(auctionGrandPrizeTableData);
+                try {
+                    AuctionPrizeTable auctionGrandPrizeTableData = new AuctionPrizeTable(auctionGrandPrizeTableBytes, i);
+                    auctionGrandPrizeTableDataList.add(auctionGrandPrizeTableData);
+                } catch (Exception e) {
+                    logger.log(Level.SEVERE, String.format("Failed to load Auction Grand Prize Table %d", i));
+                    throw e;
+                }
             }
             App.auctionGrandPrizeTableList = auctionGrandPrizeTableDataList;
 
@@ -317,16 +333,22 @@ public class AuctionController {
 
             if (auctionInfoBytes == null) {
                 System.err.println("IdxAndPak null file error");
-                return;
+                throw new Exception("Auction Info data is null");
             }
             auctionInfoBytes.rewind();
 
             ObservableList<AuctionInfo> auctionInfoDataList = FXCollections.observableArrayList();
 
+            logger.info("Loading Auction Info");
             int numAuctionInfos = Byte.toUnsignedInt(App.arm9.get(0x000cb7d0))+1;
             for (int i = 0; i < numAuctionInfos; i++) {
-                AuctionInfo auctionInfoData = new AuctionInfo(auctionInfoBytes, i);
-                auctionInfoDataList.add(auctionInfoData);
+                try {
+                    AuctionInfo auctionInfoData = new AuctionInfo(auctionInfoBytes, i);
+                    auctionInfoDataList.add(auctionInfoData);
+                } catch (Exception e) {
+                    logger.log(Level.SEVERE, String.format("Failed to load Auction Info %d", i));
+                    throw e;
+                }
             }
             auctionInfoList.setItems(auctionInfoDataList);
             auctionInfoList.setCellFactory(x -> new AuctionInfoCell());
@@ -364,8 +386,14 @@ public class AuctionController {
         List<AuctionPrizeTable> auctionPrizeTables = App.auctionPrizeTableList;
         ByteBuffer newAuctionPrizeTableDataBytes = ByteBuffer.allocate(auctionPrizeTables.size()*0x20).order(ByteOrder.LITTLE_ENDIAN);
 
+        logger.info("Saving Auction Prize Tables");
         for (int i = 0; i < auctionPrizeTables.size(); i++) {
-            newAuctionPrizeTableDataBytes.put(auctionPrizeTables.get(i).toBytes());
+            try {
+                newAuctionPrizeTableDataBytes.put(auctionPrizeTables.get(i).toBytes());
+            } catch (Exception e) {
+                logger.log(Level.SEVERE, String.format("Failed to save Auction Prize Table %d", i));
+                throw e;
+            }
         }
         newAuctionPrizeTableDataBytes.rewind();
         App.sysdata.setFile(33, newAuctionPrizeTableDataBytes);
@@ -374,8 +402,14 @@ public class AuctionController {
         List<AuctionPrizeTable> auctionGrandPrizeTables = App.auctionPrizeTableList;
         ByteBuffer newAuctionGrandPrizeTableDataBytes = ByteBuffer.allocate(auctionGrandPrizeTables.size()*0x20).order(ByteOrder.LITTLE_ENDIAN);
 
+        logger.info("Saving Auction Grand Prize Tables");
         for (int i = 0; i < auctionGrandPrizeTables.size(); i++) {
-            newAuctionGrandPrizeTableDataBytes.put(auctionGrandPrizeTables.get(i).toBytes());
+            try {
+                newAuctionGrandPrizeTableDataBytes.put(auctionGrandPrizeTables.get(i).toBytes());
+            } catch (Exception e) {
+                logger.log(Level.SEVERE, String.format("Failed to save Auction Grand Prize Table %d", i));
+                throw e;
+            }
         }
         newAuctionGrandPrizeTableDataBytes.rewind();
         App.sysdata.setFile(34, newAuctionGrandPrizeTableDataBytes);
@@ -384,8 +418,14 @@ public class AuctionController {
         List<AuctionInfo> auctionInfos = auctionInfoList.getItems();
         ByteBuffer newAuctionInfoDataBytes = ByteBuffer.allocate(auctionInfos.size()*0x10).order(ByteOrder.LITTLE_ENDIAN);
 
+        logger.info("Saving Auction Info");
         for (int i = 0; i < auctionInfos.size(); i++) {
-            newAuctionInfoDataBytes.put(auctionInfos.get(i).toBytes());
+            try {
+                newAuctionInfoDataBytes.put(auctionInfos.get(i).toBytes());
+            } catch (Exception e) {
+                logger.log(Level.SEVERE, String.format("Failed to save Auction Info %d", i));
+                throw e;
+            }
         }
         newAuctionInfoDataBytes.rewind();
         App.sysdata.setFile(32, newAuctionInfoDataBytes);

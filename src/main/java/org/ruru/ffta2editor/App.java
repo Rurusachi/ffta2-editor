@@ -1,9 +1,20 @@
 package org.ruru.ffta2editor;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Properties;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 import org.ruru.ffta2editor.model.ability.AbilityData;
 import org.ruru.ffta2editor.model.ability.ActiveAbilityData;
@@ -103,10 +114,32 @@ public class App extends Application {
     public static Map<Integer, StringProperty> evMsgNames;
     
 
-    final Properties properties = new Properties();
+    private static Logger logger = Logger.getLogger("org.ruru.ffta2editor");
+    private static final Path logPath = Path.of("logs");
+    private static final Path configPath = Path.of("ffta2-editor.properties");
+    private static final Properties properties = new Properties();
+    public static final Properties config = new Properties();
 
     @Override
     public void start(Stage stage) throws IOException {
+        if (!logPath.toFile().exists()) {
+            Files.createDirectory(logPath);
+        }
+        if (!configPath.toFile().exists()) {
+            configPath.toFile().createNewFile();
+            config.load(new FileInputStream(configPath.toFile()));
+        } else {
+            config.load(new FileInputStream(configPath.toFile()));
+        }
+        FileHandler fh = new FileHandler(String.format("logs/%s.log", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"))));
+        fh.setFormatter(new SimpleFormatter());
+        logger.addHandler(fh);
+        logger.setLevel(Level.ALL);
+        Logger globalLogger = Logger.getLogger("");
+        Handler[] handlers = globalLogger.getHandlers();
+        for (Handler handler : handlers) {
+            globalLogger.removeHandler(handler);
+        }
         properties.load(this.getClass().getClassLoader().getResourceAsStream("project.properties"));
         
         scene = new Scene(loadFXML("main"), 1280, 720);
@@ -125,22 +158,13 @@ public class App extends Application {
     }
 
     public static void main(String[] args) {
-        //String s = FFTA2Charset.decode(ByteBuffer.wrap(new byte[] {0x09, 0x20, 0x27, 0x27, 0x2A, -63, 0x00, 0x18, 0x2A, 0x2D, 0x27, 0x1F, 0x73}).order(ByteOrder.LITTLE_ENDIAN));
-        //try {
-        //    String s = "Hello\nWorld!<~><end>";
-        //    System.out.println(s);
-        //    byte[] bytes = FFTA2Charset.encode(s);
-        //    StringBuilder sb = new StringBuilder();
-        //    for (byte b : bytes) {
-        //        sb.append(String.format("%02X ", b));
-        //    }
-        //    System.out.println(sb.toString());
-        //    System.out.println(FFTA2Charset.decode(ByteBuffer.wrap(bytes)));
-        //    System.out.println(IntStream.range(0, bytes.length).mapToObj(i -> bytes[i]).filter(b -> b == (byte)0xC0 || b == (byte)0xC2).mapToInt(b -> (int)b).count());
-        //} catch (Exception e) {
-        //    System.err.println(e);
-        //}
         launch();
+        try {
+            config.store(new FileOutputStream(configPath.toFile()), "");
+        } catch (Exception e) {
+            System.err.println(e);
+            logger.log(Level.WARNING, "Failed to save config", e);
+        }
     }
 
 }

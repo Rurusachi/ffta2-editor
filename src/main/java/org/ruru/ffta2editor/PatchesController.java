@@ -5,6 +5,7 @@ import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.ruru.ffta2editor.model.character.CharacterData;
 import org.ruru.ffta2editor.model.job.JobData;
@@ -20,6 +21,9 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.util.Pair;
 
 public class PatchesController {
+    
+    private static Logger logger = Logger.getLogger("org.ruru.ffta2editor");
+    
     //private static List<Integer> bladed = Arrays.asList(0x21, 0x22, 0x23);
     //private static List<Integer> piercing = Arrays.asList(0x24, 0x25, 0x26);
     //private static List<Integer> bowGun = Arrays.asList(0x27, 0x28, 0x29);

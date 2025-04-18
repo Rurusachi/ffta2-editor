@@ -3,6 +3,8 @@ package org.ruru.ffta2editor;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.IntStream;
 
 import org.ruru.ffta2editor.AbilityController.AbilityCell;
@@ -42,6 +44,8 @@ import javafx.scene.control.TextField;
 import javafx.util.StringConverter;
 
 public class EquipmentController {
+    
+    private static Logger logger = Logger.getLogger("org.ruru.ffta2editor");
     
     public static class ItemCell<T extends ItemData>  extends ListCell<T> {
         Label label = new Label();
@@ -341,24 +345,29 @@ public class EquipmentController {
         propertyBit31.selectedProperty().bindBidirectional(equipmentProperty.getValue().propertyFlags.propertyBit31);
     }
 
-    public void loadEquipment() {
+    public void loadEquipment() throws Exception {
         if (App.archive != null) {
 
             ByteBuffer equipmentDataBytes = App.sysdata.getFile(16);
 
             if (equipmentDataBytes == null) {
                 System.err.println("IdxAndPak null file error");
-                return;
+                throw new Exception("Equipment data is null");
             }
             equipmentDataBytes.rewind();
 
             ObservableList<EquipmentData> equipmentDataList = FXCollections.observableArrayList();
 
-            //int numJobs = jobGroupBytes.remaining() / 0x48;
+            logger.info("Loading Equipment");
             int numEquipment = Short.toUnsignedInt(App.arm9.getShort(0x000cb3fc))+1;
             for (int i = 0; i < numEquipment; i++) {
-                EquipmentData equipmentData = new EquipmentData(equipmentDataBytes, i);
-                equipmentDataList.add(equipmentData);
+                try {
+                    EquipmentData equipmentData = new EquipmentData(equipmentDataBytes, i);
+                    equipmentDataList.add(equipmentData);
+                } catch (Exception e) {
+                    logger.log(Level.SEVERE, String.format("Failed to load Equipment %d \"%s\"", i, App.itemNames.size() > i ? App.itemNames.get(i).getValue() : ""));
+                    throw e;
+                }
             }
             App.equipmentList = equipmentDataList;
             equipmentList.setItems(equipmentDataList);
@@ -371,17 +380,23 @@ public class EquipmentController {
 
             if (consumableDataBytes == null) {
                 System.err.println("IdxAndPak null file error");
-                return;
+                throw new Exception("Consumable data is null");
             }
             consumableDataBytes.rewind();
 
             ObservableList<ConsumableData> consumableDataList = FXCollections.observableArrayList();
 
+            logger.info("Loading Consumables");
             consumableDataList.add(new ConsumableData("", 0));
             int numConsumables = 0x13;
             for (int i = 0; i < numConsumables; i++) {
-                ConsumableData consumableData = new ConsumableData(consumableDataBytes, i+numEquipment);
-                consumableDataList.add(consumableData);
+                try {
+                    ConsumableData consumableData = new ConsumableData(consumableDataBytes, i+numEquipment);
+                    consumableDataList.add(consumableData);
+                } catch (Exception e) {
+                    logger.log(Level.SEVERE, String.format("Failed to load Consumable %d \"%s\"", i+numEquipment, App.itemNames.size() > i ? App.itemNames.get(i).getValue() : ""));
+                    throw e;
+                }
             }
             App.consumableList = consumableDataList;
 
@@ -392,17 +407,23 @@ public class EquipmentController {
 
             if (lootDataBytes == null) {
                 System.err.println("IdxAndPak null file error");
-                return;
+                throw new Exception("Loot data is null");
             }
             lootDataBytes.rewind();
 
             ObservableList<LootData> lootDataList = FXCollections.observableArrayList();
 
+            logger.info("Loading Loot");
             lootDataList.add(new LootData("", 0));
             int numloot = 0xCC;
             for (int i = 0; i < numloot; i++) {
-                LootData lootData = new LootData(lootDataBytes, i+numEquipment+numConsumables);
-                lootDataList.add(lootData);
+                try {
+                    LootData lootData = new LootData(lootDataBytes, i+numEquipment+numConsumables);
+                    lootDataList.add(lootData);
+                } catch (Exception e) {
+                    logger.log(Level.SEVERE, String.format("Failed to load Loot %d \"%s\"", i+numEquipment+numConsumables, App.itemNames.size() > i ? App.itemNames.get(i).getValue() : ""));
+                    throw e;
+                }
             }
             App.lootList = lootDataList;
 
@@ -455,8 +476,14 @@ public class EquipmentController {
         List<EquipmentData> equipment = equipmentList.getItems();
         ByteBuffer newEquipmentDatabytes = ByteBuffer.allocate(equipment.size()*0x28).order(ByteOrder.LITTLE_ENDIAN);
 
+        logger.info("Saving Equipment");
         for (int i = 0; i < equipment.size(); i++) {
-            newEquipmentDatabytes.put(equipment.get(i).toBytes());
+            try {
+                newEquipmentDatabytes.put(equipment.get(i).toBytes());
+            } catch (Exception e) {
+                logger.log(Level.SEVERE, String.format("Failed to save Equipment %d \"%s\"", i, equipment.get(i).name.getValue()));
+                throw e;
+            }
         }
         newEquipmentDatabytes.rewind();
         App.sysdata.setFile(16, newEquipmentDatabytes);

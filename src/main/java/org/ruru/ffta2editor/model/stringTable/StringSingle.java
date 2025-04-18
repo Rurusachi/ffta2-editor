@@ -4,6 +4,8 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.IntStream;
 
 import org.ruru.ffta2editor.utility.FFTA2Charset;
@@ -14,10 +16,9 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 
 public class StringSingle {
+    private static Logger logger = Logger.getLogger("org.ruru.ffta2editor");
     public StringProperty name;
     public int id;
 
@@ -29,7 +30,7 @@ public class StringSingle {
 
     public StringProperty text = new SimpleStringProperty();
 
-    public StringSingle(ByteBuffer bytes, StringProperty name, int id) {
+    public StringSingle(ByteBuffer bytes, StringProperty name, int id) throws Exception {
         this.name = name;
         this.id = id;
 
@@ -42,13 +43,9 @@ public class StringSingle {
         try {
             text.set(FFTA2Charset.decode(bytes.slice(bytes.position(), stringLength.getValue())));
         } catch (Exception e) {
-            Alert alert = new Alert(AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText(null);
-            alert.setContentText(e.getMessage());
-            alert.showAndWait();
+            logger.log(Level.SEVERE, String.format("Failed to decode \"%s\"", name));
             System.err.println(e);
-            return;
+            throw e;
         }
     }
 

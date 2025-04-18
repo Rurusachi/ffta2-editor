@@ -23,8 +23,10 @@
 hs_err_pid*
 replay_pid*
 
+ffta2-editor.properties
 *.exe
 target/*
 data/*
 ffta2-editor/*
 .vscode/*
+logs/*

@@ -3,6 +3,7 @@ package org.ruru.ffta2editor;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import org.ruru.ffta2editor.model.stringTable.MessageId;
@@ -22,6 +23,8 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 
 public class TextController {
+    
+    private static Logger logger = Logger.getLogger("org.ruru.ffta2editor");
     
     public static class StringTableCell extends ListCell<StringTable> {
         Label label = new Label();
@@ -197,10 +200,11 @@ public class TextController {
         }
     }
 
-    public void loadMessages() {
+    public void loadMessages() throws Exception {
         if (App.archive != null) {
             ObservableList<StringTable> tempMessageList = FXCollections.observableArrayList();
 
+            logger.info("Loading jdMessage");
             for (int i = 0; i < App.jdMessage.numFiles(); i++) {
                 ByteBuffer stringTableBytes = App.jdMessage.getFile(i);
                 //System.out.println(i);
@@ -284,6 +288,7 @@ public class TextController {
             
             ObservableList<StringTable> tempEventMsgList = FXCollections.observableArrayList();
 
+            logger.info("Loading evMsg");
             for (int i = 0; i < App.evMsg.numFiles(); i++) {
                 ByteBuffer stringTableBytes = App.evMsg.getFile(i);
 
@@ -338,6 +343,7 @@ public class TextController {
 
             ObservableList<StringSingle> tempQuestList = FXCollections.observableArrayList();
 
+            logger.info("Loading jhQuest");
             for (int i = 0; i < App.jhQuest.numFiles(); i++) {
                 ByteBuffer stringTableBytes = App.jhQuest.getFile(i);
                 //System.out.println(i);
@@ -355,6 +361,7 @@ public class TextController {
 
             ObservableList<StringSingle> tempRumorList = FXCollections.observableArrayList();
 
+            logger.info("Loading jhRumor");
             for (int i = 0; i < App.jhRumor.numFiles(); i++) {
                 ByteBuffer stringTableBytes = App.jhRumor.getFile(i);
                 //System.out.println(i);
@@ -372,6 +379,7 @@ public class TextController {
 
             ObservableList<StringSingle> tempNoticeList = FXCollections.observableArrayList();
 
+            logger.info("Loading jhNotice");
             for (int i = 0; i < App.jhNotice.numFiles(); i++) {
                 ByteBuffer stringTableBytes = App.jhNotice.getFile(i);
                 //System.out.println(i);
@@ -391,6 +399,7 @@ public class TextController {
     public void saveMessages() throws Exception {
         List<StringTable> messages = messageList.getItems();
         //ArrayList<byte[]> encodedMessages = new ArrayList<>();
+        logger.info("saving jdMessage");
         for (StringTable table : messages) {
             //encodedMessages.add(table.toBytes());
             //System.out.println(table.id);
@@ -400,6 +409,7 @@ public class TextController {
             App.jdMessage.setFile(table.id, ByteBuffer.wrap(tableBytes).order(ByteOrder.LITTLE_ENDIAN));
         }
 
+        logger.info("saving evMsg");
         List<StringTable> events = eventMsgList.getItems();
         for (StringTable table : events) {
             byte[] tableBytes = table.toBytes();
@@ -407,18 +417,21 @@ public class TextController {
             App.evMsg.setFile(table.id, ByteBuffer.wrap(tableBytes).order(ByteOrder.LITTLE_ENDIAN));
         }
 
+        logger.info("saving jhQuest");
         List<StringSingle> quests = questList.getItems();
         for (StringSingle single : quests) {
             byte[] singleBytes = single.toBytes();
             App.jhQuest.setFile(single.id, ByteBuffer.wrap(singleBytes).order(ByteOrder.LITTLE_ENDIAN));
         }
         
+        logger.info("saving jhRumor");
         List<StringSingle> rumors = rumorList.getItems();
         for (StringSingle single : rumors) {
             byte[] singleBytes = single.toBytes();
             App.jhRumor.setFile(single.id, ByteBuffer.wrap(singleBytes).order(ByteOrder.LITTLE_ENDIAN));
         }
         
+        logger.info("saving jhNotice");
         List<StringSingle> notices = noticeList.getItems();
         for (StringSingle single : notices) {
             byte[] singleBytes = single.toBytes();

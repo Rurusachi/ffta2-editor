@@ -2,6 +2,8 @@ package org.ruru.ffta2editor;
 
 import java.nio.ByteBuffer;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.ruru.ffta2editor.AbilityController.AbilityCell;
 import org.ruru.ffta2editor.CharacterController.CharacterCell;
@@ -37,6 +39,8 @@ import javafx.util.Pair;
 import javafx.util.StringConverter;
 
 public class FormationController {
+    
+    private static Logger logger = Logger.getLogger("org.ruru.ffta2editor");
     
     public static class FormationCell extends ListCell<FormationData> {
         Label label = new Label();
@@ -643,24 +647,29 @@ public class FormationController {
         }
     }
 
-    public void loadFormations() {
+    public void loadFormations() throws Exception {
         if (App.archive != null) {
             int numFormations = App.entrydata.numFiles() / 2;
 
             ObservableList<FormationData> formationDataList = FXCollections.observableArrayList();
 
+            logger.info("Loading Formations");
             for (int i = 0; i < numFormations; i++) {
                 ByteBuffer headerBytes = App.entrydata.getFile(i*2);
                 ByteBuffer unitBytes = App.entrydata.getFile(i*2 + 1);
                 
                 if (headerBytes == null || unitBytes == null) {
                     System.err.println("IdxAndPak null file error");
-                    return;
+                    throw new Exception(String.format("Formation %d data is null", i));
                 }
                 headerBytes.rewind();
                 unitBytes.rewind();
-
-                formationDataList.add(new FormationData(headerBytes, unitBytes, i));
+                try {
+                    formationDataList.add(new FormationData(headerBytes, unitBytes, i));
+                } catch (Exception e) {
+                    logger.log(Level.SEVERE, String.format("Failed to load Formation %d", i));
+                    throw e;
+                }
 
                 headerBytes.rewind();
                 unitBytes.rewind();
@@ -758,10 +767,16 @@ public class FormationController {
         //    System.out.println(String.format("Resizing entrydata from %d to %d", App.entrydata.numFiles(), formations.size()*2));
         //    App.entrydata.setNumFiles(formations.size()*2);
         //}
+        logger.info("Saving Formations");
         for (int i = 0; i < formationList.getItems().size(); i++) {
-            Pair<ByteBuffer, ByteBuffer> currFormationBytes = formations.get(i).toBytes();
-            App.entrydata.setFile(i*2, currFormationBytes.getKey());
-            App.entrydata.setFile(i*2 + 1, currFormationBytes.getValue());
+            try {
+                Pair<ByteBuffer, ByteBuffer> currFormationBytes = formations.get(i).toBytes();
+                App.entrydata.setFile(i*2, currFormationBytes.getKey());
+                App.entrydata.setFile(i*2 + 1, currFormationBytes.getValue());
+            } catch (Exception e) {
+                logger.log(Level.SEVERE, String.format("Failed to save Formation %d", i));
+                throw e;
+            }
         }
     }
 }

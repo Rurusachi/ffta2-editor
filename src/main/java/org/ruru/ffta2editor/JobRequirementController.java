@@ -3,6 +3,8 @@ package org.ruru.ffta2editor;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.ruru.ffta2editor.CharacterController.CharacterCell;
 import org.ruru.ffta2editor.JobController.JobCell;
@@ -30,6 +32,8 @@ import javafx.scene.control.TextField;
 import javafx.util.StringConverter;
 
 public class JobRequirementController {
+    
+    private static Logger logger = Logger.getLogger("org.ruru.ffta2editor");
     
     public static class JobRequirementCell extends ListCell<JobRequirementData> {
         Label label = new Label();
@@ -134,25 +138,30 @@ public class JobRequirementController {
         }
     }
 
-    public void loadJobRequirements() {
+    public void loadJobRequirements() throws Exception {
         if (App.archive != null) {
 
             ByteBuffer jobRequirementBytes = App.sysdata.getFile(19);
 
             if (jobRequirementBytes == null) {
                 System.err.println("IdxAndPak null file error");
-                return;
+                throw new Exception("Job Requirements are null");
             }
             jobRequirementBytes.rewind();
 
             ObservableList<JobRequirementData> jobRequirementDataList = FXCollections.observableArrayList();
 
 
-            //int numAbilitysets = abilitySetBytes.remaining() / 0xc;
+            logger.info("Loading Job Requirements");
             int numJobRequirements = Byte.toUnsignedInt(App.arm9.get(0x000b80b8));
             for (int i = 0; i < numJobRequirements; i++) {
-                JobRequirementData jobRequirement = new JobRequirementData(jobRequirementBytes, i);
-                jobRequirementDataList.add(jobRequirement);
+                try {
+                    JobRequirementData jobRequirement = new JobRequirementData(jobRequirementBytes, i);
+                    jobRequirementDataList.add(jobRequirement);
+                } catch (Exception e) {
+                    logger.log(Level.SEVERE, String.format("Failed to load Job Requirement %d", i));
+                    throw e;
+                }
             }
             jobRequirementList.setItems(jobRequirementDataList);
             jobRequirementList.setCellFactory(x -> new JobRequirementCell());
@@ -190,8 +199,14 @@ public class JobRequirementController {
         List<JobRequirementData> jobRequirements = jobRequirementList.getItems();
         ByteBuffer newJobRequirementBytes = ByteBuffer.allocate(jobRequirements.size()*0xC).order(ByteOrder.LITTLE_ENDIAN);
 
+        logger.info("Saving Job Requirements");
         for (int i = 0; i < jobRequirements.size(); i++) {
-            newJobRequirementBytes.put(jobRequirements.get(i).toBytes());
+            try {
+                newJobRequirementBytes.put(jobRequirements.get(i).toBytes());
+            } catch (Exception e) {
+                logger.log(Level.SEVERE, String.format("Failed to save Job Requirement %d \"%s\"", i, jobRequirements.get(i).jobId.getValue().name.getValue()));
+                throw e;
+            }
         }
         newJobRequirementBytes.rewind();
         App.sysdata.setFile(19, newJobRequirementBytes);

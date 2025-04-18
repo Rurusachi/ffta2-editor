@@ -3,6 +3,8 @@ package org.ruru.ffta2editor;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.ruru.ffta2editor.EquipmentController.ItemCell;
 import org.ruru.ffta2editor.model.bazaar.BazaarRecipe;
@@ -30,6 +32,8 @@ import javafx.scene.control.TextField;
 import javafx.util.StringConverter;
 
 public class BazaarController {
+    
+    private static Logger logger = Logger.getLogger("org.ruru.ffta2editor");
     
     public static class BazaarSetCell extends ListCell<BazaarSet> {
         Label label = new Label();
@@ -186,23 +190,29 @@ public class BazaarController {
         }
     }
 
-    public void loadBazaar() {
+    public void loadBazaar() throws Exception {
         if (App.archive != null) {
 
             ByteBuffer bazaarRecipeBytes = App.sysdata.getFile(26);
 
             if (bazaarRecipeBytes == null) {
                 System.err.println("IdxAndPak null file error");
-                return;
+                throw new Exception("Bazaar Recipe data is null");
             }
             bazaarRecipeBytes.rewind();
 
             ObservableList<BazaarRecipe> bazaarRecipeDataList = FXCollections.observableArrayList();
 
+            logger.info("Loading Bazaar Recipes");
             int numBazaarRecipes = Short.toUnsignedInt(App.arm9.getShort(0x000cb684))+1;
             for (int i = 0; i < numBazaarRecipes; i++) {
-                BazaarRecipe bazaarRecipeData = new BazaarRecipe(bazaarRecipeBytes, i);
-                bazaarRecipeDataList.add(bazaarRecipeData);
+                try {
+                    BazaarRecipe bazaarRecipeData = new BazaarRecipe(bazaarRecipeBytes, i);
+                    bazaarRecipeDataList.add(bazaarRecipeData);
+                } catch (Exception e) {
+                    logger.log(Level.SEVERE, String.format("Failed to load Bazaar Recipe %d \"%s\"", i, App.itemList.size() > i ? App.itemList.get(i).name.getValue() : ""));
+                    throw e;
+                }
             }
             App.bazaarRecipeList = bazaarRecipeDataList;
 
@@ -213,16 +223,22 @@ public class BazaarController {
 
             if (bazaarSetBytes == null) {
                 System.err.println("IdxAndPak null file error");
-                return;
+                throw new Exception("Bazaar Set data is null");
             }
             bazaarSetBytes.rewind();
 
             ObservableList<BazaarSet> bazaarSetDataList = FXCollections.observableArrayList();
 
+            logger.info("Loading Bazaar Sets");
             int numBazaarSets = Byte.toUnsignedInt(App.arm9.get(0x000cb634))+1;
             for (int i = 0; i < numBazaarSets; i++) {
-                BazaarSet bazaarSetData = new BazaarSet(bazaarSetBytes, i);
-                bazaarSetDataList.add(bazaarSetData);
+                try {
+                    BazaarSet bazaarSetData = new BazaarSet(bazaarSetBytes, i);
+                    bazaarSetDataList.add(bazaarSetData);
+                } catch (Exception e) {
+                    logger.log(Level.SEVERE, String.format("Failed to load Bazaar Set %d \"%s\"", i, App.bazaarSetNames.size() > i ? App.bazaarSetNames.get(i).getValue() : ""));
+                    throw e;
+                }
             }
             bazaarSetList.setItems(bazaarSetDataList);
             bazaarSetList.setCellFactory(x -> new BazaarSetCell());
@@ -253,8 +269,14 @@ public class BazaarController {
         List<BazaarRecipe> bazaarRecipes = App.bazaarRecipeList;
         ByteBuffer newBazaarRecipeDataBytes = ByteBuffer.allocate(bazaarRecipes.size()*0x8).order(ByteOrder.LITTLE_ENDIAN);
 
+        logger.info("Saving Bazaar Recipes");
         for (int i = 0; i < bazaarRecipes.size(); i++) {
-            newBazaarRecipeDataBytes.put(bazaarRecipes.get(i).toBytes());
+            try {
+                newBazaarRecipeDataBytes.put(bazaarRecipes.get(i).toBytes());
+            } catch (Exception e) {
+                logger.log(Level.SEVERE, String.format("Failed to save Bazaar Recipe %d \"%s\"", i, bazaarRecipes.get(i).item.name.getValue()));
+                throw e;
+            }
         }
         newBazaarRecipeDataBytes.rewind();
         App.sysdata.setFile(26, newBazaarRecipeDataBytes);
@@ -262,8 +284,14 @@ public class BazaarController {
         List<BazaarSet> bazaarSets = bazaarSetList.getItems();
         ByteBuffer newBazaarSetDataBytes = ByteBuffer.allocate(bazaarSets.size()*0x2c).order(ByteOrder.LITTLE_ENDIAN);
 
+        logger.info("Saving Bazaar Sets");
         for (int i = 0; i < bazaarSets.size(); i++) {
-            newBazaarSetDataBytes.put(bazaarSets.get(i).toBytes());
+            try {
+                newBazaarSetDataBytes.put(bazaarSets.get(i).toBytes());
+            } catch (Exception e) {
+                logger.log(Level.SEVERE, String.format("Failed to save Bazaar Set %d \"%s\"", i, bazaarSets.get(i).name.getValue()));
+                throw e;
+            }
         }
         newBazaarSetDataBytes.rewind();
         App.sysdata.setFile(25, newBazaarSetDataBytes);

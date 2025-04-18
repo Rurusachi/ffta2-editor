@@ -3,6 +3,8 @@ package org.ruru.ffta2editor;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.ruru.ffta2editor.JobController.JobCell;
 import org.ruru.ffta2editor.model.job.JobData;
@@ -19,6 +21,8 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 
 public class JobGroupController {
+    
+    private static Logger logger = Logger.getLogger("org.ruru.ffta2editor");
     
     public static class JobGroupCell extends ListCell<JobGroup> {
         Label label = new Label();
@@ -93,24 +97,29 @@ public class JobGroupController {
     }
 
 
-    public void loadJobGroups() {
+    public void loadJobGroups() throws Exception {
         if (App.archive != null) {
 
             ByteBuffer jobGroupBytes = App.sysdata.getFile(36);
 
             if (jobGroupBytes == null) {
                 System.err.println("IdxAndPak null file error");
-                return;
+                throw new Exception("Job Group data is null");
             }
             jobGroupBytes.rewind();
 
             ObservableList<JobGroup> jobGroupDataList = FXCollections.observableArrayList();
 
-            //int numJobs = jobGroupBytes.remaining() / 0x48;
+            logger.info("Loading Job Groups");
             int numJobGroups = Byte.toUnsignedInt(App.arm9.get(0x000cb8b0))+1;
             for (int i = 0; i < numJobGroups; i++) {
-                JobGroup jobGroupData = new JobGroup(jobGroupBytes, i);
-                jobGroupDataList.add(jobGroupData);
+                try {
+                    JobGroup jobGroupData = new JobGroup(jobGroupBytes, i);
+                    jobGroupDataList.add(jobGroupData);
+                } catch (Exception e) {
+                    logger.log(Level.SEVERE, String.format("Failed to load Job Group %d", i));
+                    throw e;
+                }
             }
             App.jobGroupList = jobGroupDataList;
             jobGroupList.setItems(jobGroupDataList);
@@ -140,8 +149,14 @@ public class JobGroupController {
         List<JobGroup> jobGroups = jobGroupList.getItems();
         ByteBuffer newJobGroupDatabytes = ByteBuffer.allocate(jobGroups.size()*0x4).order(ByteOrder.LITTLE_ENDIAN);
 
+        logger.info("Saving Job Groups");
         for (int i = 0; i < jobGroups.size(); i++) {
-            newJobGroupDatabytes.put(jobGroups.get(i).toBytes());
+            try {
+                newJobGroupDatabytes.put(jobGroups.get(i).toBytes());
+            } catch (Exception e) {
+                logger.log(Level.SEVERE, String.format("Failed to save Job Group %d", i));
+                throw e;
+            }
         }
         newJobGroupDatabytes.rewind();
         App.sysdata.setFile(36, newJobGroupDatabytes);

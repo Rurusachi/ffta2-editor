@@ -8,6 +8,8 @@ import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 import javax.imageio.ImageIO;
@@ -47,6 +49,9 @@ import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.util.Duration;
 
 public class SpritesController {
+    
+    private static Logger logger = Logger.getLogger("org.ruru.ffta2editor");
+    
     public static class SpriteCell extends ListCell<UnitSprite> {
         ImageView image = new ImageView();
         int spriteIndex;
@@ -121,7 +126,7 @@ public class SpritesController {
         @Override protected void updateItem(UnitAnimation animation, boolean empty) {
             super.updateItem(animation, empty);
             if (animation != null) {
-                label.setText(String.format("%04X", animation.key));
+                label.setText(String.format("%04X (%d)", animation.key, animation.key >>> 8));
             } else {
                 label.setText("");
             }
@@ -665,6 +670,7 @@ public class SpritesController {
         ObservableList<UnitSst> unitSstDataList = FXCollections.observableArrayList();
         ObservableList<UnitSprite> unitSprites = FXCollections.observableArrayList();
         // last file is empty??
+        logger.info("Loading Unit Sprites");
         for (int i = 0; i < App.unitSsts.numFiles(); i++) {
             ByteBuffer unitCgBytes = App.unitCgs.getFile(i);
             ByteBuffer unitSstBytes = App.unitSsts.getFile(i);
@@ -676,12 +682,17 @@ public class SpritesController {
                 System.err.println(String.format("Sst %d is null", i));
                 continue;
             }
-            UnitSst unitSst = new UnitSst(unitSstBytes);
-            unitSstDataList.add(unitSst);
-            ByteBuffer spritePalette = unitSst.getPalettes();
-            SpriteData spriteData = unitSst.getSpriteMap();
-            UnitSprite unitSprite = new UnitSprite(i, spriteData, spritePalette, unitCgBytes);
-            unitSprites.add(unitSprite);
+            try {
+                UnitSst unitSst = new UnitSst(unitSstBytes);
+                unitSstDataList.add(unitSst);
+                ByteBuffer spritePalette = unitSst.getPalettes();
+                SpriteData spriteData = unitSst.getSpriteMap();
+                UnitSprite unitSprite = new UnitSprite(i, spriteData, spritePalette, unitCgBytes);
+                unitSprites.add(unitSprite);
+            } catch (Exception e) {
+                logger.log(Level.SEVERE, String.format("Failed to load Unit Sprite %d", i));
+                throw e;
+            }
 
             unitCgBytes.rewind();
             unitSstBytes.rewind();
@@ -692,6 +703,7 @@ public class SpritesController {
         App.unitSprites = unitSprites;
 
         
+        logger.info("Loading Top Sprites");
         ObservableList<TopSprite> topSprites = FXCollections.observableArrayList();
         topSprites.addFirst(new TopSprite(0)); // Add blank entry
         // last file is empty??
@@ -701,8 +713,13 @@ public class SpritesController {
                 System.err.println(String.format("Atl %d is null", i));
                 continue;
             }
-            TopSprite topSprite = new TopSprite(atlBytes, i+1);
-            topSprites.add(topSprite);
+            try {
+                TopSprite topSprite = new TopSprite(atlBytes, i+1);
+                topSprites.add(topSprite);
+            } catch (Exception e) {
+                logger.log(Level.SEVERE, String.format("Failed to load Top Sprite %d", i));
+                throw e;
+            }
 
             atlBytes.rewind();
         }
@@ -711,6 +728,7 @@ public class SpritesController {
         App.topSprites = topSprites;
 
         
+        logger.info("Loading Faces");
         ObservableList<UnitFace> faces = FXCollections.observableArrayList();
         faces.addFirst(new UnitFace(0)); // Add blank entry
         // last file is empty??
@@ -720,8 +738,13 @@ public class SpritesController {
                 System.err.println(String.format("Atl %d is null", i));
                 continue;
             }
-            UnitFace face = new UnitFace(faceBytes, i);
-            faces.add(face);
+            try {
+                UnitFace face = new UnitFace(faceBytes, i);
+                faces.add(face);
+            } catch (Exception e) {
+                logger.log(Level.SEVERE, String.format("Failed to load Face %d", i));
+                throw e;
+            }
 
             faceBytes.rewind();
         }
@@ -770,18 +793,23 @@ public class SpritesController {
     }
 
     public void saveSprites() {
+        logger.info("Saving Unit Sprites");
         App.unitSsts.setNumFiles(unitList.getItems().size());
         App.unitCgs.setNumFiles(unitList.getItems().size());
         for (int i = 0; i < unitList.getItems().size(); i++) {
             if (!unitList.getItems().get(i).hasChanged && !App.unitSstList.get(i).hasChanged) continue;
-            
-            UnitSst unitSst = App.unitSstList.get(i);
-            var savedSprite = unitList.getItems().get(i).saveSprites();
-            
-            unitSst.setCompressedValue(0x00FF, savedSprite.getKey());
-            unitSst.setCompressedValue(0x00F0, unitList.getItems().get(i).savePalettes());
-            App.unitSsts.setFile(i, unitSst.toByteBuffer());
-            App.unitCgs.setFile(i, savedSprite.getValue());
+            try {
+                UnitSst unitSst = App.unitSstList.get(i);
+                var savedSprite = unitList.getItems().get(i).saveSprites();
+                
+                unitSst.setCompressedValue(0x00FF, savedSprite.getKey());
+                unitSst.setCompressedValue(0x00F0, unitList.getItems().get(i).savePalettes());
+                App.unitSsts.setFile(i, unitSst.toByteBuffer());
+                App.unitCgs.setFile(i, savedSprite.getValue());
+            } catch (Exception e) {
+                logger.log(Level.SEVERE, String.format("Failed to save Unit Sprite %d", i));
+                throw e;
+            }
 
             //Path testPath = Path.of("G:\\zzz");
             //try {
@@ -793,17 +821,29 @@ public class SpritesController {
             //}
         }
 
+        logger.info("Saving Top Sprites");
         App.atl.setNumFiles(topSpriteList.getItems().size());
         for (TopSprite topSprite : topSpriteList.getItems()) {
             if (topSprite.id == 0 || !topSprite.hasChanged) continue;
-            App.atl.setFile(topSprite.id-1, ByteBuffer.wrap(topSprite.toBytes()).order(ByteOrder.LITTLE_ENDIAN));
+            try {
+                App.atl.setFile(topSprite.id-1, ByteBuffer.wrap(topSprite.toBytes()).order(ByteOrder.LITTLE_ENDIAN));
+            } catch (Exception e) {
+                logger.log(Level.SEVERE, String.format("Failed to save Top Sprite %d", topSprite.id));
+                throw e;
+            }
 
         }
 
+        logger.info("Saving Faces");
         App.face.setNumFiles(faceList.getItems().size());
         for (UnitFace face : faceList.getItems()) {
             if (face.id == 0 || !face.hasChanged) continue;
-            App.face.setFile(face.id, ByteBuffer.wrap(face.toBytes()).order(ByteOrder.LITTLE_ENDIAN));
+            try {
+                App.face.setFile(face.id, ByteBuffer.wrap(face.toBytes()).order(ByteOrder.LITTLE_ENDIAN));
+            } catch (Exception e) {
+                logger.log(Level.SEVERE, String.format("Failed to save Face %d", face.id));
+                throw e;
+            }
 
         }
 
