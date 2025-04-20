@@ -7,9 +7,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.ruru.ffta2editor.CharacterController.CharacterCell;
+import org.ruru.ffta2editor.JobController.AbilitySetCell;
 import org.ruru.ffta2editor.JobController.JobCell;
 import org.ruru.ffta2editor.JobGroupController.JobGroupCell;
 import org.ruru.ffta2editor.model.character.CharacterData;
+import org.ruru.ffta2editor.model.job.AbilitySet;
 import org.ruru.ffta2editor.model.job.JobData;
 import org.ruru.ffta2editor.model.job.JobGroup;
 import org.ruru.ffta2editor.model.job.JobRequirementData;
@@ -63,9 +65,9 @@ public class JobRequirementController {
     @FXML TextField abilityNum2;
     @FXML TextField abilityNum3;
     @FXML ComboBox<JobData> jobId;
-    @FXML ComboBox<JobGroup> job1;
-    @FXML ComboBox<JobGroup> job2;
-    @FXML ComboBox<JobGroup> job3;
+    @FXML ComboBox<AbilitySet> job1;
+    @FXML ComboBox<AbilitySet> job2;
+    @FXML ComboBox<AbilitySet> job3;
     @FXML ComboBox<CharacterData> character1;
     @FXML ComboBox<CharacterData> character2;
 
@@ -172,17 +174,17 @@ public class JobRequirementController {
             jobId.setButtonCell(new JobCell());
             jobId.setCellFactory(x -> new JobCell());
 
-            job1.setItems(App.jobGroupList);
-            job1.setButtonCell(new JobGroupCell());
-            job1.setCellFactory(x -> new JobGroupCell());
+            job1.setItems(App.abilitySetList);
+            job1.setButtonCell(new AbilitySetCell());
+            job1.setCellFactory(x -> new AbilitySetCell());
 
-            job2.setItems(App.jobGroupList);
-            job2.setButtonCell(new JobGroupCell());
-            job2.setCellFactory(x -> new JobGroupCell());
+            job2.setItems(App.abilitySetList);
+            job2.setButtonCell(new AbilitySetCell());
+            job2.setCellFactory(x -> new AbilitySetCell());
             
-            job3.setItems(App.jobGroupList);
-            job3.setButtonCell(new JobGroupCell());
-            job3.setCellFactory(x -> new JobGroupCell());
+            job3.setItems(App.abilitySetList);
+            job3.setButtonCell(new AbilitySetCell());
+            job3.setCellFactory(x -> new AbilitySetCell());
 
             character1.setItems(App.characterList);
             character1.setButtonCell(new CharacterCell());

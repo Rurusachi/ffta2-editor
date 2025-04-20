@@ -18,11 +18,11 @@ public class JobRequirementData {
     public ObjectProperty<JobData> jobId = new SimpleObjectProperty<>();
     public ObjectProperty<CharacterData> character1 = new SimpleObjectProperty<>();
     public ObjectProperty<CharacterData> character2 = new SimpleObjectProperty<>();
-    public ObjectProperty<JobGroup> job1 = new SimpleObjectProperty<>();
+    public ObjectProperty<AbilitySet> job1 = new SimpleObjectProperty<>();
     public ObjectProperty<Byte> abilityNum1 = new SimpleObjectProperty<>();
-    public ObjectProperty<JobGroup> job2 = new SimpleObjectProperty<>();
+    public ObjectProperty<AbilitySet> job2 = new SimpleObjectProperty<>();
     public ObjectProperty<Byte> abilityNum2 = new SimpleObjectProperty<>();
-    public ObjectProperty<JobGroup> job3 = new SimpleObjectProperty<>();
+    public ObjectProperty<AbilitySet> job3 = new SimpleObjectProperty<>();
     public ObjectProperty<Byte> abilityNum3 = new SimpleObjectProperty<>();
 
     public JobRequirementData(ByteBuffer bytes, int id) {
@@ -34,11 +34,11 @@ public class JobRequirementData {
         character1.set(App.characterList.get(Byte.toUnsignedInt(bytes.get())));
         character2.set(App.characterList.get(Byte.toUnsignedInt(bytes.get())));
         byte jobId = bytes.get();
-        job1.set(App.jobGroupList.get(Byte.toUnsignedInt(jobId)));
+        job1.set(App.abilitySetList.get(Byte.toUnsignedInt(jobId)));
         abilityNum1.set(bytes.get());
-        job2.set(App.jobGroupList.get(Byte.toUnsignedInt(bytes.get())));
+        job2.set(App.abilitySetList.get(Byte.toUnsignedInt(bytes.get())));
         abilityNum2.set(bytes.get());
-        job3.set(App.jobGroupList.get(Byte.toUnsignedInt(bytes.get())));
+        job3.set(App.abilitySetList.get(Byte.toUnsignedInt(bytes.get())));
         abilityNum3.set(bytes.get());
     }
 
@@ -50,11 +50,11 @@ public class JobRequirementData {
         jobId.set(App.jobDataList.get(0));
         character1.set(App.characterList.get(0));
         character2.set(App.characterList.get(0));
-        job1.set(App.jobGroupList.get(0));
+        job1.set(App.abilitySetList.get(0));
         abilityNum1.set((byte)0);
-        job2.set(App.jobGroupList.get(0));
+        job2.set(App.abilitySetList.get(0));
         abilityNum2.set((byte)0);
-        job3.set(App.jobGroupList.get(0));
+        job3.set(App.abilitySetList.get(0));
         abilityNum3.set((byte)0);
     }
 
