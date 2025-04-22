@@ -30,6 +30,8 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import org.ruru.ffta2editor.utility.AutoCompleteComboBox;
+
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -167,8 +169,8 @@ public class FormationController {
     @FXML TextField _0x43;
 
     // Unit
-    @FXML ComboBox<CharacterData> character;
-    @FXML ComboBox<JobData> job;
+    @FXML AutoCompleteComboBox<CharacterData> character;
+    @FXML AutoCompleteComboBox<JobData> job;
     @FXML ComboBox<StringProperty> name;
     @FXML TextField minLevel;
     @FXML TextField maxLevel;
@@ -182,28 +184,28 @@ public class FormationController {
     @FXML TextField unit_0x0d;
 
 
-    @FXML ComboBox<AbilityData> primaryAbility1;
-    @FXML ComboBox<AbilityData> primaryAbility2;
-    @FXML ComboBox<AbilityData> primaryAbility3;
-    @FXML ComboBox<AbilityData> primaryAbility4;
-    @FXML ComboBox<AbilityData> primaryAbility5;
-    @FXML ComboBox<AbilityData> primaryAbility6;
+    @FXML AutoCompleteComboBox<AbilityData> primaryAbility1;
+    @FXML AutoCompleteComboBox<AbilityData> primaryAbility2;
+    @FXML AutoCompleteComboBox<AbilityData> primaryAbility3;
+    @FXML AutoCompleteComboBox<AbilityData> primaryAbility4;
+    @FXML AutoCompleteComboBox<AbilityData> primaryAbility5;
+    @FXML AutoCompleteComboBox<AbilityData> primaryAbility6;
 
-    @FXML ComboBox<AbilitySet> secondaryAbilitySet;
+    @FXML AutoCompleteComboBox<AbilitySet> secondaryAbilitySet;
 
-    @FXML ComboBox<AbilityData> secondaryAbility1;
-    @FXML ComboBox<AbilityData> secondaryAbility2;
-    @FXML ComboBox<AbilityData> secondaryAbility3;
-    @FXML ComboBox<AbilityData> secondaryAbility4;
+    @FXML AutoCompleteComboBox<AbilityData> secondaryAbility1;
+    @FXML AutoCompleteComboBox<AbilityData> secondaryAbility2;
+    @FXML AutoCompleteComboBox<AbilityData> secondaryAbility3;
+    @FXML AutoCompleteComboBox<AbilityData> secondaryAbility4;
 
-    @FXML ComboBox<SPAbilityData> passiveAbility;
-    @FXML ComboBox<SPAbilityData> reactionAbility;
+    @FXML AutoCompleteComboBox<SPAbilityData> passiveAbility;
+    @FXML AutoCompleteComboBox<SPAbilityData> reactionAbility;
 
-    @FXML ComboBox<EquipmentData> equipment1;
-    @FXML ComboBox<EquipmentData> equipment2;
-    @FXML ComboBox<EquipmentData> equipment3;
-    @FXML ComboBox<EquipmentData> equipment4;
-    @FXML ComboBox<EquipmentData> equipment5;
+    @FXML AutoCompleteComboBox<EquipmentData> equipment1;
+    @FXML AutoCompleteComboBox<EquipmentData> equipment2;
+    @FXML AutoCompleteComboBox<EquipmentData> equipment3;
+    @FXML AutoCompleteComboBox<EquipmentData> equipment4;
+    @FXML AutoCompleteComboBox<EquipmentData> equipment5;
 
     @FXML TextField unit_0x32;
     @FXML TextField unit_0x33;
@@ -243,22 +245,22 @@ public class FormationController {
                     abilityList.addAll(unitProperty.getValue().character.getValue().defaultJob.getValue().abilitySet.getValue().abilities.getValue().stream().map(x -> x.ability.getValue()).toList());
                 }
 
-                primaryAbility1.setItems(abilityList);
-                primaryAbility2.setItems(abilityList);
-                primaryAbility3.setItems(abilityList);
-                primaryAbility4.setItems(abilityList);
-                primaryAbility5.setItems(abilityList);
-                primaryAbility6.setItems(abilityList);
+                primaryAbility1.setData(abilityList);
+                primaryAbility2.setData(abilityList);
+                primaryAbility3.setData(abilityList);
+                primaryAbility4.setData(abilityList);
+                primaryAbility5.setData(abilityList);
+                primaryAbility6.setData(abilityList);
             }
         });
         secondaryAbilitySet.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 ObservableList<AbilityData> abilityList = FXCollections.observableArrayList(App.abilityList.getFirst());
                 abilityList.addAll(newValue.abilities.getValue().stream().map(x -> x.ability.getValue()).toList());
-                secondaryAbility1.setItems(abilityList);
-                secondaryAbility2.setItems(abilityList);
-                secondaryAbility3.setItems(abilityList);
-                secondaryAbility4.setItems(abilityList);
+                secondaryAbility1.setData(abilityList);
+                secondaryAbility2.setData(abilityList);
+                secondaryAbility3.setData(abilityList);
+                secondaryAbility4.setData(abilityList);
             }
         });
 
@@ -680,11 +682,11 @@ public class FormationController {
 
             formationUnitList.setCellFactory(x -> new FormationUnitCell());
 
-            character.setItems(App.characterList);
+            character.setData(App.characterList);
             character.setCellFactory(x -> new CharacterCell());
             character.setButtonCell(new CharacterCell());
         
-            job.setItems(App.jobDataList);
+            job.setData(App.jobDataList);
             job.setCellFactory(x -> new JobCell());
             job.setButtonCell(new JobCell());
         
@@ -692,23 +694,23 @@ public class FormationController {
             name.setButtonCell(new StringPropertyCell());
             name.setCellFactory(x -> new StringPropertyCell());
             
-            equipment1.setItems(App.equipmentList);
+            equipment1.setData(App.equipmentList);
             equipment1.setButtonCell(new ItemCell<>());
             equipment1.setCellFactory(x -> new ItemCell<>());
             
-            equipment2.setItems(App.equipmentList);
+            equipment2.setData(App.equipmentList);
             equipment2.setButtonCell(new ItemCell<>());
             equipment2.setCellFactory(x -> new ItemCell<>());
             
-            equipment3.setItems(App.equipmentList);
+            equipment3.setData(App.equipmentList);
             equipment3.setButtonCell(new ItemCell<>());
             equipment3.setCellFactory(x -> new ItemCell<>());
             
-            equipment4.setItems(App.equipmentList);
+            equipment4.setData(App.equipmentList);
             equipment4.setButtonCell(new ItemCell<>());
             equipment4.setCellFactory(x -> new ItemCell<>());
             
-            equipment5.setItems(App.equipmentList);
+            equipment5.setData(App.equipmentList);
             equipment5.setButtonCell(new ItemCell<>());
             equipment5.setCellFactory(x -> new ItemCell<>());
         
@@ -716,15 +718,15 @@ public class FormationController {
             law.setButtonCell(new StringPropertyCell());
             law.setCellFactory(x -> new StringPropertyCell());
         
-            secondaryAbilitySet.setItems(App.abilitySetList);
+            secondaryAbilitySet.setData(App.abilitySetList);
             secondaryAbilitySet.setCellFactory(x -> new AbilitySetCell());
             secondaryAbilitySet.setButtonCell(new AbilitySetCell());
             
-            passiveAbility.setItems(App.passiveAbilityList);
+            passiveAbility.setData(App.passiveAbilityList);
             passiveAbility.setButtonCell(new AbilityCell<>());
             passiveAbility.setCellFactory(x -> new AbilityCell<>());
             
-            reactionAbility.setItems(App.reactionAbilityList);
+            reactionAbility.setData(App.reactionAbilityList);
             reactionAbility.setButtonCell(new AbilityCell<>());
             reactionAbility.setCellFactory(x -> new AbilityCell<>());
             

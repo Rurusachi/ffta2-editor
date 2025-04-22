@@ -21,6 +21,7 @@ import org.ruru.ffta2editor.model.ability.RangeAOEType;
 import org.ruru.ffta2editor.model.ability.SPAbilityData;
 import org.ruru.ffta2editor.model.ability.SpecialRequirement;
 import org.ruru.ffta2editor.model.ability.WeaponRequirement;
+import org.ruru.ffta2editor.utility.AutoCompleteComboBox;
 import org.ruru.ffta2editor.utility.ByteChangeListener;
 import org.ruru.ffta2editor.utility.ShortChangeListener;
 import org.ruru.ffta2editor.utility.UnsignedByteStringConverter;
@@ -112,25 +113,25 @@ public class AbilityController {
     @FXML TextArea abilityDescription;
 
 
-    @FXML ComboBox<AbilityEffect.Targets> targets1;
-    @FXML ComboBox<AbilityEffect.Targets> targets2;
-    @FXML ComboBox<AbilityEffect.Targets> targets3;
-    @FXML ComboBox<AbilityEffect.Targets> targets4;
+    @FXML AutoCompleteComboBox<AbilityEffect.Targets> targets1;
+    @FXML AutoCompleteComboBox<AbilityEffect.Targets> targets2;
+    @FXML AutoCompleteComboBox<AbilityEffect.Targets> targets3;
+    @FXML AutoCompleteComboBox<AbilityEffect.Targets> targets4;
 
-    @FXML ComboBox<AbilityEffect.Effect> effect1;
-    @FXML ComboBox<AbilityEffect.Effect> effect2;
-    @FXML ComboBox<AbilityEffect.Effect> effect3;
-    @FXML ComboBox<AbilityEffect.Effect> effect4;
+    @FXML AutoCompleteComboBox<AbilityEffect.Effect> effect1;
+    @FXML AutoCompleteComboBox<AbilityEffect.Effect> effect2;
+    @FXML AutoCompleteComboBox<AbilityEffect.Effect> effect3;
+    @FXML AutoCompleteComboBox<AbilityEffect.Effect> effect4;
     
-    @FXML ComboBox<AbilityEffect.Accuracy> accuracy1;
-    @FXML ComboBox<AbilityEffect.Accuracy> accuracy2;
-    @FXML ComboBox<AbilityEffect.Accuracy> accuracy3;
-    @FXML ComboBox<AbilityEffect.Accuracy> accuracy4;
+    @FXML AutoCompleteComboBox<AbilityEffect.Accuracy> accuracy1;
+    @FXML AutoCompleteComboBox<AbilityEffect.Accuracy> accuracy2;
+    @FXML AutoCompleteComboBox<AbilityEffect.Accuracy> accuracy3;
+    @FXML AutoCompleteComboBox<AbilityEffect.Accuracy> accuracy4;
     
-    @FXML ComboBox<AbilityEffect.Modifier> modifier1;
-    @FXML ComboBox<AbilityEffect.Modifier> modifier2;
-    @FXML ComboBox<AbilityEffect.Modifier> modifier3;
-    @FXML ComboBox<AbilityEffect.Modifier> modifier4;
+    @FXML AutoCompleteComboBox<AbilityEffect.Modifier> modifier1;
+    @FXML AutoCompleteComboBox<AbilityEffect.Modifier> modifier2;
+    @FXML AutoCompleteComboBox<AbilityEffect.Modifier> modifier3;
+    @FXML AutoCompleteComboBox<AbilityEffect.Modifier> modifier4;
 
     
     @FXML TextField unknownByte0;
@@ -140,12 +141,12 @@ public class AbilityController {
     @FXML TextField unknownByte31;
 
     
-    @FXML ComboBox<Race> race1;
-    @FXML ComboBox<Race> race2;
-    @FXML ComboBox<Race> race3;
-    @FXML ComboBox<Race> race4;
-    @FXML ComboBox<Race> race5;
-    @FXML ComboBox<Race> race6;
+    @FXML AutoCompleteComboBox<Race> race1;
+    @FXML AutoCompleteComboBox<Race> race2;
+    @FXML AutoCompleteComboBox<Race> race3;
+    @FXML AutoCompleteComboBox<Race> race4;
+    @FXML AutoCompleteComboBox<Race> race5;
+    @FXML AutoCompleteComboBox<Race> race6;
     @FXML ComboBox<Byte> apIndex1;
     @FXML ComboBox<Byte> apIndex2;
     @FXML ComboBox<Byte> apIndex3;
@@ -153,21 +154,21 @@ public class AbilityController {
     @FXML ComboBox<Byte> apIndex5;
     @FXML ComboBox<Byte> apIndex6;
 
-    @FXML ComboBox<Short> learnedAbility;
+    @FXML AutoCompleteComboBox<AbilityData> learnedAbility;
 
 
     @FXML TextField power;
     @FXML TextField mpCost;
-    @FXML ComboBox<AbilityElement> abilityElement;
+    @FXML AutoCompleteComboBox<AbilityElement> abilityElement;
 
     @FXML TextField range;
     @FXML TextField radius;
     @FXML TextField heightDifference;
-    @FXML ComboBox<RangeAOEType> rangeAOEType;
+    @FXML AutoCompleteComboBox<RangeAOEType> rangeAOEType;
     
-    @FXML ComboBox<WeaponRequirement> weaponRequirement;
-    @FXML ComboBox<SpecialRequirement> specialRequirement;
-    @FXML ComboBox<AbilityMenuRoutine> menuRoutine;
+    @FXML AutoCompleteComboBox<WeaponRequirement> weaponRequirement;
+    @FXML AutoCompleteComboBox<SpecialRequirement> specialRequirement;
+    @FXML AutoCompleteComboBox<AbilityMenuRoutine> menuRoutine;
 
     
     @FXML CheckBox masteredByDefault;
@@ -233,7 +234,7 @@ public class AbilityController {
     private ObjectProperty<ActiveAbilityData> abilityProperty = new SimpleObjectProperty<>();
     private ObjectProperty<AbilityAnimation> abilityAnimationProperty = new SimpleObjectProperty<>();
 
-    private ArrayList<LinkedList<AbilityData>[]> raceAPSlots = new ArrayList<>();
+    private ArrayList<LinkedList<AbilityData>[]> raceAPSlots;
 
     private boolean isRebinding = false;
 
@@ -296,7 +297,7 @@ public class AbilityController {
             isRebinding = true;
             if (oldValue != null) unbindAbilityData();
             abilityProperty.setValue(newValue);
-            abilityAnimationProperty.setValue(abilityAnimationList.get(newValue.id));
+            abilityAnimationProperty.setValue(newValue != null ? abilityAnimationList.get(newValue.id) : null);
             if (newValue != null) bindAbilityData();
             isRebinding = false;
         });
@@ -315,40 +316,40 @@ public class AbilityController {
         race6.getSelectionModel().selectedItemProperty().addListener(new ApRaceChangeListener(apIndex6));
 
         ObservableList<AbilityEffect.Targets> targetEnums = FXCollections.observableArrayList(AbilityEffect.Targets.values());
-        targets1.setItems(targetEnums);
-        targets2.setItems(targetEnums);
-        targets3.setItems(targetEnums);
-        targets4.setItems(targetEnums);
+        targets1.setData(targetEnums);
+        targets2.setData(targetEnums);
+        targets3.setData(targetEnums);
+        targets4.setData(targetEnums);
         
         ObservableList<AbilityEffect.Effect> effectEnums = FXCollections.observableArrayList(AbilityEffect.Effect.values());
-        effect1.setItems(effectEnums);
-        effect2.setItems(effectEnums);
-        effect3.setItems(effectEnums);
-        effect4.setItems(effectEnums);
+        effect1.setData(effectEnums);
+        effect2.setData(effectEnums);
+        effect3.setData(effectEnums);
+        effect4.setData(effectEnums);
         
         ObservableList<AbilityEffect.Accuracy> accuracyEnums = FXCollections.observableArrayList(AbilityEffect.Accuracy.values());
-        accuracy1.setItems(accuracyEnums);
-        accuracy2.setItems(accuracyEnums);
-        accuracy3.setItems(accuracyEnums);
-        accuracy4.setItems(accuracyEnums);
+        accuracy1.setData(accuracyEnums);
+        accuracy2.setData(accuracyEnums);
+        accuracy3.setData(accuracyEnums);
+        accuracy4.setData(accuracyEnums);
         
         ObservableList<AbilityEffect.Modifier> modifierEnums = FXCollections.observableArrayList(AbilityEffect.Modifier.values());
-        modifier1.setItems(modifierEnums);
-        modifier2.setItems(modifierEnums);
-        modifier3.setItems(modifierEnums);
-        modifier4.setItems(modifierEnums);
+        modifier1.setData(modifierEnums);
+        modifier2.setData(modifierEnums);
+        modifier3.setData(modifierEnums);
+        modifier4.setData(modifierEnums);
 
         
         ObservableList<AbilityElement> abilityElementEnums = FXCollections.observableArrayList(AbilityElement.values());
-        abilityElement.setItems(abilityElementEnums);
+        abilityElement.setData(abilityElementEnums);
         ObservableList<RangeAOEType> rangeAOETypeEnums = FXCollections.observableArrayList(RangeAOEType.values());
-        rangeAOEType.setItems(rangeAOETypeEnums);
+        rangeAOEType.setData(rangeAOETypeEnums);
         ObservableList<WeaponRequirement> weaponRequirementEnums = FXCollections.observableArrayList(WeaponRequirement.values());
-        weaponRequirement.setItems(weaponRequirementEnums);
+        weaponRequirement.setData(weaponRequirementEnums);
         ObservableList<SpecialRequirement> specialRequirementEnums = FXCollections.observableArrayList(SpecialRequirement.values());
-        specialRequirement.setItems(specialRequirementEnums);
+        specialRequirement.setData(specialRequirementEnums);
         ObservableList<AbilityMenuRoutine> menuRoutineEnums = FXCollections.observableArrayList(AbilityMenuRoutine.values());
-        menuRoutine.setItems(menuRoutineEnums);
+        menuRoutine.setData(menuRoutineEnums);
         
         // Data validators
         unknownByte0.textProperty().addListener(new ShortChangeListener(unknownByte0));
@@ -387,12 +388,12 @@ public class AbilityController {
 
 
         ObservableList<Race> raceEnums = FXCollections.observableArrayList(Race.values());
-        race1.setItems(raceEnums);
-        race2.setItems(raceEnums);
-        race3.setItems(raceEnums);
-        race4.setItems(raceEnums);
-        race5.setItems(raceEnums);
-        race6.setItems(raceEnums);
+        race1.setData(raceEnums);
+        race2.setData(raceEnums);
+        race3.setData(raceEnums);
+        race4.setData(raceEnums);
+        race5.setData(raceEnums);
+        race6.setData(raceEnums);
 
         
         //ObservableList<String> abilityNameList = FXCollections.observableArrayList(AbilityData.abilityNames);
@@ -701,6 +702,7 @@ public class AbilityController {
     public void loadAbilities() throws Exception {
         if (App.archive != null) {
             // Active Abilities
+            activeAbilityList.getSelectionModel().clearSelection();
             ByteBuffer activeAbilityDataBytes = App.sysdata.getFile(4);
 
             if (activeAbilityDataBytes == null) {
@@ -751,7 +753,7 @@ public class AbilityController {
                 }
             }
             //supportAbilityList.setCellFactory(x -> new AbilityCell());
-            //supportAbilityList.setItems(reactionAbilityDataList);
+            //supportAbilityList.setData(reactionAbilityDataList);
             App.reactionAbilityList = reactionAbilityDataList;
             
             reactionAbilityDataBytes.rewind();
@@ -780,7 +782,7 @@ public class AbilityController {
                 }
             }
             //supportAbilityList.setCellFactory(x -> new AbilityCell());
-            //supportAbilityList.setItems(supportAbilityDataList);
+            //supportAbilityList.setData(supportAbilityDataList);
             App.passiveAbilityList = passiveAbilityDataList;
             
             passiveAbilityDataBytes.rewind();
@@ -789,6 +791,10 @@ public class AbilityController {
             App.abilityList.addAll(App.activeAbilityList);
             App.abilityList.addAll(App.reactionAbilityList.subList(1, App.reactionAbilityList.size()));
             App.abilityList.addAll(App.passiveAbilityList.subList(1, App.passiveAbilityList.size()));
+
+            for (ActiveAbilityData ability : activeAbilityDataList) {
+                ability.learnedAbility.set(App.abilityList.get(Short.toUnsignedInt(ability.learnedAbilityId)));
+            }
 
             // Ability Animations
             ByteBuffer abilityAnimationBytes = App.sysdata.getFile(5);
@@ -812,12 +818,15 @@ public class AbilityController {
             abilityAnimationBytes.rewind();
 
             
-            ObservableList<Short> abilityNameIds = FXCollections.observableArrayList(IntStream.range(0, App.abilityNames.size()).mapToObj(i -> (short)i).toList());
-            learnedAbility.setItems(abilityNameIds);
-            learnedAbility.setButtonCell(new AbilityIdCell());
-            learnedAbility.setCellFactory(x -> new AbilityIdCell());
+            //ObservableList<Short> abilityNameIds = FXCollections.observableArrayList(IntStream.range(0, App.abilityNames.size()).mapToObj(i -> (short)i).toList());
+            //learnedAbility.setData(abilityNameIds);
+            //learnedAbility.setButtonCell(new AbilityIdCell());
+            //learnedAbility.setCellFactory(x -> new AbilityIdCell());
+            learnedAbility.setData(App.abilityList);
+            learnedAbility.setButtonCell(new AbilityCell<>());
+            learnedAbility.setCellFactory(x -> new AbilityCell<>());
 
-
+            raceAPSlots = new ArrayList<>();
             logger.info("Building race AP slot lists");
             for (Race r : Race.values()) {
                 raceAPSlots.add(new LinkedList[200]);

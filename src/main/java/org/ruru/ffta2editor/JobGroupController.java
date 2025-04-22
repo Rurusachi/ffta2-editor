@@ -15,7 +15,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.ComboBox;
+import org.ruru.ffta2editor.utility.AutoCompleteComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -47,10 +47,10 @@ public class JobGroupController {
 
     @FXML ListView<JobGroup> jobGroupList;
 
-    @FXML ComboBox<JobData> job1;
-    @FXML ComboBox<JobData> job2;
-    @FXML ComboBox<JobData> job3;
-    @FXML ComboBox<JobData> job4;
+    @FXML AutoCompleteComboBox<JobData> job1;
+    @FXML AutoCompleteComboBox<JobData> job2;
+    @FXML AutoCompleteComboBox<JobData> job3;
+    @FXML AutoCompleteComboBox<JobData> job4;
 
     private ObjectProperty<JobGroup> jobGroupProperty = new SimpleObjectProperty<>();
 
@@ -125,19 +125,19 @@ public class JobGroupController {
             jobGroupList.setItems(jobGroupDataList);
             jobGroupList.setCellFactory(x -> new JobGroupCell());
         
-            job1.setItems(App.jobDataList);
+            job1.setData(App.jobDataList);
             job1.setCellFactory(x -> new JobCell());
             job1.setButtonCell(new JobCell());
 
-            job2.setItems(App.jobDataList);
+            job2.setData(App.jobDataList);
             job2.setCellFactory(x -> new JobCell());
             job2.setButtonCell(new JobCell());
 
-            job3.setItems(App.jobDataList);
+            job3.setData(App.jobDataList);
             job3.setCellFactory(x -> new JobCell());
             job3.setButtonCell(new JobCell());
 
-            job4.setItems(App.jobDataList);
+            job4.setData(App.jobDataList);
             job4.setCellFactory(x -> new JobCell());
             job4.setButtonCell(new JobCell());
 

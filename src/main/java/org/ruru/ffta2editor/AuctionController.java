@@ -25,6 +25,8 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import org.ruru.ffta2editor.utility.AutoCompleteComboBox;
+
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -96,7 +98,7 @@ public class AuctionController {
     @FXML ListView<AuctionPrizeItem> auctionGrandPrizeTableItemList;
 
     // Auction Info
-    // ComboBox
+    // AutoCompleteComboBox
     @FXML ComboBox<StringProperty> region;
     @FXML ComboBox<StringProperty> otherRegion1;
     @FXML ComboBox<StringProperty> otherRegion2;
@@ -114,14 +116,14 @@ public class AuctionController {
 
 
     // Auction Prize
-    @FXML ComboBox<ItemData> prize;
+    @FXML AutoCompleteComboBox<ItemData> prize;
 
     // Short
     @FXML TextField prizeFlagRequirement;
 
 
     // Auction Grand Prize
-    @FXML ComboBox<ItemData> grandPrize;
+    @FXML AutoCompleteComboBox<ItemData> grandPrize;
 
     // Short
     @FXML TextField grandPrizeFlagRequirement;
@@ -356,11 +358,11 @@ public class AuctionController {
             auctionInfoBytes.rewind();
 
             
-            prize.setItems(App.itemList);
+            prize.setData(App.itemList);
             prize.setCellFactory(x -> new ItemCell<>());
             prize.setButtonCell(new ItemCell<>());
 
-            grandPrize.setItems(App.itemList);
+            grandPrize.setData(App.itemList);
             grandPrize.setCellFactory(x -> new ItemCell<>());
             grandPrize.setButtonCell(new ItemCell<>());
 

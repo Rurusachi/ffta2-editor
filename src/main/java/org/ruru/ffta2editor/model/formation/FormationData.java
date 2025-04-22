@@ -38,4 +38,8 @@ public class FormationData {
 
         return new Pair<ByteBuffer,ByteBuffer>(ByteBuffer.wrap(header.toBytes()), unitBytes.rewind());
     }
+
+    public String toString() {
+        return String.format("%d", id);
+    }
 }

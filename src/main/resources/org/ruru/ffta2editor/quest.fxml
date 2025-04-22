@@ -35,6 +35,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
+<?import org.ruru.ffta2editor.utility.AutoCompleteComboBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
@@ -87,7 +88,7 @@
                                     <VBox alignment="TOP_CENTER">
                                        <children>
                                           <Label text="Formation" />
-                                          <ComboBox fx:id="formation" prefWidth="150.0" />
+                                          <AutoCompleteComboBox fx:id="formation" prefWidth="150.0" />
                                        </children>
                                     </VBox>
                                     <VBox alignment="TOP_CENTER">
@@ -126,17 +127,17 @@
                                              </children>
                                           </HBox>
                                           <Label text="Required Month" />
-                                          <ComboBox fx:id="monthRequirement" prefWidth="200.0" />
+                                          <AutoCompleteComboBox fx:id="monthRequirement" prefWidth="200.0" />
                                           <Label text="Required Day" />
                                           <TextField fx:id="dayRequirement" />
                                           <Label text="0x0D" />
                                           <TextField fx:id="_0x0d" />
                                           <Label text="Required Ability" />
-                                          <ComboBox fx:id="abilityRequirement" prefWidth="200.0" />
+                                          <AutoCompleteComboBox fx:id="abilityRequirement" prefWidth="200.0" />
                                           <Label text="Required Items (item/amount)" />
                                           <HBox>
                                              <children>
-                                                <ComboBox fx:id="requiredItem1" prefWidth="200.0" />
+                                                <AutoCompleteComboBox fx:id="requiredItem1" prefWidth="200.0" />
                                                 <TextField fx:id="requiredItemAmount1" />
                                              </children>
                                              <padding>
@@ -145,7 +146,7 @@
                                           </HBox>
                                           <HBox>
                                              <children>
-                                                <ComboBox fx:id="requiredItem2" prefWidth="200.0" />
+                                                <AutoCompleteComboBox fx:id="requiredItem2" prefWidth="200.0" />
                                                 <TextField fx:id="requiredItemAmount2" />
                                              </children>
                                           </HBox>
@@ -187,7 +188,7 @@
                                           <HBox alignment="CENTER" spacing="10.0">
                                              <children>
                                                 <CheckBox fx:id="dispatch" mnemonicParsing="false" />
-                                                <ComboBox fx:id="recommendedDispatch" prefWidth="150.0" />
+                                                <AutoCompleteComboBox fx:id="recommendedDispatch" prefWidth="150.0" />
                                              </children>
                                           </HBox>
                                        </children>
@@ -205,7 +206,7 @@
                                           <Label text="Item Rewards (item/amount)" />
                                           <HBox>
                                              <children>
-                                                <ComboBox fx:id="itemReward1" prefWidth="200.0" />
+                                                <AutoCompleteComboBox fx:id="itemReward1" prefWidth="200.0" />
                                                 <TextField fx:id="itemRewardAmount1" />
                                              </children>
                                              <padding>
@@ -214,7 +215,7 @@
                                           </HBox>
                                           <HBox>
                                              <children>
-                                                <ComboBox fx:id="itemReward2" prefWidth="200.0" />
+                                                <AutoCompleteComboBox fx:id="itemReward2" prefWidth="200.0" />
                                                 <TextField fx:id="itemRewardAmount2" />
                                              </children>
                                              <padding>
@@ -223,7 +224,7 @@
                                           </HBox>
                                           <HBox>
                                              <children>
-                                                <ComboBox fx:id="itemReward3" prefWidth="200.0" />
+                                                <AutoCompleteComboBox fx:id="itemReward3" prefWidth="200.0" />
                                                 <TextField fx:id="itemRewardAmount3" />
                                              </children>
                                              <padding>
@@ -232,7 +233,7 @@
                                           </HBox>
                                           <HBox>
                                              <children>
-                                                <ComboBox fx:id="itemReward4" prefWidth="200.0" />
+                                                <AutoCompleteComboBox fx:id="itemReward4" prefWidth="200.0" />
                                                 <TextField fx:id="itemRewardAmount4" />
                                              </children>
                                           </HBox>

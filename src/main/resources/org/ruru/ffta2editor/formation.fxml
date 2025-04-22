@@ -34,6 +34,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import org.ruru.ffta2editor.utility.AutoCompleteComboBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
@@ -110,7 +111,7 @@
                                     <VBox alignment="TOP_CENTER">
                                        <children>
                                           <Label text="Character" />
-                                          <ComboBox fx:id="character" prefWidth="150.0" />
+                                          <AutoCompleteComboBox fx:id="character" prefWidth="150.0" />
                                           <Label text="Name" />
                                           <ComboBox fx:id="name" prefWidth="150.0" />
                                           <Label text="Min Level" />
@@ -124,99 +125,99 @@
                                     <VBox alignment="TOP_CENTER" layoutX="579.0" layoutY="10.0">
                                        <children>
                                           <Label text="Job" />
-                                          <ComboBox fx:id="job" prefWidth="150.0">
+                                          <AutoCompleteComboBox fx:id="job" prefWidth="150.0">
                                              <VBox.margin>
                                                 <Insets />
                                              </VBox.margin>
-                                          </ComboBox>
+                                          </AutoCompleteComboBox>
                                           <Label text="Primary Abilities" />
-                                          <ComboBox fx:id="primaryAbility1" prefWidth="150.0">
+                                          <AutoCompleteComboBox fx:id="primaryAbility1" prefWidth="150.0">
                                              <VBox.margin>
                                                 <Insets bottom="17.0" />
                                              </VBox.margin>
-                                          </ComboBox>
-                                          <ComboBox fx:id="primaryAbility2" prefWidth="150.0">
+                                          </AutoCompleteComboBox>
+                                          <AutoCompleteComboBox fx:id="primaryAbility2" prefWidth="150.0">
                                              <VBox.margin>
                                                 <Insets bottom="17.0" />
                                              </VBox.margin>
-                                          </ComboBox>
-                                          <ComboBox fx:id="primaryAbility3" prefWidth="150.0">
+                                          </AutoCompleteComboBox>
+                                          <AutoCompleteComboBox fx:id="primaryAbility3" prefWidth="150.0">
                                              <VBox.margin>
                                                 <Insets bottom="17.0" />
                                              </VBox.margin>
-                                          </ComboBox>
-                                          <ComboBox fx:id="primaryAbility4" prefWidth="150.0">
+                                          </AutoCompleteComboBox>
+                                          <AutoCompleteComboBox fx:id="primaryAbility4" prefWidth="150.0">
                                              <VBox.margin>
                                                 <Insets bottom="17.0" />
                                              </VBox.margin>
-                                          </ComboBox>
-                                          <ComboBox fx:id="primaryAbility5" prefWidth="150.0">
+                                          </AutoCompleteComboBox>
+                                          <AutoCompleteComboBox fx:id="primaryAbility5" prefWidth="150.0">
                                              <VBox.margin>
                                                 <Insets bottom="17.0" />
                                              </VBox.margin>
-                                          </ComboBox>
-                                          <ComboBox fx:id="primaryAbility6" prefWidth="150.0">
+                                          </AutoCompleteComboBox>
+                                          <AutoCompleteComboBox fx:id="primaryAbility6" prefWidth="150.0">
                                              <VBox.margin>
                                                 <Insets />
                                              </VBox.margin>
-                                          </ComboBox>
+                                          </AutoCompleteComboBox>
                                           <Label text="Passive Ability" />
-                                          <ComboBox fx:id="passiveAbility" prefWidth="150.0" />
+                                          <AutoCompleteComboBox fx:id="passiveAbility" prefWidth="150.0" />
                                           <Label text="Reaction Ability" />
-                                          <ComboBox fx:id="reactionAbility" prefWidth="150.0" />
+                                          <AutoCompleteComboBox fx:id="reactionAbility" prefWidth="150.0" />
                                        </children>
                                     </VBox>
                                     <VBox alignment="TOP_CENTER">
                                        <children>
                                           <Label text="Secondary Ability Set" />
-                                          <ComboBox fx:id="secondaryAbilitySet" prefWidth="150.0" />
+                                          <AutoCompleteComboBox fx:id="secondaryAbilitySet" prefWidth="150.0" />
                                           <Label text="Secondary Abilities" />
-                                          <ComboBox fx:id="secondaryAbility1" prefWidth="150.0">
+                                          <AutoCompleteComboBox fx:id="secondaryAbility1" prefWidth="150.0">
                                              <VBox.margin>
                                                 <Insets bottom="17.0" />
                                              </VBox.margin>
-                                          </ComboBox>
-                                          <ComboBox fx:id="secondaryAbility2" prefWidth="150.0">
+                                          </AutoCompleteComboBox>
+                                          <AutoCompleteComboBox fx:id="secondaryAbility2" prefWidth="150.0">
                                              <VBox.margin>
                                                 <Insets bottom="17.0" />
                                              </VBox.margin>
-                                          </ComboBox>
-                                          <ComboBox fx:id="secondaryAbility3" prefWidth="150.0">
+                                          </AutoCompleteComboBox>
+                                          <AutoCompleteComboBox fx:id="secondaryAbility3" prefWidth="150.0">
                                              <VBox.margin>
                                                 <Insets bottom="17.0" />
                                              </VBox.margin>
-                                          </ComboBox>
-                                          <ComboBox fx:id="secondaryAbility4" prefWidth="150.0">
+                                          </AutoCompleteComboBox>
+                                          <AutoCompleteComboBox fx:id="secondaryAbility4" prefWidth="150.0">
                                              <VBox.margin>
                                                 <Insets bottom="17.0" />
                                              </VBox.margin>
-                                          </ComboBox>
+                                          </AutoCompleteComboBox>
                                        </children>
                                     </VBox>
                                     <VBox alignment="TOP_CENTER">
                                        <children>
                                           <Label text="Equipment" />
-                                          <ComboBox fx:id="equipment1" prefWidth="150.0">
+                                          <AutoCompleteComboBox fx:id="equipment1" prefWidth="150.0">
                                              <VBox.margin>
                                                 <Insets bottom="17.0" />
                                              </VBox.margin>
-                                          </ComboBox>
-                                          <ComboBox fx:id="equipment2" prefWidth="150.0">
+                                          </AutoCompleteComboBox>
+                                          <AutoCompleteComboBox fx:id="equipment2" prefWidth="150.0">
                                              <VBox.margin>
                                                 <Insets bottom="17.0" />
                                              </VBox.margin>
-                                          </ComboBox>
-                                          <ComboBox fx:id="equipment3" prefWidth="150.0">
+                                          </AutoCompleteComboBox>
+                                          <AutoCompleteComboBox fx:id="equipment3" prefWidth="150.0">
                                              <VBox.margin>
                                                 <Insets bottom="17.0" />
                                              </VBox.margin>
-                                          </ComboBox>
-                                          <ComboBox fx:id="equipment4" prefWidth="150.0">
+                                          </AutoCompleteComboBox>
+                                          <AutoCompleteComboBox fx:id="equipment4" prefWidth="150.0">
                                              <VBox.margin>
                                                 <Insets bottom="17.0" />
                                              </VBox.margin>
-                                          </ComboBox>
-                                          <ComboBox fx:id="equipment5" prefWidth="150.0" />
+                                          </AutoCompleteComboBox>
+                                          <AutoCompleteComboBox fx:id="equipment5" prefWidth="150.0" />
                                           <Label text="Loot Tables" />
                                           <GridPane>
                                             <columnConstraints>

@@ -267,4 +267,8 @@ public class AbilitySet {
         return new Pair<byte[],byte[]>(setBuffer.array(), abilityBuffer.array());
     }
 
+    @Override
+    public String toString() {
+        return String.format("%X: %s", id , name.getValue());
+    }
 }

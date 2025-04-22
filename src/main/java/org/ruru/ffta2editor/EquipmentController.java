@@ -36,6 +36,8 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+
+import org.ruru.ffta2editor.utility.AutoCompleteComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -70,16 +72,16 @@ public class EquipmentController {
     @FXML TextField equipmentName;
     @FXML TextArea equipmentDescription;
 
-    @FXML ComboBox<AbilityElement> element;
-    @FXML ComboBox<EquipmentType> equipmentType;
-    @FXML ComboBox<EquipmentLocation> equipmentLocation;
+    @FXML AutoCompleteComboBox<AbilityElement> element;
+    @FXML AutoCompleteComboBox<EquipmentType> equipmentType;
+    @FXML AutoCompleteComboBox<EquipmentLocation> equipmentLocation;
     @FXML ComboBox<StringProperty> bonusEffect;
-    @FXML ComboBox<AbilityData> ability1;
-    @FXML ComboBox<AbilityData> ability2;
-    @FXML ComboBox<AbilityData> ability3;
-    @FXML ComboBox<JobGroup> jobGroup1;
-    @FXML ComboBox<JobGroup> jobGroup2;
-    @FXML ComboBox<JobGroup> jobGroup3;
+    @FXML AutoCompleteComboBox<AbilityData> ability1;
+    @FXML AutoCompleteComboBox<AbilityData> ability2;
+    @FXML AutoCompleteComboBox<AbilityData> ability3;
+    @FXML AutoCompleteComboBox<JobGroup> jobGroup1;
+    @FXML AutoCompleteComboBox<JobGroup> jobGroup2;
+    @FXML AutoCompleteComboBox<JobGroup> jobGroup3;
     
     @FXML ComboBox<UnitSprite> sprite;
     @FXML ComboBox<Byte> palette;
@@ -149,11 +151,11 @@ public class EquipmentController {
             if (newValue != null) bindEquipmentData();
         });
         ObservableList<AbilityElement> abilityElementEnums = FXCollections.observableArrayList(AbilityElement.values());
-        element.setItems(abilityElementEnums);
+        element.setData(abilityElementEnums);
         ObservableList<EquipmentType> equipmentTypeEnums = FXCollections.observableArrayList(EquipmentType.values());
-        equipmentType.setItems(equipmentTypeEnums);
+        equipmentType.setData(equipmentTypeEnums);
         ObservableList<EquipmentLocation> equipmentLocationEnums = FXCollections.observableArrayList(EquipmentLocation.values());
-        equipmentLocation.setItems(equipmentLocationEnums);
+        equipmentLocation.setData(equipmentLocationEnums);
         palette.setItems(paletteList);
 
     
@@ -445,27 +447,27 @@ public class EquipmentController {
             bonusEffect.setCellFactory(x -> new StringPropertyCell());
             bonusEffect.setButtonCell(new StringPropertyCell());
 
-            ability1.setItems(App.abilityList);
+            ability1.setData(App.abilityList);
             ability1.setCellFactory(x -> new AbilityCell<>());
             ability1.setButtonCell(new AbilityCell<>());
 
-            ability2.setItems(App.abilityList);
+            ability2.setData(App.abilityList);
             ability2.setCellFactory(x -> new AbilityCell<>());
             ability2.setButtonCell(new AbilityCell<>());
 
-            ability3.setItems(App.abilityList);
+            ability3.setData(App.abilityList);
             ability3.setCellFactory(x -> new AbilityCell<>());
             ability3.setButtonCell(new AbilityCell<>());
 
-            jobGroup1.setItems(App.jobGroupList);
+            jobGroup1.setData(App.jobGroupList);
             jobGroup1.setCellFactory(x -> new JobGroupCell());
             jobGroup1.setButtonCell(new JobGroupCell());
 
-            jobGroup2.setItems(App.jobGroupList);
+            jobGroup2.setData(App.jobGroupList);
             jobGroup2.setCellFactory(x -> new JobGroupCell());
             jobGroup2.setButtonCell(new JobGroupCell());
 
-            jobGroup3.setItems(App.jobGroupList);
+            jobGroup3.setData(App.jobGroupList);
             jobGroup3.setCellFactory(x -> new JobGroupCell());
             jobGroup3.setButtonCell(new JobGroupCell());
         }

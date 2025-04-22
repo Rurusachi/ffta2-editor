@@ -8,4 +8,9 @@ public abstract class ItemData {
     public int id;
 
     abstract public byte[] toBytes();
+
+    @Override
+    public String toString() {
+        return String.format("%X: %s", id, name.getValue());
+    }
 }

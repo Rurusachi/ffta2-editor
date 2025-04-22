@@ -7,4 +7,5 @@ module org.ruru.ffta2editor {
 
     opens org.ruru.ffta2editor to javafx.fxml;
     exports org.ruru.ffta2editor;
+    exports org.ruru.ffta2editor.utility;
 }

@@ -34,6 +34,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import org.ruru.ffta2editor.utility.AutoCompleteComboBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
@@ -85,7 +86,7 @@
                                     <VBox alignment="TOP_CENTER">
                                        <children>
                                           <Label text="Gender" />
-                                          <ComboBox fx:id="gender" prefWidth="150.0" />
+                                          <AutoCompleteComboBox fx:id="gender" prefWidth="150.0" />
                                        </children>
                                     </VBox>
                                     <VBox alignment="TOP_CENTER">
@@ -97,7 +98,7 @@
                                     <VBox alignment="TOP_CENTER">
                                        <children>
                                           <Label text="Default Job" />
-                                          <ComboBox fx:id="defaultJob" prefWidth="150.0" />
+                                          <AutoCompleteComboBox fx:id="defaultJob" prefWidth="150.0" />
                                        </children>
                                     </VBox>
                                  </children>

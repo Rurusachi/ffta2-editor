@@ -91,7 +91,8 @@ public class ActiveAbilityData extends AbilityData {
     public SimpleObjectProperty<Byte> apIndex6 = new SimpleObjectProperty<>();
     public SimpleObjectProperty<Byte> _0x30 = new SimpleObjectProperty<>();
     public SimpleObjectProperty<Byte> _0x31 = new SimpleObjectProperty<>();
-    public SimpleObjectProperty<Short> learnedAbility = new SimpleObjectProperty<>();
+    public SimpleObjectProperty<AbilityData> learnedAbility = new SimpleObjectProperty<>();
+    public Short learnedAbilityId; // Needed because learnedAbility can't be set until all abilities have been loaded
 
     public class AbilityFlags {
         private BitSet flags;
@@ -267,13 +268,14 @@ public class ActiveAbilityData extends AbilityData {
         apIndex6.set(bytes.get());
         _0x30.set(bytes.get());
         _0x31.set(bytes.get());
-        learnedAbility.set(bytes.getShort());
+        learnedAbilityId = bytes.getShort();
+        //learnedAbility.set();
 
         abilityFlags.learnableByBlueMagick.bind(new BooleanBinding() {
             { bind(learnedAbility); }
             @Override
             protected boolean computeValue() {
-                return learnedAbility.getValue() != 0;
+                return learnedAbility.getValue() != null && learnedAbility.getValue().id != 0;
             }
             
         });
@@ -326,13 +328,14 @@ public class ActiveAbilityData extends AbilityData {
         apIndex6.set((byte)0);
         _0x30.set((byte)0);
         _0x31.set((byte)0);
-        learnedAbility.set((short)0);
+        learnedAbilityId = 0;
+        //learnedAbility.set((short)0);
 
         abilityFlags.learnableByBlueMagick.bind(new BooleanBinding() {
             { bind(learnedAbility); }
             @Override
             protected boolean computeValue() {
-                return learnedAbility.getValue() != 0;
+                return learnedAbility.getValue().id != 0;
             }
             
         });
@@ -377,7 +380,7 @@ public class ActiveAbilityData extends AbilityData {
         buffer.put(apIndex6.getValue().byteValue());
         buffer.put(_0x30.getValue().byteValue());
         buffer.put(_0x31.getValue().byteValue());
-        buffer.putShort(learnedAbility.getValue());
+        buffer.putShort((short)learnedAbility.getValue().id);
 
         return buffer.array();
     }

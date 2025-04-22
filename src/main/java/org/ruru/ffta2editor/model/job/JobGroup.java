@@ -44,4 +44,12 @@ public class JobGroup {
 
         return buffer.array();
     }
+
+    @Override
+    public String toString() {
+        return String.format("%X: (%s, %s, %s, %s)", id, job1.getValue().name.getValue(),
+                                                                              job2.getValue().name.getValue(),
+                                                                              job3.getValue().name.getValue(), 
+                                                                              job4.getValue().name.getValue());
+    }
 }

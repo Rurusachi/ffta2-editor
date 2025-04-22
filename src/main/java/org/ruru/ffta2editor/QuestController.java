@@ -33,6 +33,8 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+
+import org.ruru.ffta2editor.utility.AutoCompleteComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -69,8 +71,8 @@ public class QuestController {
     @FXML TextArea questDescription;
 
     // Quest Info
-    // ComboBox
-    @FXML ComboBox<FormationData> formation;
+    // AutoCompleteComboBox
+    @FXML AutoCompleteComboBox<FormationData> formation;
 
     // Short
     @FXML TextField info_0x02;
@@ -78,17 +80,17 @@ public class QuestController {
     @FXML TextField endEvent;
 
     // Quest Data
-    // ComboBox
-    @FXML ComboBox<FFTA2Month> monthRequirement;
-    @FXML ComboBox<AbilityData> abilityRequirement;
-    @FXML ComboBox<ItemData> requiredItem1;
-    @FXML ComboBox<ItemData> requiredItem2;
-    @FXML ComboBox<ItemData> itemReward1;
-    @FXML ComboBox<ItemData> itemReward2;
-    @FXML ComboBox<ItemData> itemReward3;
-    @FXML ComboBox<ItemData> itemReward4;
+    // AutoCompleteComboBox
+    @FXML AutoCompleteComboBox<FFTA2Month> monthRequirement;
+    @FXML AutoCompleteComboBox<AbilityData> abilityRequirement;
+    @FXML AutoCompleteComboBox<ItemData> requiredItem1;
+    @FXML AutoCompleteComboBox<ItemData> requiredItem2;
+    @FXML AutoCompleteComboBox<ItemData> itemReward1;
+    @FXML AutoCompleteComboBox<ItemData> itemReward2;
+    @FXML AutoCompleteComboBox<ItemData> itemReward3;
+    @FXML AutoCompleteComboBox<ItemData> itemReward4;
     @FXML ComboBox<StringProperty> questLocation;
-    @FXML ComboBox<JobData> recommendedDispatch;
+    @FXML AutoCompleteComboBox<JobData> recommendedDispatch;
 
     // Short
     @FXML TextField storyRequirement;
@@ -199,7 +201,7 @@ public class QuestController {
             if (newValue != null) bindQuestData();
         });
         ObservableList<FFTA2Month> monthEnums = FXCollections.observableArrayList(FFTA2Month.values());
-        monthRequirement.setItems(monthEnums);
+        monthRequirement.setData(monthEnums);
 
         
         // Data validators
@@ -599,39 +601,39 @@ public class QuestController {
             });
 
 
-            formation.setItems(App.formationList);
+            formation.setData(App.formationList);
             formation.setCellFactory(x -> new FormationCell());
             formation.setButtonCell(new FormationCell());
 
-            abilityRequirement.setItems(App.abilityList);
+            abilityRequirement.setData(App.abilityList);
             abilityRequirement.setCellFactory(x -> new AbilityCell<>());
             abilityRequirement.setButtonCell(new AbilityCell<>());
             
-            requiredItem1.setItems(App.itemList);
+            requiredItem1.setData(App.itemList);
             requiredItem1.setCellFactory(x -> new ItemCell<>());
             requiredItem1.setButtonCell(new ItemCell<>());
             
-            requiredItem2.setItems(App.itemList);
+            requiredItem2.setData(App.itemList);
             requiredItem2.setCellFactory(x -> new ItemCell<>());
             requiredItem2.setButtonCell(new ItemCell<>());
             
-            itemReward1.setItems(App.itemList);
+            itemReward1.setData(App.itemList);
             itemReward1.setCellFactory(x -> new ItemCell<>());
             itemReward1.setButtonCell(new ItemCell<>());
             
-            itemReward2.setItems(App.itemList);
+            itemReward2.setData(App.itemList);
             itemReward2.setCellFactory(x -> new ItemCell<>());
             itemReward2.setButtonCell(new ItemCell<>());
             
-            itemReward3.setItems(App.itemList);
+            itemReward3.setData(App.itemList);
             itemReward3.setCellFactory(x -> new ItemCell<>());
             itemReward3.setButtonCell(new ItemCell<>());
             
-            itemReward4.setItems(App.itemList);
+            itemReward4.setData(App.itemList);
             itemReward4.setCellFactory(x -> new ItemCell<>());
             itemReward4.setButtonCell(new ItemCell<>());
 
-            recommendedDispatch.setItems(App.jobDataList);
+            recommendedDispatch.setData(App.jobDataList);
             recommendedDispatch.setCellFactory(x -> new JobCell());
             recommendedDispatch.setButtonCell(new JobCell());
 

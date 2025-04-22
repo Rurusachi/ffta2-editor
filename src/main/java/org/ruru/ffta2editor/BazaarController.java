@@ -23,7 +23,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.ComboBox;
+import org.ruru.ffta2editor.utility.AutoCompleteComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -81,12 +81,12 @@ public class BazaarController {
     @FXML TextField storyRequirement;
     @FXML TextField flagRequirement;
 
-    @FXML ComboBox<EquipmentData> item;
+    @FXML AutoCompleteComboBox<EquipmentData> item;
     @FXML TextField grade;
 
-    @FXML ComboBox<LootData> loot1;
-    @FXML ComboBox<LootData> loot2;
-    @FXML ComboBox<LootData> loot3;
+    @FXML AutoCompleteComboBox<LootData> loot1;
+    @FXML AutoCompleteComboBox<LootData> loot2;
+    @FXML AutoCompleteComboBox<LootData> loot3;
     
 
     private ObjectProperty<BazaarSet> bazaarSetProperty = new SimpleObjectProperty<>();
@@ -247,19 +247,19 @@ public class BazaarController {
 
             bazaarSetBytes.rewind();
 
-            item.setItems(App.equipmentList);
+            item.setData(App.equipmentList);
             item.setCellFactory(x -> new ItemCell<>());
             item.setButtonCell(new ItemCell<>());
 
-            loot1.setItems(App.lootList);
+            loot1.setData(App.lootList);
             loot1.setCellFactory(x -> new ItemCell<>());
             loot1.setButtonCell(new ItemCell<>());
 
-            loot2.setItems(App.lootList);
+            loot2.setData(App.lootList);
             loot2.setCellFactory(x -> new ItemCell<>());
             loot2.setButtonCell(new ItemCell<>());
 
-            loot3.setItems(App.lootList);
+            loot3.setData(App.lootList);
             loot3.setCellFactory(x -> new ItemCell<>());
             loot3.setButtonCell(new ItemCell<>());
         }

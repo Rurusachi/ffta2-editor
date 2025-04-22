@@ -28,7 +28,7 @@ public class EquipmentData extends ItemData {
     public ObjectProperty<Byte> hitSound = new SimpleObjectProperty<>();
     public ObjectProperty<Short> buy = new SimpleObjectProperty<>();
     public ObjectProperty<Short> sell = new SimpleObjectProperty<>();
-    public ObjectProperty<Byte> bonusEffect = new SimpleObjectProperty<>();
+    public ObjectProperty<Byte> bonusEffect = new SimpleObjectProperty<>(); // table 0x12: offset 0x75
     public ObjectProperty<Byte> attack = new SimpleObjectProperty<>();
     public ObjectProperty<Byte> defense = new SimpleObjectProperty<>();
     public ObjectProperty<Byte> magick = new SimpleObjectProperty<>();

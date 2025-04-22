@@ -190,4 +190,8 @@ public class CharacterData {
 
         return buffer.array();
     }
+
+    public String toString() {
+        return String.format("%X: %s", id , nameString.getValue());
+    }
 }

@@ -8,4 +8,9 @@ public abstract class AbilityData {
     public int id;
 
     abstract public byte[] toBytes();
+
+    @Override
+    public String toString() {
+        return String.format("%X: %s", id , name.getValue());
+    }
 }

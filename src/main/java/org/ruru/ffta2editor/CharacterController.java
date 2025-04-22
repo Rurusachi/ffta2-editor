@@ -29,6 +29,8 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import org.ruru.ffta2editor.utility.AutoCompleteComboBox;
+
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -64,8 +66,8 @@ public class CharacterController {
 
     @FXML ComboBox<StringProperty> name;
     @FXML TextField dialogueRole;
-    @FXML ComboBox<JobGender> gender;
-    @FXML ComboBox<JobData> defaultJob;
+    @FXML AutoCompleteComboBox<JobGender> gender;
+    @FXML AutoCompleteComboBox<JobData> defaultJob;
     
     // Short
     @FXML ComboBox<StringProperty> jobName;
@@ -105,7 +107,7 @@ public class CharacterController {
             if (newValue != null) bindCharacterData();
         });
         ObservableList<JobGender> genderEnums = FXCollections.observableArrayList(JobGender.values());
-        gender.setItems(genderEnums);
+        gender.setData(genderEnums);
 
         unitPalette.setItems(unitPaletteList);
         enemyPalette.setItems(enemyPaletteList);
@@ -304,7 +306,7 @@ public class CharacterController {
             characterList.setItems(characterDataList);
             characterList.setCellFactory(x -> new CharacterCell());
             
-            defaultJob.setItems(App.jobDataList);
+            defaultJob.setData(App.jobDataList);
             defaultJob.setButtonCell(new JobCell());
             defaultJob.setCellFactory(x -> new JobCell());
 

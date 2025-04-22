@@ -34,6 +34,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import org.ruru.ffta2editor.utility.AutoCompleteComboBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
@@ -112,7 +113,7 @@
                                                 <VBox alignment="TOP_CENTER">
                                                    <children>
                                                       <Label text="Item" />
-                                                      <ComboBox fx:id="item" prefWidth="150.0" />
+                                                      <AutoCompleteComboBox fx:id="item" prefWidth="150.0" />
                                                    </children>
                                                 </VBox>
                                                 <VBox alignment="TOP_CENTER">
@@ -126,21 +127,21 @@
                                           <VBox alignment="TOP_CENTER">
                                              <children>
                                                 <Label text="Recipe" />
-                                                <ComboBox fx:id="loot1" prefWidth="150.0">
+                                                <AutoCompleteComboBox fx:id="loot1" prefWidth="150.0">
                                                    <VBox.margin>
                                                       <Insets bottom="10.0" />
                                                    </VBox.margin>
-                                                </ComboBox>
-                                                <ComboBox fx:id="loot2" prefWidth="150.0">
+                                                </AutoCompleteComboBox>
+                                                <AutoCompleteComboBox fx:id="loot2" prefWidth="150.0">
                                                    <VBox.margin>
                                                       <Insets bottom="10.0" />
                                                    </VBox.margin>
-                                                </ComboBox>
-                                                <ComboBox fx:id="loot3" prefWidth="150.0">
+                                                </AutoCompleteComboBox>
+                                                <AutoCompleteComboBox fx:id="loot3" prefWidth="150.0">
                                                    <VBox.margin>
                                                       <Insets bottom="10.0" />
                                                    </VBox.margin>
-                                                </ComboBox>
+                                                </AutoCompleteComboBox>
                                              </children>
                                           </VBox>
                                        </children>

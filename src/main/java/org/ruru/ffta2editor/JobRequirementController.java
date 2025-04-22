@@ -9,12 +9,11 @@ import java.util.logging.Logger;
 import org.ruru.ffta2editor.CharacterController.CharacterCell;
 import org.ruru.ffta2editor.JobController.AbilitySetCell;
 import org.ruru.ffta2editor.JobController.JobCell;
-import org.ruru.ffta2editor.JobGroupController.JobGroupCell;
 import org.ruru.ffta2editor.model.character.CharacterData;
 import org.ruru.ffta2editor.model.job.AbilitySet;
 import org.ruru.ffta2editor.model.job.JobData;
-import org.ruru.ffta2editor.model.job.JobGroup;
 import org.ruru.ffta2editor.model.job.JobRequirementData;
+import org.ruru.ffta2editor.utility.AutoCompleteComboBox;
 import org.ruru.ffta2editor.utility.ByteChangeListener;
 import org.ruru.ffta2editor.utility.ShortChangeListener;
 import org.ruru.ffta2editor.utility.UnsignedByteStringConverter;
@@ -26,7 +25,6 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -64,12 +62,12 @@ public class JobRequirementController {
     @FXML TextField abilityNum1;
     @FXML TextField abilityNum2;
     @FXML TextField abilityNum3;
-    @FXML ComboBox<JobData> jobId;
-    @FXML ComboBox<AbilitySet> job1;
-    @FXML ComboBox<AbilitySet> job2;
-    @FXML ComboBox<AbilitySet> job3;
-    @FXML ComboBox<CharacterData> character1;
-    @FXML ComboBox<CharacterData> character2;
+    @FXML AutoCompleteComboBox<JobData> jobId;
+    @FXML AutoCompleteComboBox<AbilitySet> job1;
+    @FXML AutoCompleteComboBox<AbilitySet> job2;
+    @FXML AutoCompleteComboBox<AbilitySet> job3;
+    @FXML AutoCompleteComboBox<CharacterData> character1;
+    @FXML AutoCompleteComboBox<CharacterData> character2;
 
     private ObjectProperty<JobRequirementData> jobRequirementProperty = new SimpleObjectProperty<>();
 
@@ -170,27 +168,27 @@ public class JobRequirementController {
 
             jobRequirementBytes.rewind();
             
-            jobId.setItems(App.jobDataList);
+            jobId.setData(App.jobDataList);
             jobId.setButtonCell(new JobCell());
             jobId.setCellFactory(x -> new JobCell());
 
-            job1.setItems(App.abilitySetList);
+            job1.setData(App.abilitySetList);
             job1.setButtonCell(new AbilitySetCell());
             job1.setCellFactory(x -> new AbilitySetCell());
 
-            job2.setItems(App.abilitySetList);
+            job2.setData(App.abilitySetList);
             job2.setButtonCell(new AbilitySetCell());
             job2.setCellFactory(x -> new AbilitySetCell());
             
-            job3.setItems(App.abilitySetList);
+            job3.setData(App.abilitySetList);
             job3.setButtonCell(new AbilitySetCell());
             job3.setCellFactory(x -> new AbilitySetCell());
 
-            character1.setItems(App.characterList);
+            character1.setData(App.characterList);
             character1.setButtonCell(new CharacterCell());
             character1.setCellFactory(x -> new CharacterCell());
 
-            character2.setItems(App.characterList);
+            character2.setData(App.characterList);
             character2.setButtonCell(new CharacterCell());
             character2.setCellFactory(x -> new CharacterCell());
         }

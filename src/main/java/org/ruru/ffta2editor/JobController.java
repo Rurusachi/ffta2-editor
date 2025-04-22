@@ -20,6 +20,7 @@ import org.ruru.ffta2editor.model.job.JobGender;
 import org.ruru.ffta2editor.model.job.JobMoveType;
 import org.ruru.ffta2editor.model.topSprite.TopSprite;
 import org.ruru.ffta2editor.model.unitFace.UnitFace;
+import org.ruru.ffta2editor.utility.AutoCompleteComboBox;
 import org.ruru.ffta2editor.utility.ByteChangeListener;
 import org.ruru.ffta2editor.utility.ShortChangeListener;
 import org.ruru.ffta2editor.utility.UnitSprite;
@@ -225,18 +226,18 @@ public class JobController {
     @FXML TextField _0x2a;
     @FXML TextField _0x2b;
     @FXML TextField _0x2c;
-    @FXML ComboBox<JobElementalResistance> fireResistance;
-    @FXML ComboBox<JobElementalResistance> airResistance;
-    @FXML ComboBox<JobElementalResistance> earthResistance;
-    @FXML ComboBox<JobElementalResistance> waterResistance;
-    @FXML ComboBox<JobElementalResistance> iceResistance;
-    @FXML ComboBox<JobElementalResistance> electricityResistance;
-    @FXML ComboBox<JobElementalResistance> holyResistance;
-    @FXML ComboBox<JobElementalResistance> darkResistance;
+    @FXML AutoCompleteComboBox<JobElementalResistance> fireResistance;
+    @FXML AutoCompleteComboBox<JobElementalResistance> airResistance;
+    @FXML AutoCompleteComboBox<JobElementalResistance> earthResistance;
+    @FXML AutoCompleteComboBox<JobElementalResistance> waterResistance;
+    @FXML AutoCompleteComboBox<JobElementalResistance> iceResistance;
+    @FXML AutoCompleteComboBox<JobElementalResistance> electricityResistance;
+    @FXML AutoCompleteComboBox<JobElementalResistance> holyResistance;
+    @FXML AutoCompleteComboBox<JobElementalResistance> darkResistance;
 
-    @FXML ComboBox<JobGender> gender;
-    @FXML ComboBox<Race> race;
-    @FXML ComboBox<JobMoveType> moveType;
+    @FXML AutoCompleteComboBox<JobGender> gender;
+    @FXML AutoCompleteComboBox<Race> race;
+    @FXML AutoCompleteComboBox<JobMoveType> moveType;
 
     @FXML TextField raceSomethingMaybe;
     @FXML TextField _0x32;
@@ -269,13 +270,13 @@ public class JobController {
 
 
     // Ability set
-    @FXML ComboBox<AbilitySet> abilitySetList;
+    @FXML AutoCompleteComboBox<AbilitySet> abilitySetList;
     @FXML ListView<AbilitySetAbility> abilitySetAbilityList;
     
     @FXML TextField abilitySetName;
     @FXML TextArea abilitySetDescription;
 
-    @FXML ComboBox<ActiveAbilityData> abilitySetAbilityData;
+    @FXML AutoCompleteComboBox<ActiveAbilityData> abilitySetAbilityData;
     @FXML TextField maxAP;
     @FXML TextField castAnimation;
     @FXML TextField ability_0x4;
@@ -365,20 +366,20 @@ public class JobController {
             abilitySetAbilityList.refresh();
         });
         ObservableList<Race> raceEnums = FXCollections.observableArrayList(Race.values());
-        race.setItems(raceEnums);
+        race.setData(raceEnums);
         ObservableList<JobMoveType> moveTypeEnums = FXCollections.observableArrayList(JobMoveType.values());
-        moveType.setItems(moveTypeEnums);
+        moveType.setData(moveTypeEnums);
         ObservableList<JobElementalResistance> elementalResistanceEnums = FXCollections.observableArrayList(JobElementalResistance.values());
-        fireResistance.setItems(elementalResistanceEnums);
-        airResistance.setItems(elementalResistanceEnums);
-        earthResistance.setItems(elementalResistanceEnums);
-        waterResistance.setItems(elementalResistanceEnums);
-        iceResistance.setItems(elementalResistanceEnums);
-        electricityResistance.setItems(elementalResistanceEnums);
-        holyResistance.setItems(elementalResistanceEnums);
-        darkResistance.setItems(elementalResistanceEnums);
+        fireResistance.setData(elementalResistanceEnums);
+        airResistance.setData(elementalResistanceEnums);
+        earthResistance.setData(elementalResistanceEnums);
+        waterResistance.setData(elementalResistanceEnums);
+        iceResistance.setData(elementalResistanceEnums);
+        electricityResistance.setData(elementalResistanceEnums);
+        holyResistance.setData(elementalResistanceEnums);
+        darkResistance.setData(elementalResistanceEnums);
         ObservableList<JobGender> genderEnums = FXCollections.observableArrayList(JobGender.values());
-        gender.setItems(genderEnums);
+        gender.setData(genderEnums);
 
         unitPalette.setItems(unitPaletteList);
         enemyPalette.setItems(enemyPaletteList);
@@ -955,13 +956,12 @@ public class JobController {
                     throw e;
                 }
             }
-            //abilitySetList.setCellFactory(x -> new JobCell());
             App.abilitySetList = abilitySetDataList;
-            abilitySetList.setItems(abilitySetDataList);
+            abilitySetList.setData(abilitySetDataList);
             abilitySetList.setButtonCell(new AbilitySetCell());
             abilitySetList.setCellFactory(x -> new AbilitySetCell());
 
-            abilitySetAbilityData.setItems(App.activeAbilityList);
+            abilitySetAbilityData.setData(App.activeAbilityList);
             abilitySetAbilityData.setButtonCell(new AbilityCell<>());
             abilitySetAbilityData.setCellFactory(x -> new AbilityCell<>());
 

@@ -34,6 +34,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.CheckBox?>
+<?import org.ruru.ffta2editor.utility.AutoCompleteComboBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
@@ -80,19 +81,19 @@
                                     <VBox alignment="TOP_CENTER">
                                        <children>
                                           <Label text="Type" />
-                                          <ComboBox fx:id="equipmentType" />
+                                          <AutoCompleteComboBox fx:id="equipmentType" />
                                        </children>
                                     </VBox>
                                     <VBox alignment="TOP_CENTER">
                                        <children>
                                           <Label text="Equipment Location" />
-                                          <ComboBox fx:id="equipmentLocation" />
+                                          <AutoCompleteComboBox fx:id="equipmentLocation" />
                                        </children>
                                     </VBox>
                                     <VBox alignment="TOP_CENTER">
                                        <children>
                                           <Label text="Element" />
-                                          <ComboBox fx:id="element" />
+                                          <AutoCompleteComboBox fx:id="element" />
                                        </children>
                                     </VBox>
                                  </children>
@@ -195,12 +196,12 @@
                                           <Label text="Job Group" GridPane.rowIndex="5" />
                                           <Label text="Ability" GridPane.rowIndex="7" />
                                           <Label text="Job Group" GridPane.rowIndex="8" />
-                                          <ComboBox fx:id="ability1" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                          <ComboBox fx:id="jobGroup1" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                          <ComboBox fx:id="ability2" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                          <ComboBox fx:id="jobGroup2" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                                          <ComboBox fx:id="ability3" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-                                          <ComboBox fx:id="jobGroup3" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                                          <AutoCompleteComboBox fx:id="ability1" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                          <AutoCompleteComboBox fx:id="jobGroup1" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                          <AutoCompleteComboBox fx:id="ability2" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                          <AutoCompleteComboBox fx:id="jobGroup2" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                          <AutoCompleteComboBox fx:id="ability3" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                                          <AutoCompleteComboBox fx:id="jobGroup3" GridPane.columnIndex="1" GridPane.rowIndex="8" />
                                        </children>
                                     </GridPane>
                                  </children>
