@@ -45,10 +45,24 @@ public class PatchesController {
                                             };
 
     private static int[] alwaysOverride = {57, 58, 59, 60, 67};
+
+    private struct PatchElement {
+        int address;
+        int originalBytes;
+        int modifiedBytes;
+    }
                                              
     //@FXML CheckBox animationFix;
 
     int entryLength;
+
+    @FXML
+    private ToggleButton signedEquipmentStats;
+
+    @FXML
+    public void initialize() {
+        signedEquipmentStats.setSelected(EquipmentData.patchedSignedStats);
+    }
 
     @FXML
     private void applyAnimationFix() {
@@ -218,6 +232,54 @@ public class PatchesController {
             
             Alert loadAlert = new Alert(AlertType.INFORMATION);
             loadAlert.setTitle("Expanded Top Sprite Index Limit patch");
+            loadAlert.setHeaderText("Patch applied");
+            //saveAlert.setDialogPane(new DialogPane());
+            loadAlert.show();
+        }
+    }
+
+    public void applySignedEquipmentStats() {
+        if (App.archive != null) {
+            List<PatchElement> arm9Patches = new ArrayList<>();
+
+            // MOVE
+            // JUMP
+            // EVASION
+            // SPEED
+            arm9Patches.add(new PatchElement(0x000b9b30, 0x1700d4e5, 0xd701d4e1)); // ldrb -> ldrsb r0, [r4, 0x17]
+            arm9Patches.add(new PatchElement(0x000cfcd8, 0x1710d0e5, 0xd711d0e1)); // ldrb -> ldrsb r1, [r0, 0x17]
+            arm9Patches.add(new PatchElement(0x00110808, 0x1710d4e5, 0xd711d4e1)); // ldrb -> ldrsb r1, [r4, 0x17]
+            arm9Patches.add(new PatchElement(0x0011080c, 0x000051e3, 0x0000a0e3)); // cmp r1, 0x0 -> mov r0, 0x0
+            arm9Patches.add(new PatchElement(0x00110810, 0x0f00000a, 0x18008de5)); // beq ... -> str r0, [sp, local_28]
+            arm9Patches.add(new PatchElement(0x00110820, 0x0000a0e3, 0xe1a00000)); // mov r0, 0x0 -> nop
+            arm9Patches.add(new PatchElement(0x00110848, 0x18008de5, 0x0100a0e3)); // str r0, [sp, local_28] -> mov r0, 0x1
+            arm9Patches.add(new PatchElement(0x00110ff8, 0x1710d4e5, 0xd711d4e1)); // ldrb -> ldrsb r1, [r4, 0x17]
+            arm9Patches.add(new PatchElement(0x00110ffc, 0x000051e3, 0x0000a0e3)); // cmp r1, 0x0 -> mov r0, 0x0
+            arm9Patches.add(new PatchElement(0x00111000, 0x0f00000a, 0x18008de5)); // beq ... -> str r0, [sp, local_28]
+            arm9Patches.add(new PatchElement(0x00111008, 0x0000a0e3, 0xe1a00000)); // mov r0, 0x0 -> nop
+            arm9Patches.add(new PatchElement(0x00111038, 0x18008de5, 0x0100a0e3)); // str r0, [sp, local_28] -> mov r0, 0x1
+            arm9Patches.add(new PatchElement(0x00111c44, 0x1710d4e5, 0xd711d4e1)); // ldrb -> ldrsb r1, [r4, 0x17]
+            arm9Patches.add(new PatchElement(0x00111c48, 0x000051e3, 0x0000a0e3)); // cmp r1, 0x0 -> mov r0, 0x0
+            arm9Patches.add(new PatchElement(0x00111c4c, 0x0f00000a, 0x18008de5)); // beq ... -> str r0, [sp, local_28]
+            arm9Patches.add(new PatchElement(0x00111c5c, 0x0000a0e3, 0xe1a00000)); // mov r0, 0x0 -> nop
+            arm9Patches.add(new PatchElement(0x00111c84, 0x18008de5, 0x0100a0e3)); // str r0, [sp, local_28] -> mov r0, 0x1
+            // ATTACK
+            // DEFENSE
+            // MAGIC
+            // RESISTANCE
+            
+            if (EquipmentData.patchedSignedStats) {
+                forEach (arm9Patches, (patch) -> {
+                    App.arm9.putInt(patch.address, patch.originalBytes);
+                });
+            } else {
+                forEach (arm9Patches, (patch) -> {
+                    App.arm9.putInt(patch.address, patch.modifiedBytes);
+                });
+            }
+            
+            Alert loadAlert = new Alert(AlertType.INFORMATION);
+            loadAlert.setTitle("Signed Equipment Stats patch");
             loadAlert.setHeaderText("Patch applied");
             //saveAlert.setDialogPane(new DialogPane());
             loadAlert.show();

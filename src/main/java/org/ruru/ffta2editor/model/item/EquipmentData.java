@@ -16,6 +16,9 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 
 public class EquipmentData extends ItemData {
+
+    public static boolean patchedSignedStats = false;
+
     public ObjectProperty<EquipmentType> equipmentType = new SimpleObjectProperty<>(); 
     public ObjectProperty<Short> notName = new SimpleObjectProperty<>();
     public ObjectProperty<AbilityElement> element = new SimpleObjectProperty<>();
