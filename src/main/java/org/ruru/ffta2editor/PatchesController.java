@@ -243,8 +243,59 @@ public class PatchesController {
             List<PatchElement> arm9Patches = new ArrayList<>();
 
             // MOVE
+            arm9Patches.add(new PatchElement(0x000b9b10, 0x1900d4e5, 0xd901d4e1)); // ldrb -> ldrsb r0, [r4, 0x19]
+            arm9Patches.add(new PatchElement(0x000cfd28, 0x1910d0e5, 0xd911d0e1)); // ldrb -> ldrsb r1, [r0, 0x19]
+            arm9Patches.add(new PatchElement(0x00110724, 0x1910d4e5, 0xd911d4e1)); // ldrb -> ldrsb r1, [r4, 0x19]
+            arm9Patches.add(new PatchElement(0x00110728, 0x000051e3, 0x0000a0e3)); // cmp r1, 0x0 -> mov r0, 0x0
+            arm9Patches.add(new PatchElement(0x0011072c, 0x0f00000a, 0x18008de5)); // beq ... -> str r0, [sp, local_28]
+            arm9Patches.add(new PatchElement(0x0011073c, 0x0000a0e3, 0xe1a00000)); // mov r0, 0x0 -> nop
+            arm9Patches.add(new PatchElement(0x00110764, 0x18008de5, 0x0100a0e3)); // str r0, [sp, local_28] -> mov r0, 0x1
+            arm9Patches.add(new PatchElement(0x00110f14, 0x1910d4e5, 0xd911d4e1)); // ldrb -> ldrsb r1, [r4, 0x19]
+            arm9Patches.add(new PatchElement(0x00110f18, 0x000051e3, 0x0000a0e3)); // cmp r1, 0x0 -> mov r0, 0x0
+            arm9Patches.add(new PatchElement(0x00110f1c, 0x0f00000a, 0x18008de5)); // beq ... -> str r0, [sp, local_28]
+            arm9Patches.add(new PatchElement(0x00110f24, 0x0000a0e3, 0xe1a00000)); // mov r0, 0x0 -> nop
+            arm9Patches.add(new PatchElement(0x00110f54, 0x18008de5, 0x0100a0e3)); // str r0, [sp, local_28] -> mov r0, 0x1
+            arm9Patches.add(new PatchElement(0x00111b30, 0x1910d4e5, 0xd911d4e1)); // ldrb -> ldrsb r1, [r4, 0x19]
+            arm9Patches.add(new PatchElement(0x00111b34, 0x000051e3, 0x0000a0e3)); // cmp r1, 0x0 -> mov r0, 0x0
+            arm9Patches.add(new PatchElement(0x00111b38, 0x1300000a, 0x18008de5)); // beq ... -> str r0, [sp, local_28]
+            arm9Patches.add(new PatchElement(0x00111b48, 0x0000a0e3, 0xe1a00000)); // mov r0, 0x0 -> nop
+            arm9Patches.add(new PatchElement(0x00111b70, 0x18008de5, 0x0100a0e3)); // str r0, [sp, local_28] -> mov r0, 0x1
             // JUMP
+            arm9Patches.add(new PatchElement(0x000b9b20, 0x1a00d4e5, 0xda01d4e1)); // ldrb -> ldrsb r0, [r4, 0x1a]
+            arm9Patches.add(new PatchElement(0x000cfd50, 0x1a10d0e5, 0xda11d0e1)); // ldrb -> ldrsb r1, [r0, 0x1a]
+            arm9Patches.add(new PatchElement(0x00110770, 0x1a10d4e5, 0xda11d4e1)); // ldrb -> ldrsb r1, [r4, 0x1a]
+            arm9Patches.add(new PatchElement(0x00110774, 0x000051e3, 0x0000a0e3)); // cmp r1, 0x0 -> mov r0, 0x0
+            arm9Patches.add(new PatchElement(0x00110778, 0x0f00000a, 0x18008de5)); // beq ... -> str r0, [sp, local_28]
+            arm9Patches.add(new PatchElement(0x00110788, 0x0000a0e3, 0xe1a00000)); // mov r0, 0x0 -> nop
+            arm9Patches.add(new PatchElement(0x001107b0, 0x18008de5, 0x0100a0e3)); // str r0, [sp, local_28] -> mov r0, 0x1
+            arm9Patches.add(new PatchElement(0x00110f60, 0x1a10d4e5, 0xda11d4e1)); // ldrb -> ldrsb r1, [r4, 0x1a]
+            arm9Patches.add(new PatchElement(0x00110f64, 0x000051e3, 0x0000a0e3)); // cmp r1, 0x0 -> mov r0, 0x0
+            arm9Patches.add(new PatchElement(0x00110f68, 0x0f00000a, 0x18008de5)); // beq ... -> str r0, [sp, local_28]
+            arm9Patches.add(new PatchElement(0x00110f70, 0x0000a0e3, 0xe1a00000)); // mov r0, 0x0 -> nop
+            arm9Patches.add(new PatchElement(0x00110fa0, 0x18008de5, 0x0100a0e3)); // str r0, [sp, local_28] -> mov r0, 0x1
+            arm9Patches.add(new PatchElement(0x00111b8c, 0x1a10d4e5, 0xda11d4e1)); // ldrb -> ldrsb r1, [r4, 0x1a]
+            arm9Patches.add(new PatchElement(0x00111b90, 0x000051e3, 0x0000a0e3)); // cmp r1, 0x0 -> mov r0, 0x0
+            arm9Patches.add(new PatchElement(0x00111b94, 0x1300000a, 0x18008de5)); // beq ... -> str r0, [sp, local_28]
+            arm9Patches.add(new PatchElement(0x00111ba4, 0x0000a0e3, 0xe1a00000)); // mov r0, 0x0 -> nop
+            arm9Patches.add(new PatchElement(0x00111bcc, 0x18008de5, 0x0100a0e3)); // str r0, [sp, local_28] -> mov r0, 0x1
             // EVASION
+            arm9Patches.add(new PatchElement(0x000b9b04, 0x1800d4e5, 0xd801d4e1)); // ldrbeq -> ldrsbeq r0, [r4, 0x18]
+            arm9Patches.add(new PatchElement(0x000cfd00, 0x1810d0e5, 0xd811d0e1)); // ldrb -> ldrsb r1, [r0, 0x18]
+            arm9Patches.add(new PatchElement(0x001107bc, 0x1810d4e5, 0xd811d4e1)); // ldrb -> ldrsb r1, [r4, 0x18]
+            arm9Patches.add(new PatchElement(0x001107c0, 0x000051e3, 0x0000a0e3)); // cmp r1, 0x0 -> mov r0, 0x0
+            arm9Patches.add(new PatchElement(0x001107c4, 0x0f00000a, 0x18008de5)); // beq ... -> str r0, [sp, local_28]
+            arm9Patches.add(new PatchElement(0x001107d4, 0x0000a0e3, 0xe1a00000)); // mov r0, 0x0 -> nop
+            arm9Patches.add(new PatchElement(0x001107fc, 0x18008de5, 0x0100a0e3)); // str r0, [sp, local_28] -> mov r0, 0x1
+            arm9Patches.add(new PatchElement(0x00110fac, 0x1810d4e5, 0xd811d4e1)); // ldrb -> ldrsb r1, [r4, 0x18]
+            arm9Patches.add(new PatchElement(0x00110fb0, 0x000051e3, 0x0000a0e3)); // cmp r1, 0x0 -> mov r0, 0x0
+            arm9Patches.add(new PatchElement(0x00110fb4, 0x0f00000a, 0x18008de5)); // beq ... -> str r0, [sp, local_28]
+            arm9Patches.add(new PatchElement(0x00110fbc, 0x0000a0e3, 0xe1a00000)); // mov r0, 0x0 -> nop
+            arm9Patches.add(new PatchElement(0x00110fec, 0x18008de5, 0x0100a0e3)); // str r0, [sp, local_28] -> mov r0, 0x1
+            arm9Patches.add(new PatchElement(0x00111be8, 0x1810d4e5, 0xd811d4e1)); // ldrb -> ldrsb r1, [r4, 0x18]
+            arm9Patches.add(new PatchElement(0x00111bec, 0x000051e3, 0x0000a0e3)); // cmp r1, 0x0 -> mov r0, 0x0
+            arm9Patches.add(new PatchElement(0x00111bf0, 0x1300000a, 0x18008de5)); // beq ... -> str r0, [sp, local_28]
+            arm9Patches.add(new PatchElement(0x00111c00, 0x0000a0e3, 0xe1a00000)); // mov r0, 0x0 -> nop
+            arm9Patches.add(new PatchElement(0x00111c28, 0x18008de5, 0x0100a0e3)); // str r0, [sp, local_28] -> mov r0, 0x1
             // SPEED
             arm9Patches.add(new PatchElement(0x000b9b30, 0x1700d4e5, 0xd701d4e1)); // ldrb -> ldrsb r0, [r4, 0x17]
             arm9Patches.add(new PatchElement(0x000cfcd8, 0x1710d0e5, 0xd711d0e1)); // ldrb -> ldrsb r1, [r0, 0x17]
@@ -260,7 +311,7 @@ public class PatchesController {
             arm9Patches.add(new PatchElement(0x00111038, 0x18008de5, 0x0100a0e3)); // str r0, [sp, local_28] -> mov r0, 0x1
             arm9Patches.add(new PatchElement(0x00111c44, 0x1710d4e5, 0xd711d4e1)); // ldrb -> ldrsb r1, [r4, 0x17]
             arm9Patches.add(new PatchElement(0x00111c48, 0x000051e3, 0x0000a0e3)); // cmp r1, 0x0 -> mov r0, 0x0
-            arm9Patches.add(new PatchElement(0x00111c4c, 0x0f00000a, 0x18008de5)); // beq ... -> str r0, [sp, local_28]
+            arm9Patches.add(new PatchElement(0x00111c4c, 0x1300000a, 0x18008de5)); // beq ... -> str r0, [sp, local_28]
             arm9Patches.add(new PatchElement(0x00111c5c, 0x0000a0e3, 0xe1a00000)); // mov r0, 0x0 -> nop
             arm9Patches.add(new PatchElement(0x00111c84, 0x18008de5, 0x0100a0e3)); // str r0, [sp, local_28] -> mov r0, 0x1
             // ATTACK
