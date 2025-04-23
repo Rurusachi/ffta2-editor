@@ -347,14 +347,9 @@ public class MainController {
         App.naUnitAnimTable = LZSS.decode(animTable.position(4)).decodedData;
 
 
-        if (App.arm9.getInt(0x000b5ab4) != 0xe5d00018) {
-            JobData.patchedTopSprite = true;
-            CharacterData.patchedTopSprite = true;
-        } else {
-            JobData.patchedTopSprite = false;
-            CharacterData.patchedTopSprite = false;
-        }
-        
+        JobData.patchedTopSprite = App.arm9.getInt(0x000b5ab4) != 0xe5d00018;
+        CharacterData.patchedTopSprite = App.arm9.getInt(0x000b5ab4) != 0xe5d00018;
+        EquipmentData.patchedSignedStats = App.arm9.getInt(0x000cfcd8) != 0x1710d0e5;
         
 
         logger.info("Loading Text");
