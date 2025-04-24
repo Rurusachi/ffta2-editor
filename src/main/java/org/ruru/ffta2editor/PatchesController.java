@@ -14,9 +14,13 @@ import org.ruru.ffta2editor.model.unitSst.UnitSst.SstHeaderNode;
 import org.ruru.ffta2editor.utility.LZSS;
 
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ToggleButton;
 import javafx.util.Pair;
@@ -28,6 +32,8 @@ public class PatchesController {
     public static BooleanProperty patchedExpandedTopSprites = new SimpleBooleanProperty();
     public static BooleanProperty patchedSignedEquipmentStats = new SimpleBooleanProperty();
     public static BooleanProperty patchedStartingMp = new SimpleBooleanProperty();
+    
+    public static IntegerProperty maxLevel = new SimpleIntegerProperty();
     
     
     
@@ -263,27 +269,6 @@ public class PatchesController {
         }
     }
 
-    @FXML 
-    public void applyStartingMpPatch() {
-        if (App.archive != null) {
-            List<PatchElement> arm9Patches = new ArrayList<>();
-
-            arm9Patches.add(new PatchElement(0x000b9180, 0xe3a01000, 0xe1c403b8)); // mov r1, 0x0 -> strh r0, [r4, 0x38]
-            arm9Patches.add(new PatchElement(0x000b918c, 0xe1c413b8, 0xe3a01000)); // strh r1, [r4, 0x38] -> mov r1, 0x0
-            arm9Patches.add(new PatchElement(0x000bac44, 0xe3a00000, 0xe1d503ba)); // mov r0, 0x0 -> ldrh r0, [r5, 0x3A]
-            
-            // The value is already flipped
-            boolean newValue = patchedStartingMp.getValue();
-            applyPatchElements(arm9Patches, App.arm9, newValue);
-            String alertText = newValue ? "Patch applied" : "Patch removed";
-
-            Alert loadAlert = new Alert(AlertType.INFORMATION);
-            loadAlert.setTitle("Max Starting MP patch");
-            loadAlert.setHeaderText(alertText);
-            loadAlert.show();
-        }
-    }
-
     @FXML
     public void applySignedEquipmentStats() {
         if (App.archive != null) {
@@ -455,10 +440,69 @@ public class PatchesController {
         }
     }
 
+    @FXML 
+    public void applyStartingMpPatch() {
+        if (App.archive != null) {
+            List<PatchElement> arm9Patches = new ArrayList<>();
+
+            arm9Patches.add(new PatchElement(0x000b9180, 0xe3a01000, 0xe1c403b8)); // mov r1, 0x0 -> strh r0, [r4, 0x38]
+            arm9Patches.add(new PatchElement(0x000b918c, 0xe1c413b8, 0xe3a01000)); // strh r1, [r4, 0x38] -> mov r1, 0x0
+            arm9Patches.add(new PatchElement(0x000bac44, 0xe3a00000, 0xe1d503ba)); // mov r0, 0x0 -> ldrh r0, [r5, 0x3A]
+            
+            // The value is already flipped
+            boolean newValue = patchedStartingMp.getValue();
+            applyPatchElements(arm9Patches, App.arm9, newValue);
+            String alertText = newValue ? "Patch applied" : "Patch removed";
+
+            Alert loadAlert = new Alert(AlertType.INFORMATION);
+            loadAlert.setTitle("Max Starting MP patch");
+            loadAlert.setHeaderText(alertText);
+            loadAlert.show();
+        }
+    }
+
+    @FXML
+    public void applyMaxLevelPatch() {
+        if (App.archive != null) {
+            
+            TextInputDialog dialog = new TextInputDialog(maxLevel.getValue().toString());
+            dialog.setTitle("Max Level patch");
+            var result = dialog.showAndWait();
+            if (!result.isPresent()) return;
+            
+            int newLevel;
+            try {
+                newLevel = Integer.parseInt(result.get());
+                if (newLevel < 1 || newLevel > 127) throw new Exception("Value must be between 1 and 127");
+            } catch (Exception e) {
+                Alert loadAlert = new Alert(AlertType.ERROR);
+                loadAlert.setTitle("Max Level patch");
+                loadAlert.setHeaderText(e.toString());
+                loadAlert.setContentText(e.getMessage());
+                loadAlert.show();
+                return;
+            }
+            maxLevel.set(newLevel);
+
+            App.arm9.put(0x000b9094, (byte)newLevel);
+            App.arm9.put(0x000b909c, (byte)newLevel);
+
+            
+            String alertText = String.format("Max level set to %d", newLevel);
+
+            Alert loadAlert = new Alert(AlertType.INFORMATION);
+            loadAlert.setTitle("Max Level patch");
+            loadAlert.setHeaderText(alertText);
+            loadAlert.show();
+        }
+
+    }
+
     public void loadPatches() {
-        patchedExpandedTopSprites.setValue(App.arm9.getInt(0x000b5ab4) != 0xe5d00018);
-        patchedSignedEquipmentStats.setValue(App.arm9.getInt(0x000cfcd8) != 0xe5d01017);
-        patchedStartingMp.setValue(App.arm9.getInt(0x000b9180) != 0xe3a01000);
+        patchedExpandedTopSprites.set(App.arm9.getInt(0x000b5ab4) != 0xe5d00018);
+        patchedSignedEquipmentStats.set(App.arm9.getInt(0x000cfcd8) != 0xe5d01017);
+        patchedStartingMp.set(App.arm9.getInt(0x000b9180) != 0xe3a01000);
+        maxLevel.set(App.arm9.get(0x000b9094));
         
         
         expandedTopSprites.selectedProperty().bindBidirectional(patchedExpandedTopSprites);

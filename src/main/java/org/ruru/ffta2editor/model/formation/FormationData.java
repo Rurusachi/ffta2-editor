@@ -44,6 +44,6 @@ public class FormationData {
     }
 
     public String toString() {
-        return String.format("%d", id);
+        return String.format("%X: %s", id, name.getValue());
     }
 }
