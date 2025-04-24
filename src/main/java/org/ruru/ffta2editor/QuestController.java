@@ -593,6 +593,9 @@ public class QuestController {
             questDataList.forEach(x -> {
                 try {
                     App.evMsgNames.get(Short.toUnsignedInt(x.info.startEvent.getValue())).set(x.name.getValue());
+                    if (x.info.formation.getValue().id != 0) {
+                        x.info.formation.getValue().name.set(x.name.getValue());
+                    }
                 } catch (Exception e) {
                     logger.log(Level.SEVERE, String.format("Failed to set Event %d name from Quest %d name", x.id, x.info.startEvent));
                     System.err.println(e);

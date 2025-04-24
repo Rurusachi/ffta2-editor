@@ -54,7 +54,7 @@ public class FormationController {
         @Override protected void updateItem(FormationData formation, boolean empty) {
             super.updateItem(formation, empty);
             if (formation != null) {
-                label.setText(String.format("%d", formation.id));
+                label.setText(String.format("%X: %s", formation.id, formation.name.getValue()));
             } else {
                 label.setText("");
             }
@@ -676,6 +676,7 @@ public class FormationController {
                 headerBytes.rewind();
                 unitBytes.rewind();
             }
+            formationDataList.get(0).name.set("Recruitable Units");
             App.formationList = formationDataList;
             formationList.setItems(formationDataList);
             formationList.setCellFactory(x -> new FormationCell());

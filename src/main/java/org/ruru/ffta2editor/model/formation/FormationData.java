@@ -3,17 +3,21 @@ package org.ruru.ffta2editor.model.formation;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.util.Pair;
 
 public class FormationData {
     public int id;
+    public StringProperty name = new SimpleStringProperty();
     public FormationHeader header;
     public ObservableList<FormationUnit> units;
 
     public FormationData(ByteBuffer headerBytes, ByteBuffer unitBytes, int id) {
         this.id = id;
+        this.name.set("");
         header = new FormationHeader(headerBytes);
         units = FXCollections.observableArrayList();
         for (int i = 0; i < Byte.toUnsignedInt(header.numUnits.getValue()); i++) {
