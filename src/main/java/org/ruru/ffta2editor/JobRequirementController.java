@@ -16,7 +16,7 @@ import org.ruru.ffta2editor.model.job.JobRequirementData;
 import org.ruru.ffta2editor.utility.AutoCompleteComboBox;
 import org.ruru.ffta2editor.utility.ByteChangeListener;
 import org.ruru.ffta2editor.utility.ShortChangeListener;
-import org.ruru.ffta2editor.utility.UnsignedByteStringConverter;
+import org.ruru.ffta2editor.utility.ByteStringConverter;
 import org.ruru.ffta2editor.utility.UnsignedShortStringConverter;
 
 import javafx.beans.binding.Bindings;
@@ -108,7 +108,7 @@ public class JobRequirementController {
         StringConverter<Short> unsignedShortConverter = new UnsignedShortStringConverter();
         Bindings.bindBidirectional(flag.textProperty(), jobRequirementProperty.getValue().flag, unsignedShortConverter);
 
-        StringConverter<Byte> unsignedByteConverter = new UnsignedByteStringConverter();
+        StringConverter<Byte> unsignedByteConverter = new ByteStringConverter();
         Bindings.bindBidirectional(indexOrder.textProperty(), jobRequirementProperty.getValue().indexOrder, unsignedByteConverter);
         Bindings.bindBidirectional(abilityNum1.textProperty(), jobRequirementProperty.getValue().abilityNum1, unsignedByteConverter);
         Bindings.bindBidirectional(abilityNum2.textProperty(), jobRequirementProperty.getValue().abilityNum2, unsignedByteConverter);

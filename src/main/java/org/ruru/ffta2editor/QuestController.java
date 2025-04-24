@@ -20,7 +20,7 @@ import org.ruru.ffta2editor.model.quest.Quest;
 import org.ruru.ffta2editor.utility.ByteChangeListener;
 import org.ruru.ffta2editor.utility.IntRangeChangeListener;
 import org.ruru.ffta2editor.utility.ShortChangeListener;
-import org.ruru.ffta2editor.utility.UnsignedByteStringConverter;
+import org.ruru.ffta2editor.utility.ByteStringConverter;
 import org.ruru.ffta2editor.utility.UnsignedShortStringConverter;
 
 import javafx.beans.binding.Bindings;
@@ -443,7 +443,7 @@ public class QuestController {
         Bindings.bindBidirectional(gilReward.textProperty(), questProperty.getValue().data.gilReward, unsignedShortConverter);
         Bindings.bindBidirectional(_0x58.textProperty(), questProperty.getValue().data._0x58, unsignedShortConverter);
 
-        StringConverter<Byte> unsignedByteConverter = new UnsignedByteStringConverter();
+        StringConverter<Byte> unsignedByteConverter = new ByteStringConverter();
         Bindings.bindBidirectional(type.textProperty(), questProperty.getValue().data.type, unsignedByteConverter);
         Bindings.bindBidirectional(questGroup.textProperty(), questProperty.getValue().data.questGroup, unsignedByteConverter);
         Bindings.bindBidirectional(rank.textProperty(), questProperty.getValue().data.rank, unsignedByteConverter);

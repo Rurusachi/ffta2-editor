@@ -14,7 +14,7 @@ import org.ruru.ffta2editor.model.item.EquipmentData;
 import org.ruru.ffta2editor.model.item.LootData;
 import org.ruru.ffta2editor.utility.IntRangeChangeListener;
 import org.ruru.ffta2editor.utility.ShortChangeListener;
-import org.ruru.ffta2editor.utility.UnsignedByteStringConverter;
+import org.ruru.ffta2editor.utility.ByteStringConverter;
 import org.ruru.ffta2editor.utility.UnsignedShortStringConverter;
 
 import javafx.beans.binding.Bindings;
@@ -158,7 +158,7 @@ public class BazaarController {
     public void bindBazaarSetItemData() {
         item.valueProperty().bindBidirectional(bazaarSetItemProperty.getValue().item);
 
-        StringConverter<Byte> unsignedByteConverter = new UnsignedByteStringConverter();
+        StringConverter<Byte> unsignedByteConverter = new ByteStringConverter();
         Bindings.bindBidirectional(grade.textProperty(), bazaarSetItemProperty.getValue().grade, unsignedByteConverter);
     }
 

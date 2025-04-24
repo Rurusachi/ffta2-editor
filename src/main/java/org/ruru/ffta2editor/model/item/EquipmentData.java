@@ -10,6 +10,7 @@ import org.ruru.ffta2editor.model.ability.AbilityElement;
 import org.ruru.ffta2editor.model.job.JobGroup;
 import org.ruru.ffta2editor.utility.UnitSprite;
 
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -17,7 +18,7 @@ import javafx.beans.property.SimpleStringProperty;
 
 public class EquipmentData extends ItemData {
 
-    public static boolean patchedSignedStats = false;
+    public static BooleanProperty patchedSignedStats = new SimpleBooleanProperty();
 
     public ObjectProperty<EquipmentType> equipmentType = new SimpleObjectProperty<>(); 
     public ObjectProperty<Short> notName = new SimpleObjectProperty<>();

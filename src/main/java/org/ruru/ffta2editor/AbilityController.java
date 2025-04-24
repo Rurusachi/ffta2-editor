@@ -24,7 +24,7 @@ import org.ruru.ffta2editor.model.ability.WeaponRequirement;
 import org.ruru.ffta2editor.utility.AutoCompleteComboBox;
 import org.ruru.ffta2editor.utility.ByteChangeListener;
 import org.ruru.ffta2editor.utility.ShortChangeListener;
-import org.ruru.ffta2editor.utility.UnsignedByteStringConverter;
+import org.ruru.ffta2editor.utility.ByteStringConverter;
 import org.ruru.ffta2editor.utility.UnsignedShortStringConverter;
 
 import javafx.beans.binding.Bindings;
@@ -541,7 +541,7 @@ public class AbilityController {
         modifier4.valueProperty().bindBidirectional(abilityProperty.getValue().effect4.modifierProperty);
 
 
-        StringConverter<Byte> unsignedByteConverter = new UnsignedByteStringConverter();
+        StringConverter<Byte> unsignedByteConverter = new ByteStringConverter();
         StringConverter<Short> unsignedShortConverter = new UnsignedShortStringConverter();
         Bindings.bindBidirectional(unknownByte0.textProperty(), abilityProperty.getValue()._0x0, unsignedShortConverter);
         Bindings.bindBidirectional(unknownByte4.textProperty(), abilityProperty.getValue()._0x4, unsignedByteConverter);

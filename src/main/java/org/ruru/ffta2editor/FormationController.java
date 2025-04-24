@@ -20,7 +20,7 @@ import org.ruru.ffta2editor.model.item.EquipmentData;
 import org.ruru.ffta2editor.model.job.AbilitySet;
 import org.ruru.ffta2editor.model.job.JobData;
 import org.ruru.ffta2editor.utility.ByteChangeListener;
-import org.ruru.ffta2editor.utility.UnsignedByteStringConverter;
+import org.ruru.ffta2editor.utility.ByteStringConverter;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.ObjectBinding;
@@ -440,7 +440,7 @@ public class FormationController {
 
         });
 
-        StringConverter<Byte> unsignedByteConverter = new UnsignedByteStringConverter();
+        StringConverter<Byte> unsignedByteConverter = new ByteStringConverter();
         Bindings.bindBidirectional(partyLimit.textProperty(), formationProperty.getValue().header.partyLimit, unsignedByteConverter);
         Bindings.bindBidirectional(_0x02.textProperty(), formationProperty.getValue().header._0x02, unsignedByteConverter);
         Bindings.bindBidirectional(_0x04.textProperty(), formationProperty.getValue().header._0x04, unsignedByteConverter);
@@ -573,7 +573,7 @@ public class FormationController {
 
         });
 
-        StringConverter<Byte> unsignedByteConverter = new UnsignedByteStringConverter();
+        StringConverter<Byte> unsignedByteConverter = new ByteStringConverter();
         Bindings.bindBidirectional(minLevel.textProperty(), unitProperty.getValue().minLevel, unsignedByteConverter);
         Bindings.bindBidirectional(maxLevel.textProperty(), unitProperty.getValue().maxLevel, unsignedByteConverter);
         Bindings.bindBidirectional(unit_0x06.textProperty(), unitProperty.getValue()._0x06, unsignedByteConverter);

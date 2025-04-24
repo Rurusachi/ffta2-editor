@@ -24,7 +24,7 @@ import org.ruru.ffta2editor.utility.AutoCompleteComboBox;
 import org.ruru.ffta2editor.utility.ByteChangeListener;
 import org.ruru.ffta2editor.utility.ShortChangeListener;
 import org.ruru.ffta2editor.utility.UnitSprite;
-import org.ruru.ffta2editor.utility.UnsignedByteStringConverter;
+import org.ruru.ffta2editor.utility.ByteStringConverter;
 import org.ruru.ffta2editor.utility.UnsignedShortStringConverter;
 
 import javafx.beans.binding.Bindings;
@@ -655,7 +655,7 @@ public class JobController {
         race.valueProperty().bindBidirectional(jobProperty.getValue().race);
         moveType.valueProperty().bindBidirectional(jobProperty.getValue().moveType);
 
-        StringConverter<Byte> unsignedByteConverter = new UnsignedByteStringConverter();
+        StringConverter<Byte> unsignedByteConverter = new ByteStringConverter();
         Bindings.bindBidirectional(hpBase.textProperty(), jobProperty.getValue().hpBase, unsignedByteConverter);
         Bindings.bindBidirectional(mpBase.textProperty(), jobProperty.getValue().mpBase, unsignedByteConverter);
         Bindings.bindBidirectional(speedBase.textProperty(), jobProperty.getValue().speedBase, unsignedByteConverter);
@@ -856,7 +856,7 @@ public class JobController {
     }
 
     public void bindAbilitySetAbilityData() {
-        StringConverter<Byte> unsignedByteConverter = new UnsignedByteStringConverter();
+        StringConverter<Byte> unsignedByteConverter = new ByteStringConverter();
         StringConverter<Short> unsignedShortConverter = new UnsignedShortStringConverter();
         Bindings.bindBidirectional(maxAP.textProperty(), abilitySetAbilityProperty.getValue().maxAP, unsignedByteConverter);
         Bindings.bindBidirectional(castAnimation.textProperty(), abilitySetAbilityProperty.getValue().castAnimation, unsignedShortConverter);

@@ -14,7 +14,7 @@ import org.ruru.ffta2editor.model.auction.AuctionPrizeTable.AuctionPrizeItem;
 import org.ruru.ffta2editor.model.item.ItemData;
 import org.ruru.ffta2editor.utility.ByteChangeListener;
 import org.ruru.ffta2editor.utility.ShortChangeListener;
-import org.ruru.ffta2editor.utility.UnsignedByteStringConverter;
+import org.ruru.ffta2editor.utility.ByteStringConverter;
 import org.ruru.ffta2editor.utility.UnsignedShortStringConverter;
 
 import javafx.beans.binding.Bindings;
@@ -228,7 +228,7 @@ public class AuctionController {
         Bindings.bindBidirectional(auctionStoryRequirement.textProperty(), auctionInfoProperty.getValue().storyRequirement, unsignedShortConverter);
         Bindings.bindBidirectional(entryFee.textProperty(), auctionInfoProperty.getValue().entryFee, unsignedShortConverter);
 
-        StringConverter<Byte> unsignedByteConverter = new UnsignedByteStringConverter();
+        StringConverter<Byte> unsignedByteConverter = new ByteStringConverter();
         Bindings.bindBidirectional(auctionFlagRequirement.textProperty(), auctionInfoProperty.getValue().flagRequirement, unsignedByteConverter);
         Bindings.bindBidirectional(_0x06.textProperty(), auctionInfoProperty.getValue()._0x06, unsignedByteConverter);
         Bindings.bindBidirectional(_0x07.textProperty(), auctionInfoProperty.getValue()._0x07, unsignedByteConverter);

@@ -23,7 +23,7 @@ import org.ruru.ffta2editor.model.job.JobGroup;
 import org.ruru.ffta2editor.utility.ByteChangeListener;
 import org.ruru.ffta2editor.utility.ShortChangeListener;
 import org.ruru.ffta2editor.utility.UnitSprite;
-import org.ruru.ffta2editor.utility.UnsignedByteStringConverter;
+import org.ruru.ffta2editor.utility.ByteStringConverter;
 import org.ruru.ffta2editor.utility.UnsignedShortStringConverter;
 
 import javafx.beans.binding.Bindings;
@@ -183,14 +183,14 @@ public class EquipmentController {
 
         hitEffect.textProperty().addListener(new ByteChangeListener(hitEffect));
         hitSound.textProperty().addListener(new ByteChangeListener(hitSound));
-        attack.textProperty().addListener(new ByteChangeListener(attack));
-        defense.textProperty().addListener(new ByteChangeListener(defense));
-        magick.textProperty().addListener(new ByteChangeListener(magick));
-        resistance.textProperty().addListener(new ByteChangeListener(resistance));
-        speed.textProperty().addListener(new ByteChangeListener(speed));
-        evasion.textProperty().addListener(new ByteChangeListener(evasion));
-        move.textProperty().addListener(new ByteChangeListener(move));
-        jump.textProperty().addListener(new ByteChangeListener(jump));
+        attack.textProperty().addListener(new ByteChangeListener(attack, EquipmentData.patchedSignedStats));
+        defense.textProperty().addListener(new ByteChangeListener(defense, EquipmentData.patchedSignedStats));
+        magick.textProperty().addListener(new ByteChangeListener(magick, EquipmentData.patchedSignedStats));
+        resistance.textProperty().addListener(new ByteChangeListener(resistance, EquipmentData.patchedSignedStats));
+        speed.textProperty().addListener(new ByteChangeListener(speed, EquipmentData.patchedSignedStats));
+        evasion.textProperty().addListener(new ByteChangeListener(evasion, EquipmentData.patchedSignedStats));
+        move.textProperty().addListener(new ByteChangeListener(move, EquipmentData.patchedSignedStats));
+        jump.textProperty().addListener(new ByteChangeListener(jump, EquipmentData.patchedSignedStats));
         range.textProperty().addListener(new ByteChangeListener(range));
     }
 
@@ -274,17 +274,18 @@ public class EquipmentController {
         Bindings.bindBidirectional(sell.textProperty(), equipmentProperty.getValue().sell, unsignedShortConverter);
         Bindings.bindBidirectional(attackEffect.textProperty(), equipmentProperty.getValue().attackEffect, unsignedShortConverter);
         
-        StringConverter<Byte> unsignedByteConverter = new UnsignedByteStringConverter();
+        StringConverter<Byte> unsignedByteConverter = new ByteStringConverter();
+        StringConverter<Byte> equipmentStatByteConverter = new ByteStringConverter(EquipmentData.patchedSignedStats);
         Bindings.bindBidirectional(hitEffect.textProperty(), equipmentProperty.getValue().hitEffect, unsignedByteConverter);
         Bindings.bindBidirectional(hitSound.textProperty(), equipmentProperty.getValue().hitSound, unsignedByteConverter);
-        Bindings.bindBidirectional(attack.textProperty(), equipmentProperty.getValue().attack, unsignedByteConverter);
-        Bindings.bindBidirectional(defense.textProperty(), equipmentProperty.getValue().defense, unsignedByteConverter);
-        Bindings.bindBidirectional(magick.textProperty(), equipmentProperty.getValue().magick, unsignedByteConverter);
-        Bindings.bindBidirectional(resistance.textProperty(), equipmentProperty.getValue().resistance, unsignedByteConverter);
-        Bindings.bindBidirectional(speed.textProperty(), equipmentProperty.getValue().speed, unsignedByteConverter);
-        Bindings.bindBidirectional(evasion.textProperty(), equipmentProperty.getValue().evasion, unsignedByteConverter);
-        Bindings.bindBidirectional(move.textProperty(), equipmentProperty.getValue().move, unsignedByteConverter);
-        Bindings.bindBidirectional(jump.textProperty(), equipmentProperty.getValue().jump, unsignedByteConverter);
+        Bindings.bindBidirectional(attack.textProperty(), equipmentProperty.getValue().attack, equipmentStatByteConverter);
+        Bindings.bindBidirectional(defense.textProperty(), equipmentProperty.getValue().defense, equipmentStatByteConverter);
+        Bindings.bindBidirectional(magick.textProperty(), equipmentProperty.getValue().magick, equipmentStatByteConverter);
+        Bindings.bindBidirectional(resistance.textProperty(), equipmentProperty.getValue().resistance, equipmentStatByteConverter);
+        Bindings.bindBidirectional(speed.textProperty(), equipmentProperty.getValue().speed, equipmentStatByteConverter);
+        Bindings.bindBidirectional(evasion.textProperty(), equipmentProperty.getValue().evasion, equipmentStatByteConverter);
+        Bindings.bindBidirectional(move.textProperty(), equipmentProperty.getValue().move, equipmentStatByteConverter);
+        Bindings.bindBidirectional(jump.textProperty(), equipmentProperty.getValue().jump, equipmentStatByteConverter);
         Bindings.bindBidirectional(range.textProperty(), equipmentProperty.getValue().range, unsignedByteConverter);
 
         

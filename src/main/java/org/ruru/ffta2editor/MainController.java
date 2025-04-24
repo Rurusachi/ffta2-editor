@@ -14,6 +14,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.ruru.ffta2editor.model.character.CharacterData;
+import org.ruru.ffta2editor.model.item.EquipmentData;
 import org.ruru.ffta2editor.model.job.JobData;
 import org.ruru.ffta2editor.utility.Archive;
 import org.ruru.ffta2editor.utility.IdxAndPak;
@@ -347,9 +348,6 @@ public class MainController {
         App.naUnitAnimTable = LZSS.decode(animTable.position(4)).decodedData;
 
 
-        JobData.patchedTopSprite = App.arm9.getInt(0x000b5ab4) != 0xe5d00018;
-        CharacterData.patchedTopSprite = App.arm9.getInt(0x000b5ab4) != 0xe5d00018;
-        EquipmentData.patchedSignedStats = App.arm9.getInt(0x000cfcd8) != 0x1710d0e5;
         
 
         logger.info("Loading Text");
@@ -376,6 +374,8 @@ public class MainController {
         bazaarTabController.loadBazaar();
         logger.info("Loading Auctions");
         auctionTabController.loadAuctions();
+        logger.info("Loading Patches");
+        patchesTabController.loadPatches();
     }
 
     private ColorAdjust dimEffect = new ColorAdjust();

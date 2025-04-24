@@ -19,7 +19,7 @@ import org.ruru.ffta2editor.model.topSprite.TopSprite;
 import org.ruru.ffta2editor.model.unitFace.UnitFace;
 import org.ruru.ffta2editor.utility.ByteChangeListener;
 import org.ruru.ffta2editor.utility.UnitSprite;
-import org.ruru.ffta2editor.utility.UnsignedByteStringConverter;
+import org.ruru.ffta2editor.utility.ByteStringConverter;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.ObjectBinding;
@@ -193,7 +193,7 @@ public class CharacterController {
         unitPortrait.valueProperty().bindBidirectional(characterProperty.getValue().unitPortrait);
         enemyPortrait.valueProperty().bindBidirectional(characterProperty.getValue().enemyPortrait);
         
-        StringConverter<Byte> unsignedByteConverter = new UnsignedByteStringConverter();
+        StringConverter<Byte> unsignedByteConverter = new ByteStringConverter();
         Bindings.bindBidirectional(dialogueRole.textProperty(), characterProperty.getValue().dialogueRole, unsignedByteConverter);
         Bindings.bindBidirectional(_0x13.textProperty(), characterProperty.getValue()._0x13, unsignedByteConverter);
         Bindings.bindBidirectional(_0x1a.textProperty(), characterProperty.getValue()._0x1a, unsignedByteConverter);
