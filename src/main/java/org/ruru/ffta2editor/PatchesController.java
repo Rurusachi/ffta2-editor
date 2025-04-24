@@ -7,24 +7,29 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.ruru.ffta2editor.model.character.CharacterData;
-import org.ruru.ffta2editor.model.item.EquipmentData;
-import org.ruru.ffta2editor.model.job.JobData;
 import org.ruru.ffta2editor.model.unitSst.UnitAnimation;
 import org.ruru.ffta2editor.model.unitSst.UnitAnimation.UnitAnimationFrame;
 import org.ruru.ffta2editor.model.unitSst.UnitSst;
 import org.ruru.ffta2editor.model.unitSst.UnitSst.SstHeaderNode;
 import org.ruru.ffta2editor.utility.LZSS;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
-import javafx.scene.control.ToggleButton;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ToggleButton;
 import javafx.util.Pair;
 
 public class PatchesController {
     
     private static Logger logger = Logger.getLogger("org.ruru.ffta2editor");
+
+    public static BooleanProperty patchedExpandedTopSprites = new SimpleBooleanProperty();
+    public static BooleanProperty patchedSignedEquipmentStats = new SimpleBooleanProperty();
+    public static BooleanProperty patchedStartingMp = new SimpleBooleanProperty();
+    
+    
     
     //private static List<Integer> bladed = Arrays.asList(0x21, 0x22, 0x23);
     //private static List<Integer> piercing = Arrays.asList(0x24, 0x25, 0x26);
@@ -49,13 +54,41 @@ public class PatchesController {
     private static int[] alwaysOverride = {57, 58, 59, 60, 67};
 
     private record PatchElement(int address, int originalBytes, int modifiedBytes){};
+
+    private void applyPatchElements(List<PatchElement> patches, ByteBuffer file, boolean apply) {
+        if (apply) {
+            for (PatchElement patch : patches) {
+                if (file.getInt(patch.address) != patch.originalBytes){
+                    System.err.println(String.format("applyPatchElements: Unexpected instruction (%08x) at %08x in arm9", App.arm9.getInt(patch.address), patch.address));
+                }
+                file.putInt(patch.address, patch.modifiedBytes);
+            }
+        } else {
+            for (PatchElement patch : patches) {
+                if (file.getInt(patch.address) != patch.modifiedBytes){
+                    System.err.println(String.format("applyPatchElements: Unexpected instruction (%08x) at %08x in arm9", App.arm9.getInt(patch.address), patch.address));
+                }
+                file.putInt(patch.address, patch.originalBytes);
+            }
+        }
+    }
+    //private void revertPatchElements(List<PatchElement> patches) {
+    //    for (PatchElement patch : patches) {
+    //        if (App.arm9.getInt(patch.address) != patch.modifiedBytes){
+    //            System.err.println(String.format("applyPatchElements: Unexpected instruction (%08x) at %08x in arm9", App.arm9.getInt(patch.address), patch.address));
+    //        }
+    //        App.arm9.putInt(patch.address, patch.originalBytes);
+    //    }
+    //}
                                              
     //@FXML CheckBox animationFix;
 
     int entryLength;
 
-    @FXML
-    private ToggleButton signedEquipmentStats;
+    
+    @FXML ToggleButton expandedTopSprites;
+    @FXML ToggleButton signedEquipmentStats;
+    @FXML ToggleButton startingMp;
 
     @FXML
     private void applyAnimationFix() {
@@ -142,7 +175,6 @@ public class PatchesController {
             Alert loadAlert = new Alert(AlertType.INFORMATION);
             loadAlert.setTitle("Animation Fix patch");
             loadAlert.setHeaderText("Patch applied");
-            //saveAlert.setDialogPane(new DialogPane());
             loadAlert.show();
         }
     }
@@ -206,27 +238,48 @@ public class PatchesController {
     }
 
     @FXML 
-    public void applyExpandedTopSpritesFix() {
+    public void applyExpandedTopSprites() {
         if (App.archive != null) {
+            List<PatchElement> arm9Patches = new ArrayList<>();
+            
             // Character data top sprite and enemy top sprite
-            App.arm9.putInt(0x000b5ab4, 0xe1d001b8); // ldrh r0, [r0, 0x18]
-            App.arm9.putInt(0x000b5abc, 0xe1d001ba); // ldrh r0, [r0, 0x1a]
+            arm9Patches.add(new PatchElement(0x000b5ab4, 0xe5d00018, 0xe1d001b8)); // ldrb r0, [r0, 0x18] -> ldrh r0, [r0, 0x18]
+            arm9Patches.add(new PatchElement(0x000b5abc, 0xe5d00019, 0xe1d001ba)); // ldrb r0, [r0, 0x19] -> ldrh r0, [r0, 0x1a]
             
             // Job Data top sprite and enemy top sprite
-            App.arm9.putInt(0x000b5e20, 0xe1d003bc); // ldrh r0, [r0, 0x3c]
-            App.arm9.putInt(0x000b5e28, 0xe1d003be); // ldrh r0, [r0, 0x3e]
-
-            App.arm9.putInt(0x000b5e78, 0xe5d00040); // ldrb r0, [r0, 0x40]
+            arm9Patches.add(new PatchElement(0x000b5e20, 0xe5d0003f , 0xe1d003bc)); // ldrb r0, [r0, 0x3f] -> ldrh r0, [r0, 0x3c]
+            arm9Patches.add(new PatchElement(0x000b5e28, 0xe5d00040 , 0xe1d003be)); // ldrb r0, [r0, 0x40] -> ldrh r0, [r0, 0x3e]
+            arm9Patches.add(new PatchElement(0x000b5e78, 0xe5d0003e , 0xe5d00040)); // ldrb r0, [r0, 0x3e] -> ldrb r0, [r0, 0x40]
             
-
-
-            JobData.patchedTopSprite = true;
-            CharacterData.patchedTopSprite = true;
+            // The value is already flipped
+            boolean newValue = patchedExpandedTopSprites.getValue();
+            applyPatchElements(arm9Patches, App.arm9, newValue);
+            String alertText = newValue ? "Patch applied" : "Patch removed";
             
             Alert loadAlert = new Alert(AlertType.INFORMATION);
-            loadAlert.setTitle("Expanded Top Sprite Index Limit patch");
-            loadAlert.setHeaderText("Patch applied");
-            //saveAlert.setDialogPane(new DialogPane());
+            loadAlert.setTitle("Max Starting MP patch.");
+            loadAlert.setHeaderText(String.format("%s. Please restart the editor", alertText));
+            loadAlert.show();
+        }
+    }
+
+    @FXML 
+    public void applyStartingMpPatch() {
+        if (App.archive != null) {
+            List<PatchElement> arm9Patches = new ArrayList<>();
+
+            arm9Patches.add(new PatchElement(0x000b9180, 0xe3a01000, 0xe1c403b8)); // mov r1, 0x0 -> strh r0, [r4, 0x38]
+            arm9Patches.add(new PatchElement(0x000b918c, 0xe1c413b8, 0xe3a01000)); // strh r1, [r4, 0x38] -> mov r1, 0x0
+            arm9Patches.add(new PatchElement(0x000bac44, 0xe3a00000, 0xe1d503ba)); // mov r0, 0x0 -> ldrh r0, [r5, 0x3A]
+            
+            // The value is already flipped
+            boolean newValue = patchedStartingMp.getValue();
+            applyPatchElements(arm9Patches, App.arm9, newValue);
+            String alertText = newValue ? "Patch applied" : "Patch removed";
+
+            Alert loadAlert = new Alert(AlertType.INFORMATION);
+            loadAlert.setTitle("Max Starting MP patch");
+            loadAlert.setHeaderText(alertText);
             loadAlert.show();
         }
     }
@@ -389,54 +442,28 @@ public class PatchesController {
             arm9Patches.add(new PatchElement(0x00111e20, 0xe3a00000, 0xe1a00000)); // mov r0, 0x0 -> nop
             arm9Patches.add(new PatchElement(0x00111e48, 0xe58d0018, 0xe3a00001)); // str r0, [sp, local_50] -> mov r0, 0x1
             
-            String alertText;
             // The value is already flipped
-            if (!EquipmentData.patchedSignedStats.getValue()) {
-                for (PatchElement patch : arm9Patches) {
-                    if (App.arm9.getInt(patch.address) != patch.modifiedBytes){
-                        System.err.println(String.format("patchedSignedStats: Unexpected instruction (%08x) at %08x in arm9", App.arm9.getInt(patch.address), patch.address));
-                    }
-                    App.arm9.putInt(patch.address, patch.originalBytes);
-                }
-                for (PatchElement patch : overlay11Patches) {
-                    if (App.overlay11.getInt(patch.address) != patch.modifiedBytes){
-                        System.err.println(String.format("patchedSignedStats: Unexpected instruction (%08x) at %08x in overlay11", App.arm9.getInt(patch.address), patch.address));
-                    }
-                    App.overlay11.putInt(patch.address, patch.originalBytes);
-                }
-                alertText = "Patch removed";
-            } else {
-                for (PatchElement patch : arm9Patches) {
-                    if (App.arm9.getInt(patch.address) != patch.originalBytes){
-                        System.err.println(String.format("patchedSignedStats: Unexpected instruction (%08x) at %08x in arm9", App.arm9.getInt(patch.address), patch.address));
-                    }
-                    App.arm9.putInt(patch.address, patch.modifiedBytes);
-                }
-                for (PatchElement patch : overlay11Patches) {
-                    if (App.overlay11.getInt(patch.address) != patch.originalBytes){
-                        System.err.println(String.format("patchedSignedStats: Unexpected instruction (%08x) at %08x in overlay11", App.arm9.getInt(patch.address), patch.address));
-                    }
-                    App.overlay11.putInt(patch.address, patch.modifiedBytes);
-                }
-                alertText = "Patch applied";
-            }
+            boolean newValue = patchedSignedEquipmentStats.getValue();
+            applyPatchElements(arm9Patches, App.arm9, newValue);
+            applyPatchElements(overlay11Patches, App.overlay11, newValue);
+            String alertText = newValue ? "Patch applied" : "Patch removed";
             
             Alert loadAlert = new Alert(AlertType.INFORMATION);
             loadAlert.setTitle("Signed Equipment Stats patch");
             loadAlert.setHeaderText(alertText);
-            //saveAlert.setDialogPane(new DialogPane());
             loadAlert.show();
         }
     }
 
     public void loadPatches() {
-        boolean patchedTopSprite = App.arm9.getInt(0x000b5ab4) != 0xe5d00018;
-        JobData.patchedTopSprite = patchedTopSprite;
-        CharacterData.patchedTopSprite = patchedTopSprite;
-        EquipmentData.patchedSignedStats.setValue(App.arm9.getInt(0x000cfcd8) != 0xe5d01017);
-        System.out.println(String.format("EquipmentData.patchedSignedStats: %s", EquipmentData.patchedSignedStats.getValue().toString()));
+        patchedExpandedTopSprites.setValue(App.arm9.getInt(0x000b5ab4) != 0xe5d00018);
+        patchedSignedEquipmentStats.setValue(App.arm9.getInt(0x000cfcd8) != 0xe5d01017);
+        patchedStartingMp.setValue(App.arm9.getInt(0x000b9180) != 0xe3a01000);
         
-        signedEquipmentStats.selectedProperty().bindBidirectional(EquipmentData.patchedSignedStats);
+        
+        expandedTopSprites.selectedProperty().bindBidirectional(patchedExpandedTopSprites);
+        signedEquipmentStats.selectedProperty().bindBidirectional(patchedSignedEquipmentStats);
+        startingMp.selectedProperty().bindBidirectional(patchedStartingMp);
     }
     
     public void applyPatches() {

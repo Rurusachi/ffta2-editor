@@ -13,9 +13,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.ruru.ffta2editor.model.character.CharacterData;
-import org.ruru.ffta2editor.model.item.EquipmentData;
-import org.ruru.ffta2editor.model.job.JobData;
 import org.ruru.ffta2editor.utility.Archive;
 import org.ruru.ffta2editor.utility.IdxAndPak;
 import org.ruru.ffta2editor.utility.LZSS;
@@ -350,6 +347,8 @@ public class MainController {
 
         
 
+        logger.info("Loading Patches");
+        patchesTabController.loadPatches();
         logger.info("Loading Text");
         textTabController.loadMessages();
         logger.info("Loading Abilities");
@@ -374,8 +373,6 @@ public class MainController {
         bazaarTabController.loadBazaar();
         logger.info("Loading Auctions");
         auctionTabController.loadAuctions();
-        logger.info("Loading Patches");
-        patchesTabController.loadPatches();
     }
 
     private ColorAdjust dimEffect = new ColorAdjust();

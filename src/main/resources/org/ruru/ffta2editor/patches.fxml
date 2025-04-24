@@ -19,8 +19,9 @@
                </padding>
                <children>
                   <Button fx:id="animationFix" mnemonicParsing="false" onAction="#applyAnimationFix" text="Animation Fix (irreversible)" />
-                  <Button fx:id="expandedTopSpritesFix" mnemonicParsing="false" onAction="#applyExpandedTopSpritesFix" text="Expanded Top Sprite Index Limit" />
+                  <ToggleButton fx:id="expandedTopSprites" mnemonicParsing="false" onAction="#applyExpandedTopSprites" text="Expanded Top Sprite Index Limit" />
                   <ToggleButton fx:id="signedEquipmentStats" mnemonicParsing="false" onAction="#applySignedEquipmentStats" text="Equipment can have negative stats" />
+                  <ToggleButton fx:id="startingMp" mnemonicParsing="false" onAction="#applyStartingMpPatch" text="Units start with max MP" />
                </children>
             </VBox>
          </children>

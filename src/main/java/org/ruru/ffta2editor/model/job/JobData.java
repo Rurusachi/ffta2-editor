@@ -5,6 +5,7 @@ import java.nio.ByteOrder;
 import java.util.BitSet;
 
 import org.ruru.ffta2editor.App;
+import org.ruru.ffta2editor.PatchesController;
 import org.ruru.ffta2editor.model.Race;
 import org.ruru.ffta2editor.model.topSprite.TopSprite;
 import org.ruru.ffta2editor.model.unitFace.UnitFace;
@@ -16,8 +17,6 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public class JobData {
-
-    public static boolean patchedTopSprite = false;
     
     //public String name;
     public StringProperty name;
@@ -366,7 +365,7 @@ public class JobData {
         _0x39.set(bytes.get());
         _0x3a.set(bytes.get());
         _0x3b.set(bytes.get());
-        if (patchedTopSprite) {
+        if (PatchesController.patchedExpandedTopSprites.getValue()) {
             unitTopSprite.set(App.topSprites.get(Short.toUnsignedInt(bytes.getShort())));
             enemyTopSprite.set(App.topSprites.get(Short.toUnsignedInt(bytes.getShort())));
             _0x3e.set(bytes.get()); // 0x3e -> 0x40
@@ -538,7 +537,7 @@ public class JobData {
         buffer.put(_0x39.getValue());
         buffer.put(_0x3a.getValue());
         buffer.put(_0x3b.getValue());
-        if (patchedTopSprite) {
+        if (PatchesController.patchedExpandedTopSprites.getValue()) {
             buffer.putShort((short)unitTopSprite.getValue().id);
             buffer.putShort((short)enemyTopSprite.getValue().id);
             buffer.put(_0x3e.getValue()); // 0x3e -> 0x40

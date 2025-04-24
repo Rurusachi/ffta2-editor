@@ -183,14 +183,14 @@ public class EquipmentController {
 
         hitEffect.textProperty().addListener(new ByteChangeListener(hitEffect));
         hitSound.textProperty().addListener(new ByteChangeListener(hitSound));
-        attack.textProperty().addListener(new ByteChangeListener(attack, EquipmentData.patchedSignedStats));
-        defense.textProperty().addListener(new ByteChangeListener(defense, EquipmentData.patchedSignedStats));
-        magick.textProperty().addListener(new ByteChangeListener(magick, EquipmentData.patchedSignedStats));
-        resistance.textProperty().addListener(new ByteChangeListener(resistance, EquipmentData.patchedSignedStats));
-        speed.textProperty().addListener(new ByteChangeListener(speed, EquipmentData.patchedSignedStats));
-        evasion.textProperty().addListener(new ByteChangeListener(evasion, EquipmentData.patchedSignedStats));
-        move.textProperty().addListener(new ByteChangeListener(move, EquipmentData.patchedSignedStats));
-        jump.textProperty().addListener(new ByteChangeListener(jump, EquipmentData.patchedSignedStats));
+        attack.textProperty().addListener(new ByteChangeListener(attack, PatchesController.patchedSignedEquipmentStats));
+        defense.textProperty().addListener(new ByteChangeListener(defense, PatchesController.patchedSignedEquipmentStats));
+        magick.textProperty().addListener(new ByteChangeListener(magick, PatchesController.patchedSignedEquipmentStats));
+        resistance.textProperty().addListener(new ByteChangeListener(resistance, PatchesController.patchedSignedEquipmentStats));
+        speed.textProperty().addListener(new ByteChangeListener(speed, PatchesController.patchedSignedEquipmentStats));
+        evasion.textProperty().addListener(new ByteChangeListener(evasion, PatchesController.patchedSignedEquipmentStats));
+        move.textProperty().addListener(new ByteChangeListener(move, PatchesController.patchedSignedEquipmentStats));
+        jump.textProperty().addListener(new ByteChangeListener(jump, PatchesController.patchedSignedEquipmentStats));
         range.textProperty().addListener(new ByteChangeListener(range));
     }
 
@@ -275,7 +275,7 @@ public class EquipmentController {
         Bindings.bindBidirectional(attackEffect.textProperty(), equipmentProperty.getValue().attackEffect, unsignedShortConverter);
         
         StringConverter<Byte> unsignedByteConverter = new ByteStringConverter();
-        StringConverter<Byte> equipmentStatByteConverter = new ByteStringConverter(EquipmentData.patchedSignedStats);
+        StringConverter<Byte> equipmentStatByteConverter = new ByteStringConverter(PatchesController.patchedSignedEquipmentStats);
         Bindings.bindBidirectional(hitEffect.textProperty(), equipmentProperty.getValue().hitEffect, unsignedByteConverter);
         Bindings.bindBidirectional(hitSound.textProperty(), equipmentProperty.getValue().hitSound, unsignedByteConverter);
         Bindings.bindBidirectional(attack.textProperty(), equipmentProperty.getValue().attack, equipmentStatByteConverter);
