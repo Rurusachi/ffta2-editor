@@ -49,6 +49,7 @@
           <items>
             <MenuItem mnemonicParsing="false" onAction="#openFileSelector" text="Open…" />
             <MenuItem mnemonicParsing="false" onAction="#saveFileSelector" text="Save As…" />
+            <MenuItem fx:id="saveMenuItem" disable="true" mnemonicParsing="false" onAction="#saveToLast" text="Save" />
           </items>
         </Menu>
       </menus>

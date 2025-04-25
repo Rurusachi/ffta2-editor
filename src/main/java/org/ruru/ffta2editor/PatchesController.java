@@ -478,7 +478,6 @@ public class PatchesController {
                 Alert loadAlert = new Alert(AlertType.ERROR);
                 loadAlert.setTitle("Max Level patch");
                 loadAlert.setHeaderText(e.toString());
-                loadAlert.setContentText(e.getMessage());
                 loadAlert.show();
                 return;
             }

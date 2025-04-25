@@ -18,9 +18,13 @@ import org.ruru.ffta2editor.utility.IdxAndPak;
 import org.ruru.ffta2editor.utility.LZSS;
 
 import javafx.application.Platform;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.MenuItem;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
@@ -67,10 +71,17 @@ public class MainController {
     @FXML AnchorPane equipmentTab;
     @FXML EquipmentController equipmentTabController;
     
+    @FXML MenuItem saveMenuItem;
 
     File romFile;
+    ObjectProperty<File> lastSavePath = new SimpleObjectProperty<>();
     
     private static Logger logger = Logger.getLogger("org.ruru.ffta2editor");
+
+    @FXML
+    public void initialize() {
+        saveMenuItem.disableProperty().bind(lastSavePath.isNull());
+    }
 
     @FXML
     private void openFileSelector() {
@@ -94,6 +105,7 @@ public class MainController {
             return;
         }
         App.config.setProperty("lastPath", loadPath.getParent());
+        lastSavePath.set(loadPath);
         try {
             load(loadPath);
         } catch (Exception e) {
@@ -389,6 +401,17 @@ public class MainController {
         abilityTab.getScene().getRoot().setEffect(dimEffect);
     }
 
+    @FXML void saveToLast() {
+        if (romFile == null || lastSavePath.get() == null) return;
+        setDim(true);
+        Alert saveAlert = new Alert(AlertType.CONFIRMATION);
+        saveAlert.setTitle(String.format("Save"));
+        saveAlert.setHeaderText(String.format("Save to \"%s\"?", lastSavePath.get().getPath()));
+        var result = saveAlert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK)
+            saveTo(lastSavePath.get());
+    }
+
     @FXML
     private void saveFileSelector() {
         if (romFile == null) return;
@@ -412,9 +435,14 @@ public class MainController {
             return;
         }
         App.config.setProperty("lastPath", savePath.getParent());
+        lastSavePath.set(savePath);
 
+        saveTo(savePath);
+    }
+
+    private void saveTo(File savePath) {
         Alert saveAlert = new Alert(AlertType.NONE);
-        saveAlert.setTitle("Saving");
+        saveAlert.setTitle(String.format("Saving to %s", savePath.getPath()));
         saveAlert.setHeaderText("Saving. Please wait.");
         saveAlert.show();
         CompletableFuture.runAsync(() -> {
@@ -537,13 +565,6 @@ public class MainController {
         App.archive.repack(newIdx, newBin);
         System.out.println("Archive successfully repacked");
 
-
-
-        //FileOutputStream newRom = new FileOutputStream(savePath);
-        //Files.copy(romFile.toPath(), newRom);
-        //newRom.close();
-
-        //Path dataPath = romFile.toPath().resolveSibling("data");
         Path dataPath = Path.of("data");
         File pcIdx = dataPath.resolve("data\\master\\pc.idx").toFile();
         File pcBin = dataPath.resolve("data\\master\\pc.bin").toFile();
