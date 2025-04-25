@@ -23,6 +23,7 @@
                   <ToggleButton fx:id="signedEquipmentStats" mnemonicParsing="false" onAction="#applySignedEquipmentStats" text="Equipment can have negative stats" />
                   <ToggleButton fx:id="startingMp" mnemonicParsing="false" onAction="#applyStartingMpPatch" text="Units start with max MP" />
                   <Button fx:id="maxLevel" mnemonicParsing="false" onAction="#applyMaxLevelPatch" text="Set Max Level" />
+                  <Button fx:id="mpGain" mnemonicParsing="false" onAction="#applyMPGainPatch" text="Set MP gain per turn" />
                </children>
             </VBox>
          </children>

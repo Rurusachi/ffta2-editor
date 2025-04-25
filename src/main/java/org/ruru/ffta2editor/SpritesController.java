@@ -191,7 +191,7 @@ public class SpritesController {
 
     public void refresh() {
         UnitSst sst = App.unitSstList.get(unitProperty.getValue().unitIndex);
-        List<UnitAnimation> animations = sst.asList().stream().filter(node -> node.key() != 0xFF && node.key() != 0xF0).map(node -> sst.getAnimation(node.key())).filter(x -> x != null).sorted(Comparator.comparingInt(x -> x.key)).toList();
+        List<UnitAnimation> animations = sst.asList().stream().filter(node -> node.key != 0xFF && node.key != 0xF0).map(node -> sst.getAnimation(node.key)).filter(x -> x != null).sorted(Comparator.comparingInt(x -> x.key)).toList();
         animationList.setItems(FXCollections.observableArrayList(animations));
         animationsTab.setDisable(false);
 

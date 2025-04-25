@@ -7,10 +7,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.ruru.ffta2editor.model.battle.SBN;
+import org.ruru.ffta2editor.model.battle.SBN.Command;
+import org.ruru.ffta2editor.model.unitSst.SstHeaderNode;
 import org.ruru.ffta2editor.model.unitSst.UnitAnimation;
 import org.ruru.ffta2editor.model.unitSst.UnitAnimation.UnitAnimationFrame;
 import org.ruru.ffta2editor.model.unitSst.UnitSst;
-import org.ruru.ffta2editor.model.unitSst.UnitSst.SstHeaderNode;
 import org.ruru.ffta2editor.utility.LZSS;
 
 import javafx.beans.property.BooleanProperty;
@@ -207,7 +209,7 @@ public class PatchesController {
             byte animationId = (byte)(animation.getKey() >>> 8);
             byte animationType = (byte)(animation.getKey() & 0xFF);
             SstHeaderNode newNode = new SstHeaderNode(unitSst.size, animationType, animationId, 0);
-            newNode.compressedValue = compressedAnimation;
+            newNode.value = compressedAnimation;
             unitSst.insert(newNode);
             
             int oldValue = App.naUnitAnimTable.get(4+1 + i*entryLength + animationId);
@@ -491,6 +493,124 @@ public class PatchesController {
 
             Alert loadAlert = new Alert(AlertType.INFORMATION);
             loadAlert.setTitle("Max Level patch");
+            loadAlert.setHeaderText(alertText);
+            loadAlert.show();
+        }
+
+    }
+
+    @FXML
+    public void applyMPGainPatch() {
+        if (App.archive != null) {
+            
+            TextInputDialog dialog = new TextInputDialog(Integer.toString(10));
+            dialog.setTitle("MP gain");
+            dialog.setHeaderText("Flat MP per turn");
+            var result = dialog.showAndWait();
+            if (!result.isPresent()) return;
+            
+            int flatRegen;
+            try {
+                flatRegen = Integer.parseInt(result.get());
+                if (flatRegen < 0) throw new Exception("Value must be 0 or higher");
+            } catch (Exception e) {
+                Alert loadAlert = new Alert(AlertType.ERROR);
+                loadAlert.setTitle("MP gain patch");
+                loadAlert.setHeaderText(e.toString());
+                loadAlert.show();
+                return;
+            }
+
+            dialog.setHeaderText("%Max MP per turn");
+            result = dialog.showAndWait();
+            if (!result.isPresent()) return;
+            
+            int percentage;
+            try {
+                percentage = Integer.parseInt(result.get());
+                if (percentage < 0 || 100 < percentage) throw new Exception("Value must be between 0 and 100");
+            } catch (Exception e) {
+                Alert loadAlert = new Alert(AlertType.ERROR);
+                loadAlert.setTitle("MP gain patch");
+                loadAlert.setHeaderText(e.toString());
+                loadAlert.show();
+                return;
+            }
+            int divisor = percentage != 0 ? 100 / percentage : 99999;
+
+
+            ByteBuffer btlprocessFile = App.archive.getFile("battle/btlprocess.sbn");
+            SBN btlprocess = new SBN(btlprocessFile.rewind());
+
+            int insertion_point = 0x160c;
+            int i = 0;
+            for (; i < btlprocess.commands.size(); i++) {
+                if (btlprocess.commands.get(i).address == insertion_point) break;
+            }
+
+            ByteBuffer flatParams = ByteBuffer.allocate(6).order(ByteOrder.LITTLE_ENDIAN);
+            flatParams.putShort((short)0);
+            flatParams.putInt(flatRegen);
+            ByteBuffer divisorParams = ByteBuffer.allocate(6).order(ByteOrder.LITTLE_ENDIAN);
+            divisorParams.putShort((short)0);
+            divisorParams.putInt(divisor);
+
+            ArrayList<Command> newCommands = new ArrayList<>();
+            newCommands.add(new Command(0, (byte)0x0, (byte)0x8, flatParams.array()));
+            newCommands.add(new Command(0, (byte)0x2, (byte)0x8, new byte[]{0x00, 0x00, (byte)0xfe, (byte)0xff, 0x01, 0x00}));
+            newCommands.add(new Command(0, (byte)0x1c, (byte)0x4, new byte[]{0x01, 0x00}));
+            newCommands.add(new Command(0, (byte)0x32, (byte)0x4, new byte[]{(byte)0xff, (byte)0xff}));
+            newCommands.add(new Command(0, (byte)0x31, (byte)0x4, new byte[]{0x18, 0x06}));
+            newCommands.add(new Command(0, (byte)0x1c, (byte)0x4, new byte[]{(byte)0xff, (byte)0xff}));
+            newCommands.add(new Command(0, (byte)0x2b, (byte)0x4, new byte[]{0x00, 0x00}));
+            newCommands.add(new Command(0, (byte)0x0, (byte)0x8, divisorParams.array()));
+            newCommands.add(new Command(0, (byte)0x9, (byte)0x2, new byte[]{}));
+            newCommands.add(new Command(0, (byte)0x6, (byte)0x2, new byte[]{}));
+
+            int additionalBytes = newCommands.stream().mapToInt(x -> x.size).sum();
+            newCommands.add(new Command(0, (byte)0x2d, (byte)0x10, new byte[]{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}));
+            
+
+            if (btlprocess.commands.get(i).opcode == 0x30) {
+                // Already applied
+                System.out.println("Already applied");
+                ByteBuffer params = ByteBuffer.wrap(btlprocess.commands.get(i).parameters).order(ByteOrder.LITTLE_ENDIAN);
+                params.getShort();
+                int jumpAddress = params.getInt();
+                for (; i < btlprocess.commands.size(); i++) {
+                    if (btlprocess.commands.get(i).address == insertion_point+jumpAddress) break;
+                }
+                int j = 0;
+                for (; i < btlprocess.commands.size(); i++, j++) {
+                    btlprocess.commands.set(i, newCommands.get(j));
+                }
+                if (i < btlprocess.commands.size() || j < newCommands.size()) {
+                    System.err.println(String.format("Sizes don't match: %d < %d or %d < %d", i, btlprocess.commands.size(), j, newCommands.size()));
+                }
+            } else {
+                System.out.println("Not applied yet");
+                for (Command c : newCommands) {
+                    btlprocess.commands.add(c);
+                }
+    
+                ByteBuffer params = ByteBuffer.allocate(6).order(ByteOrder.LITTLE_ENDIAN);
+                params.putShort((short)0);
+                params.putInt(btlprocess.endAddress - insertion_point);
+                //btlprocess.commands.set(i, new Command(0, (byte)0x30, (byte)0x8, params.array()));
+                btlprocess.commands.get(i).opcode = 0x30;
+                btlprocess.commands.get(i).size = 0x8;
+                btlprocess.commands.get(i).parameters = params.array();
+            }
+            
+
+            ByteBuffer newBtlprocess = btlprocess.toByteBuffer();
+
+            App.archive.setFile("battle/btlprocess.sbn", newBtlprocess);
+
+            
+            String alertText = String.format("MP gain set to %d + %d%% Max MP per turn", flatRegen, percentage);
+            Alert loadAlert = new Alert(AlertType.INFORMATION);
+            loadAlert.setTitle("MP gain patch");
             loadAlert.setHeaderText(alertText);
             loadAlert.show();
         }
