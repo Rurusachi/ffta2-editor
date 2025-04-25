@@ -179,6 +179,41 @@ public class ActiveAbilityData extends AbilityData {
             bit_31.setValue(flags.get(24 + 7));
         }
 
+        public void copyFrom(AbilityFlags source) {
+            masteredByDefault.set(source.masteredByDefault.get());
+            targetSelf.set(source.targetSelf.get());
+            invertedOnUndead.set(source.invertedOnUndead.get());
+            isMagickal.set(source.isMagickal.get());
+            //learnableByBlueMagick.set(source.learnableByBlueMagick.get()); // Is bound
+            counterable.set(source.counterable.get());
+            bypassReactions.set(source.bypassReactions.get());
+            reflectable.set(source.reflectable.get());
+            usableWithMagickFrenzyAndDoublecast.set(source.usableWithMagickFrenzyAndDoublecast.get());
+            ignoreSilence.set(source.ignoreSilence.get());
+            usableByAI.set(source.usableByAI.get());
+            activatesBonecrusher_Maybe.set(source.activatesBonecrusher_Maybe.get());
+            magickCounterable.set(source.magickCounterable.get());
+            throwsItem.set(source.throwsItem.get());
+            activatesAbsorbMP.set(source.activatesAbsorbMP.get());
+            caughtByStickyFingers.set(source.caughtByStickyFingers.get());
+            usableWithMix.set(source.usableWithMix.get());
+            mirrorItem.set(source.mirrorItem.get());
+            antiCounter.set(source.antiCounter.get());
+            canTargetEmptySquare.set(source.canTargetEmptySquare.get());
+            spawnsObject.set(source.spawnsObject.get());
+            attackWithSecondWeapon.set(source.attackWithSecondWeapon.get());
+            isItem.set(source.isItem.get());
+            bit_23.set(source.bit_23.get());
+            AICheckDamage_Maybe.set(source.AICheckDamage_Maybe.get());
+            AICheckHealingBuff_Maybe.set(source.AICheckHealingBuff_Maybe.get());
+            AICheckDebuff_Maybe.set(source.AICheckDebuff_Maybe.get());
+            elpe_UnburdenSoul.set(source.elpe_UnburdenSoul.get());
+            back_Side_DamageModifier.set(source.back_Side_DamageModifier.get());
+            counterable_Maybe.set(source.counterable_Maybe.get());
+            bit_30.set(source.bit_30.get());
+            bit_31.set(source.bit_31.get());
+        }
+
         public byte[] toBytes() {
             flags.set(0, masteredByDefault.getValue());
             flags.set(1, targetSelf.getValue());
@@ -339,6 +374,44 @@ public class ActiveAbilityData extends AbilityData {
             }
             
         });
+    }
+
+    public void copyFrom(ActiveAbilityData source) {
+        _0x0.set(source._0x0.getValue());
+        abilityElement.set(source.abilityElement.getValue());
+        mpCost.set(source.mpCost.getValue());
+        _0x4.set(source._0x4.getValue());
+        _0x5.set(source._0x5.getValue());
+        power.set(source.power.getValue());
+        weaponRequirement.set(source.weaponRequirement.getValue());
+        specialRequirement.set(source.specialRequirement.getValue());
+        rangeAOEType.set(source.rangeAOEType.getValue());
+        range.set(source.range.getValue());
+        radius.set(source.radius.getValue());
+        heightDifference.set(source.heightDifference.getValue());
+        menuRoutine.set(source.menuRoutine.getValue());
+        effect1.copyFrom(source.effect1);
+        effect2.copyFrom(source.effect2);
+        effect3.copyFrom(source.effect3);
+        effect4.copyFrom(source.effect4);
+
+        abilityFlags.copyFrom(source.abilityFlags);
+        race1.set(source.race1.get());
+        apIndex1.set(source.apIndex1.get());
+        race2.set(source.race2.get());
+        apIndex2.set(source.apIndex2.get());
+        race3.set(source.race3.get());
+        apIndex3.set(source.apIndex3.get());
+        race4.set(source.race4.get());
+        apIndex4.set(source.apIndex4.get());
+        race5.set(source.race5.get());
+        apIndex5.set(source.apIndex5.get());
+        race6.set(source.race6.get());
+        apIndex6.set(source.apIndex6.get());
+        _0x30.set(source._0x30.get());
+        _0x31.set(source._0x31.get());
+        learnedAbilityId = source.learnedAbilityId; // Unneeded?
+        learnedAbility.set(source.learnedAbility.get());
     }
 
     public byte[] toBytes() {

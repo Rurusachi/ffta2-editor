@@ -37,9 +37,11 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.util.StringConverter;
@@ -301,6 +303,7 @@ public class AbilityController {
             if (newValue != null) bindAbilityData();
             isRebinding = false;
         });
+
         apIndex1.getSelectionModel().selectedItemProperty().addListener(new ApIndexChangeListener(race1));
         apIndex2.getSelectionModel().selectedItemProperty().addListener(new ApIndexChangeListener(race2));
         apIndex3.getSelectionModel().selectedItemProperty().addListener(new ApIndexChangeListener(race3));
@@ -699,6 +702,8 @@ public class AbilityController {
         //}
     }
 
+    private ObjectProperty<ActiveAbilityData> copyAbilityData = new SimpleObjectProperty<>();
+
     public void loadAbilities() throws Exception {
         if (App.archive != null) {
             // Active Abilities
@@ -724,7 +729,35 @@ public class AbilityController {
                     throw e;
                 }
             }
-            activeAbilityList.setCellFactory(x -> new AbilityCell<>());
+            activeAbilityList.setCellFactory(x -> {
+                var cell = new AbilityCell<ActiveAbilityData>();
+
+                ContextMenu menu = new ContextMenu();
+
+                MenuItem copyItem = new MenuItem("Copy");
+                copyItem.setOnAction(event -> copyAbilityData.set(cell.getItem()));
+
+                
+                MenuItem pasteItem = new MenuItem();
+                pasteItem.textProperty().bind(copyAbilityData.asString("Paste from \"%s\""));
+                pasteItem.setOnAction(event -> {
+                    if (copyAbilityData != null) {
+                        cell.getItem().copyFrom(copyAbilityData.get());
+                        abilityAnimationList.get(cell.getItem().id).copyFrom(abilityAnimationList.get(copyAbilityData.get().id));
+                    }
+                });
+                menu.getItems().addAll(copyItem, pasteItem);
+
+                cell.emptyProperty().addListener((observable, oldValue, newValue) -> {
+                    if (newValue) {
+                        cell.setContextMenu(null);
+                    } else {
+                        cell.setContextMenu(menu);
+                    }
+                });
+
+                return cell;
+            });
             activeAbilityList.setItems(activeAbilityDataList);
             App.activeAbilityList = activeAbilityDataList;
             

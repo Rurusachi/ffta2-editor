@@ -590,6 +590,13 @@ public class AbilityEffect {
         modifierProperty.setValue(modifier);
     }
 
+    public void copyFrom(AbilityEffect source) {
+        targetsProperty.set(source.targetsProperty.get());
+        effectProperty.set(source.effectProperty.get());
+        accuracyProperty.set(source.accuracyProperty.get());
+        modifierProperty.set(source.modifierProperty.get());
+    }
+
     public byte[] toBytes() {
         byte[] bytes = {((Targets)targetsProperty.getValue()).value, ((Effect)effectProperty.getValue()).value, ((Accuracy)accuracyProperty.getValue()).value, ((Modifier)modifierProperty.getValue()).value};
         return bytes;

@@ -3,6 +3,8 @@ package org.ruru.ffta2editor.model.ability;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import org.ruru.ffta2editor.model.ability.ActiveAbilityData.AbilityFlags;
+
 import javafx.beans.property.SimpleObjectProperty;
 
 public class AbilityAnimation {
@@ -70,6 +72,28 @@ public class AbilityAnimation {
         targetState.set((short)0);
         _0x16.set((byte)0);
         _0x17.set((byte)0);
+    }
+
+    public void copyFrom(AbilityAnimation source) {
+        animation.set(source.animation.get());
+        subtype.set(source.subtype.get());
+        start.set(source.start.get());
+        unitAnimation.set(source.unitAnimation.get());
+        second.set(source.second.get());
+        untilThird.set(source.untilThird.get());
+        third.set(source.third.get());
+        untilFourth.set(source.untilFourth.get());
+        fourth.set(source.fourth.get());
+        untilEnd.set(source.untilEnd.get());
+        _0x0C.set(source._0x0C.get());
+        flinch_Glee.set(source.flinch_Glee.get());
+        _0x10.set(source._0x10.get());
+        _0x11.set(source._0x11.get());
+        _0x12.set(source._0x12.get());
+        _0x13.set(source._0x13.get());
+        targetState.set(source.targetState.get());
+        _0x16.set(source._0x16.get());
+        _0x17.set(source._0x17.get());
     }
 
     public byte[] toBytes() {
