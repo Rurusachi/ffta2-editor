@@ -50,34 +50,43 @@ public class FormationHeader {
     public ObjectProperty<Byte> _0x21 = new SimpleObjectProperty<>();
     public ObjectProperty<Byte> _0x22 = new SimpleObjectProperty<>();
     public ObjectProperty<Byte> _0x23 = new SimpleObjectProperty<>();
+    
+    // Sets of 4 bytes. Idk what they mean.
     public ObjectProperty<Byte> _0x24 = new SimpleObjectProperty<>();
     public ObjectProperty<Byte> _0x25 = new SimpleObjectProperty<>();
     public ObjectProperty<Byte> _0x26 = new SimpleObjectProperty<>();
     public ObjectProperty<Byte> _0x27 = new SimpleObjectProperty<>();
+    
     public ObjectProperty<Byte> _0x28 = new SimpleObjectProperty<>();
     public ObjectProperty<Byte> _0x29 = new SimpleObjectProperty<>();
     public ObjectProperty<Byte> _0x2a = new SimpleObjectProperty<>();
     public ObjectProperty<Byte> _0x2b = new SimpleObjectProperty<>();
+    
     public ObjectProperty<Byte> _0x2c = new SimpleObjectProperty<>();
     public ObjectProperty<Byte> _0x2d = new SimpleObjectProperty<>();
     public ObjectProperty<Byte> _0x2e = new SimpleObjectProperty<>();
     public ObjectProperty<Byte> _0x2f = new SimpleObjectProperty<>();
+    
     public ObjectProperty<Byte> _0x30 = new SimpleObjectProperty<>();
     public ObjectProperty<Byte> _0x31 = new SimpleObjectProperty<>();
     public ObjectProperty<Byte> _0x32 = new SimpleObjectProperty<>();
     public ObjectProperty<Byte> _0x33 = new SimpleObjectProperty<>();
+    
     public ObjectProperty<Byte> _0x34 = new SimpleObjectProperty<>();
     public ObjectProperty<Byte> _0x35 = new SimpleObjectProperty<>();
     public ObjectProperty<Byte> _0x36 = new SimpleObjectProperty<>();
     public ObjectProperty<Byte> _0x37 = new SimpleObjectProperty<>();
+    
     public ObjectProperty<Byte> _0x38 = new SimpleObjectProperty<>();
     public ObjectProperty<Byte> _0x39 = new SimpleObjectProperty<>();
     public ObjectProperty<Byte> _0x3a = new SimpleObjectProperty<>();
     public ObjectProperty<Byte> _0x3b = new SimpleObjectProperty<>();
+    
     public ObjectProperty<Byte> _0x3c = new SimpleObjectProperty<>();
     public ObjectProperty<Byte> _0x3d = new SimpleObjectProperty<>();
     public ObjectProperty<Byte> _0x3e = new SimpleObjectProperty<>();
     public ObjectProperty<Byte> _0x3f = new SimpleObjectProperty<>();
+    
     public ObjectProperty<Byte> _0x40 = new SimpleObjectProperty<>();
     public ObjectProperty<Byte> _0x41 = new SimpleObjectProperty<>();
     public ObjectProperty<Byte> _0x42 = new SimpleObjectProperty<>();
