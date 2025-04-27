@@ -429,6 +429,24 @@ public class PatchesController {
             arm9Patches.add(new PatchElement(0x00111e10, 0x0a000013, 0xe58d0018)); // beq ... -> str r0, [sp, local_50]
             arm9Patches.add(new PatchElement(0x00111e20, 0xe3a00000, 0xe1a00000)); // mov r0, 0x0 -> nop
             arm9Patches.add(new PatchElement(0x00111e48, 0xe58d0018, 0xe3a00001)); // str r0, [sp, local_50] -> mov r0, 0x1
+
+            // LOWER BOUNDARY (replace useless code)
+            arm9Patches.add(new PatchElement(0x000b9a04, 0xea00000c, 0xea000015)); // b LAB_020b9a3c -> LAB_020b9a60
+            arm9Patches.add(new PatchElement(0x000b9a08, 0xea00000c, 0xea000014)); // b LAB_020b9a48 -> LAB_020b9a60
+            arm9Patches.add(new PatchElement(0x000b9a0c, 0xea00000c, 0xea000013)); // b LAB_020b9a54 -> LAB_020b9a60
+            // move/jump
+            arm9Patches.add(new PatchElement(0x000b9d08, 0xe1570006, 0xeaffff4f)); // cmp r7, r6 -> b 020b9a3c
+            arm9Patches.add(new PatchElement(0x000b9a3c, 0xe59d0004, 0xe3570001)); // ... -> cmp r7, 0x1
+            arm9Patches.add(new PatchElement(0x000b9a40, 0xe2606ffa, 0x33a07001)); // ... -> movlo r7, 0x1
+            arm9Patches.add(new PatchElement(0x000b9a44, 0xea000007, 0xe1570006)); // ... -> cmp r7, r6
+            arm9Patches.add(new PatchElement(0x000b9a48, 0xe59d0004, 0xea0000b3)); // ... -> b 020b9d0c
+            // evasion
+            arm9Patches.add(new PatchElement(0x000b9ce4, 0xe1570006, 0xeaffff58)); // cmp r7, r6 -> b 020b9a4c
+            arm9Patches.add(new PatchElement(0x000b9a4c, 0xe2606ffa, 0xe3570000)); // ... -> cmp r7, 0x0
+            arm9Patches.add(new PatchElement(0x000b9a50, 0xea000004, 0x33a07000)); // ... -> movlo r7, 0x0
+            arm9Patches.add(new PatchElement(0x000b9a54, 0xe59d0004, 0xe1570006)); // ... -> cmp r7, r6
+            arm9Patches.add(new PatchElement(0x000b9a58, 0xe2606ffa, 0xea0000a6)); // ... -> b 020b9ce8
+
             
             // The value is already flipped
             boolean newValue = patchedSignedEquipmentStats.getValue();
