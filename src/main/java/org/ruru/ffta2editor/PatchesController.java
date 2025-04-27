@@ -34,6 +34,7 @@ public class PatchesController {
     public static BooleanProperty patchedExpandedTopSprites = new SimpleBooleanProperty();
     public static BooleanProperty patchedSignedEquipmentStats = new SimpleBooleanProperty();
     public static BooleanProperty patchedStartingMp = new SimpleBooleanProperty();
+    public static BooleanProperty patchedSequencerPeytral = new SimpleBooleanProperty();
     
     public static IntegerProperty maxLevel = new SimpleIntegerProperty();
     
@@ -617,16 +618,37 @@ public class PatchesController {
 
     }
 
+    @FXML 
+    public void applySequencerPeytralPatch() {
+        if (App.archive != null) {
+            List<PatchElement> arm9Patches = new ArrayList<>();
+
+            arm9Patches.add(new PatchElement(0x000b9b40, 0xe358003f, 0xea000003)); // cmp r8, 0x3f -> b LAB_020b9b54
+            arm9Patches.add(new PatchElement(0x000b9b84, 0xe1580000, 0xea000003)); // cmp r8, r0 -> b LAB_020b9b98
+            
+            boolean newValue = patchedSequencerPeytral.getValue();
+            applyPatchElements(arm9Patches, App.arm9, newValue);
+            String alertText = newValue ? "Patch applied" : "Patch removed";
+
+            Alert loadAlert = new Alert(AlertType.INFORMATION);
+            loadAlert.setTitle("Sequencer / Peytral stat growth patch");
+            loadAlert.setHeaderText(alertText);
+            loadAlert.show();
+        }
+    }
+
     public void loadPatches() {
         patchedExpandedTopSprites.set(App.arm9.getInt(0x000b5ab4) != 0xe5d00018);
         patchedSignedEquipmentStats.set(App.arm9.getInt(0x000cfcd8) != 0xe5d01017);
         patchedStartingMp.set(App.arm9.getInt(0x000b9180) != 0xe3a01000);
+        patchedSequencerPeytral.set(App.arm9.getInt(0x000b9b40) != 0xe358003f);
         maxLevel.set(App.arm9.get(0x000b9094));
         
         
         expandedTopSprites.selectedProperty().bindBidirectional(patchedExpandedTopSprites);
         signedEquipmentStats.selectedProperty().bindBidirectional(patchedSignedEquipmentStats);
         startingMp.selectedProperty().bindBidirectional(patchedStartingMp);
+        sequencerPeytral.selectedProperty().bindBidirectional(patchedSequencerPeytral);
     }
     
     public void applyPatches() {
