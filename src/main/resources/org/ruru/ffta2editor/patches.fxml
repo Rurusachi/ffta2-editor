@@ -21,6 +21,7 @@
                   <Button fx:id="animationFix" mnemonicParsing="false" onAction="#applyAnimationFix" text="Animation Fix (irreversible)" />
                   <ToggleButton fx:id="expandedTopSprites" mnemonicParsing="false" onAction="#applyExpandedTopSprites" text="Expanded Top Sprite Index Limit" />
                   <ToggleButton fx:id="signedEquipmentStats" mnemonicParsing="false" onAction="#applySignedEquipmentStats" text="Equipment can have negative stats" />
+                  <ToggleButton fx:id="sequencerPeytral" mnemonicParsing="false" onAction="#applySequencerPeytralPatch" text="Sequencer and Peytral stat growth" />
                   <ToggleButton fx:id="startingMp" mnemonicParsing="false" onAction="#applyStartingMpPatch" text="Units start with max MP" />
                   <Button fx:id="maxLevel" mnemonicParsing="false" onAction="#applyMaxLevelPatch" text="Set Max Level" />
                   <Button fx:id="mpGain" mnemonicParsing="false" onAction="#applyMPGainPatch" text="Set MP gain per turn" />
