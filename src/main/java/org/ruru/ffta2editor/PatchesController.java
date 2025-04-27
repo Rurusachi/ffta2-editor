@@ -622,12 +622,21 @@ public class PatchesController {
     public void applySequencerPeytralPatch() {
         if (App.archive != null) {
             List<PatchElement> arm9Patches = new ArrayList<>();
+            List<PatchElement> overlay11Patches = new ArrayList<>();
 
+            overlay11Patches.add(new PatchElement(0x0000e26c, 0xe350003f, 0xea000003)); // cmp r0, 0x3f -> b LAB_overlay_11__02141240
             arm9Patches.add(new PatchElement(0x000b9b40, 0xe358003f, 0xea000003)); // cmp r8, 0x3f -> b LAB_020b9b54
+            arm9Patches.add(new PatchElement(0x00111050, 0xe350003f, 0xea000005)); // cmp r0, 0x3f -> b LAB_0211106c
+            arm9Patches.add(new PatchElement(0x00111cac, 0xe350003f, 0xea000005)); // cmp r0, 0x3f -> b LAB_02111cc8
+
+            overlay11Patches.add(new PatchElement(0x0000e2fc, 0xe1510000, 0xea000003)); // cmp r1, r0 -> b LAB_overlay_11__021412d0
             arm9Patches.add(new PatchElement(0x000b9b84, 0xe1580000, 0xea000003)); // cmp r8, r0 -> b LAB_020b9b98
+            arm9Patches.add(new PatchElement(0x001110c8, 0xe1510000, 0xea000005)); // cmp r1, r0 -> b LAB_021110e4
+            arm9Patches.add(new PatchElement(0x00111d34, 0xe1510000, 0xea000005)); // cmp r1, r0 -> b LAB_021110e4
             
             boolean newValue = patchedSequencerPeytral.getValue();
             applyPatchElements(arm9Patches, App.arm9, newValue);
+            applyPatchElements(overlay11Patches, App.overlay11, newValue);
             String alertText = newValue ? "Patch applied" : "Patch removed";
 
             Alert loadAlert = new Alert(AlertType.INFORMATION);
