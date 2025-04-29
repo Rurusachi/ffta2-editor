@@ -442,7 +442,7 @@ public class PatchesController {
             arm9Patches.add(new PatchElement(0x000b9a44, 0xea000007, 0xe1570006)); // ... -> cmp r7, r6
             arm9Patches.add(new PatchElement(0x000b9a48, 0xe59d0004, 0xe1a0f00e)); // ... -> mov pc, lr
             // Evasion
-            arm9Patches.add(new PatchElement(0x000b9ce4, 0xe1570006, 0xebffff58)); // cmp r7, r6 -> b 020b9a4c
+            arm9Patches.add(new PatchElement(0x000b9ce4, 0xe1570006, 0xebffff58)); // cmp r7, r6 -> bl 020b9a4c
             arm9Patches.add(new PatchElement(0x000b9a4c, 0xe2606ffa, 0xe3570000)); // ... -> cmp r7, 0x0
             arm9Patches.add(new PatchElement(0x000b9a50, 0xea000004, 0xb3a07000)); // ... -> movlt r7, 0x0
             arm9Patches.add(new PatchElement(0x000b9a54, 0xe59d0004, 0xe1570006)); // ... -> cmp r7, r6
