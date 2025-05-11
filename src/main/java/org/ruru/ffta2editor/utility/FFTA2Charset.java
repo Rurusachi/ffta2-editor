@@ -122,7 +122,7 @@ public class FFTA2Charset {
         decodingMap.put(0x6F, "8");
         decodingMap.put(0x70, "9");
         decodingMap.put(0x71, "~");
-        decodingMap.put(0x72, "'");
+        decodingMap.put(0x72, "`");
         decodingMap.put(0x73, "!");
         decodingMap.put(0x74, "?");
         decodingMap.put(0x75, "#");
@@ -150,7 +150,7 @@ public class FFTA2Charset {
         decodingMap.put(0x8B, "}");
         decodingMap.put(0x8C, "|");
         decodingMap.put(0x8D, "-");
-        decodingMap.put(0x8E, "*");
+        decodingMap.put(0x8E, "ー");
         decodingMap.put(0x8F, "—");
         decodingMap.put(0x90, "«");
         decodingMap.put(0x91, "»");
@@ -187,9 +187,12 @@ public class FFTA2Charset {
         decodingMap.put(0xC7, "\\defaultOption:%02X\\");
         decodingMap.put(0xC800, "\\endOption\\");
         decodingMap.put(0xC9, "\\var9:%02X\\");
-        decodingMap.put(0xCA, "\\varA:%02X\\");
-        decodingMap.put(0xCB, "\\sprite:%02X\\");
-        decodingMap.put(0xCE, "\\varE:%02X\\");
+        decodingMap.put(0xCA, "\\varA:%02X\\"); // Insert variable in text
+        decodingMap.put(0xCB, "\\sprite:%02X\\"); // "com_key" related. 0x0 - 0x18 are valid. Invalid defaults to 0x0.
+        decodingMap.put(0xCC, "\\varC:%02X\\"); // length = -param
+        decodingMap.put(0xCD, "\\varD:%02X\\"); // length = param
+        decodingMap.put(0xCE, "\\varE:%02X\\"); // ???
+        decodingMap.put(0xCF, "\\varF:%02X\\"); // length = params == 0 ? 6 : 0
     }
     public static HashMap<String, Integer> encodingMap = new HashMap<>();
     static {
@@ -307,7 +310,7 @@ public class FFTA2Charset {
         encodingMap.put("8", 0x6F);
         encodingMap.put("9", 0x70);
         encodingMap.put("~", 0x71);
-        encodingMap.put("'", 0x72);
+        encodingMap.put("`", 0x72);
         encodingMap.put("!", 0x73);
         encodingMap.put("?", 0x74);
         encodingMap.put("#", 0x75);
@@ -335,7 +338,7 @@ public class FFTA2Charset {
         encodingMap.put("}", 0x8B);
         encodingMap.put("|", 0x8C);
         encodingMap.put("-", 0x8D);
-        encodingMap.put("*", 0x8E);
+        encodingMap.put("ー", 0x8E);
         encodingMap.put("—", 0x8F);
         encodingMap.put("«", 0x90);
         encodingMap.put("»", 0x91);
@@ -374,11 +377,15 @@ public class FFTA2Charset {
         encodingMap.put("\\var9:", 0xC9);
         encodingMap.put("\\varA:", 0xCA);
         encodingMap.put("\\sprite:", 0xCB);
+        encodingMap.put("\\varC:", 0xCC);
+        encodingMap.put("\\varD:", 0xCD);
         encodingMap.put("\\varE:", 0xCE);
+        encodingMap.put("\\varF:", 0xCF);
     }
 
     public static String decode(ByteBuffer bytes) throws Exception {
         StringBuilder sb = new StringBuilder();
+        boolean shouldPrint = false;
         while(bytes.remaining() > 0) {
             int b = 0;
             String s = null;
@@ -407,7 +414,11 @@ public class FFTA2Charset {
             //if (s == "\r") break;
             if (s.equals("\r") ) continue;
             sb.append(s);
+            if (b == 0xCC) shouldPrint = true;
             //if (s == "\\end\\") break;
+        }
+        if (shouldPrint) {
+            System.out.println(String.format("Found in: \"%s\"", sb.toString()));
         }
         return sb.toString();
     }
