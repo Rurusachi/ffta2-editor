@@ -60,8 +60,6 @@ public class StringSingle {
         try {
             byte[] bytes = FFTA2Charset.encode(text.getValue());
             
-            //short numLines = (short)IntStream.range(0, bytes.length).mapToObj(i -> bytes[i]).filter(b -> b == (byte)0xC0 || b == (byte)0xC1 || b == (byte)0xC7).mapToInt(b -> (int)b).count();
-            // This may not be 100% correct
             ArrayList<byte[]> pages = new ArrayList<>();
             int start = 0;
             for (int i = 0; i < bytes.length; i++) {
@@ -72,14 +70,11 @@ public class StringSingle {
             }
             int maxLines = 0;
             for (byte[] page : pages) {
-                //int numLines = (short)IntStream.range(0, page.length).mapToObj(i -> page[i]).filter(b -> b == (byte)0xC0 || b == (byte)0xC2 || b == (byte)0xC8 || b == (byte)0xC9).mapToInt(b -> (int)b).count();
-                //int numLines = (short)IntStream.range(0, page.length).mapToObj(i -> page[i]).filter(b -> b == (byte)0xC0 || b == (byte)0xC8).mapToInt(b -> (int)b).count() + 1;
                 int numLines = (int)IntStream.range(0, page.length).mapToObj(i -> page[i]).filter(b -> b == (byte)0xC0 || b == (byte)0xC1).mapToInt(b -> (int)b).count();
                 int numOptions = (int)IntStream.range(0, page.length).mapToObj(i -> page[i]).filter(b -> b == (byte)0xC8).count();
                 if (numOptions > 0) numLines += numOptions - 1;
                 maxLines = Math.max(maxLines, numLines);
             }
-            //short numLines = (short)IntStream.range(0, bytes.length).mapToObj(i -> bytes[i]).filter(b -> (Byte.toUnsignedInt(b) > 0xC1 && Byte.toUnsignedInt(b) < 0xCA)).mapToInt(b -> (int)b).count();
             stringLength.set(bytes.length);
             numLines.set((short)Math.max(1, maxLines));
             stringBytes.put(bytes);
