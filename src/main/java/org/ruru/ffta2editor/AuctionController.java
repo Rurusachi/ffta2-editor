@@ -403,7 +403,7 @@ public class AuctionController {
         App.sysdata.setFile(33, newAuctionPrizeTableDataBytes);
 
 
-        List<AuctionPrizeTable> auctionGrandPrizeTables = App.auctionPrizeTableList;
+        List<AuctionPrizeTable> auctionGrandPrizeTables = App.auctionGrandPrizeTableList;
         ByteBuffer newAuctionGrandPrizeTableDataBytes = ByteBuffer.allocate(auctionGrandPrizeTables.size()*0x20).order(ByteOrder.LITTLE_ENDIAN);
 
         logger.info("Saving Auction Grand Prize Tables");
