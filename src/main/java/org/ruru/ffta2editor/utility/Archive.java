@@ -9,10 +9,12 @@ import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.ruru.ffta2editor.utility.Archive.ArchiveEntry.ArchiveEntryList;
+
 public class Archive {
-    private class EncodedTableId {
-        int a;
-        int b;
+    private static class EncodedTableId {
+        public int a;
+        public int b;
 
         public EncodedTableId(int a, int b){
             this.a = a;
@@ -26,9 +28,9 @@ public class Archive {
         }
     }
     
-    private class DecodedTableId {
-        int offset;
-        int size;
+    private static class DecodedTableId {
+        public int offset;
+        public int size;
 
         public DecodedTableId(int offset, int size){
             this.offset = offset;
@@ -42,11 +44,11 @@ public class Archive {
         }
     }
 
-    private class ExtraData {
-        int offset;
-        int size;
-        byte chr;
-        int chr_position;
+    private static class ExtraData {
+        public int offset;
+        public int size;
+        public byte chr;
+        public int chr_position;
 
         public ExtraData(int offset, int size, byte chr, int chr_position) {
             this.offset = offset;
@@ -56,11 +58,11 @@ public class Archive {
         }
     }
 
-    private class ArchiveEntry {
-        public class ArchiveEntryList {
-            byte chr;
-            int chr_position;
-            ByteBuffer file;
+    public static class ArchiveEntry {
+        public static class ArchiveEntryList {
+            public byte chr;
+            public int chr_position;
+            public ByteBuffer file;
 
             public ArchiveEntryList(byte chr, int chr_position, ByteBuffer file) {
                 this.chr = chr;
@@ -68,10 +70,14 @@ public class Archive {
                 this.file = file;
                 file.order(ByteOrder.LITTLE_ENDIAN);
             }
+
+            public ArchiveEntryList copy() {
+                return new ArchiveEntryList(chr, chr_position, file);
+            }
         }
-        boolean isList;
-        ByteBuffer file;
-        ArrayList<ArchiveEntryList> files;
+        public boolean isList;
+        public ByteBuffer file;
+        public ArrayList<ArchiveEntryList> files;
 
 
         public ArchiveEntry(ArrayList<ArchiveEntryList> files) {
@@ -82,6 +88,18 @@ public class Archive {
         public ArchiveEntry(ByteBuffer file) {
             isList = false;
             this.file = file;
+        }
+
+        public ArchiveEntry copy() {
+            if (isList) {
+                ArrayList<ArchiveEntryList> fileCopies = new ArrayList<>();
+                for (ArchiveEntryList entry : files) {
+                    fileCopies.add(entry.copy());
+                }
+                return new ArchiveEntry(fileCopies);
+            } else {
+                return new ArchiveEntry(file);
+            }
         }
 
     }
@@ -187,7 +205,7 @@ public class Archive {
 
                 for (ExtraData extraData : bottomTableEntries.get(index)) {
                     int newSize = extraData.size == 0 ? decoded.size : extraData.size;
-                    fileList.files.add(fileList.new ArchiveEntryList(extraData.chr, extraData.chr_position, pcBinBuffer.slice(extraData.offset, newSize).order(ByteOrder.LITTLE_ENDIAN)));
+                    fileList.files.add(new ArchiveEntryList(extraData.chr, extraData.chr_position, pcBinBuffer.slice(extraData.offset, newSize).order(ByteOrder.LITTLE_ENDIAN)));
                 }
                 files.add(fileList);
             } else {
