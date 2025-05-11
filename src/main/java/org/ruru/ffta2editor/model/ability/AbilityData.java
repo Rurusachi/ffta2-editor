@@ -11,6 +11,6 @@ public abstract class AbilityData {
 
     @Override
     public String toString() {
-        return String.format("%X: %s", id , name.getValue());
+        return String.format("%X: %s", id, name.getValue());
     }
 }

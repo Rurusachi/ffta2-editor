@@ -11,6 +11,8 @@ import org.ruru.ffta2editor.AbilityController.AbilityCell;
 import org.ruru.ffta2editor.JobController.JobSpriteCell;
 import org.ruru.ffta2editor.JobGroupController.JobGroupCell;
 import org.ruru.ffta2editor.TextController.StringPropertyCell;
+import org.ruru.ffta2editor.TextController.StringWithId;
+import org.ruru.ffta2editor.TextController.StringWithIdCell;
 import org.ruru.ffta2editor.model.ability.AbilityData;
 import org.ruru.ffta2editor.model.ability.AbilityElement;
 import org.ruru.ffta2editor.model.item.ConsumableData;
@@ -75,7 +77,7 @@ public class EquipmentController {
     @FXML AutoCompleteComboBox<AbilityElement> element;
     @FXML AutoCompleteComboBox<EquipmentType> equipmentType;
     @FXML AutoCompleteComboBox<EquipmentLocation> equipmentLocation;
-    @FXML ComboBox<StringProperty> bonusEffect;
+    @FXML ComboBox<StringWithId> bonusEffect;
     @FXML AutoCompleteComboBox<AbilityData> ability1;
     @FXML AutoCompleteComboBox<AbilityData> ability2;
     @FXML AutoCompleteComboBox<AbilityData> ability3;
@@ -368,7 +370,7 @@ public class EquipmentController {
                     EquipmentData equipmentData = new EquipmentData(equipmentDataBytes, i);
                     equipmentDataList.add(equipmentData);
                 } catch (Exception e) {
-                    logger.log(Level.SEVERE, String.format("Failed to load Equipment %d \"%s\"", i, App.itemNames.size() > i ? App.itemNames.get(i).getValue() : ""));
+                    logger.log(Level.SEVERE, String.format("Failed to load Equipment %d \"%s\"", i, App.itemNames.size() > i ? App.itemNames.get(i).string().getValue() : ""));
                     throw e;
                 }
             }
@@ -397,7 +399,7 @@ public class EquipmentController {
                     ConsumableData consumableData = new ConsumableData(consumableDataBytes, i+numEquipment);
                     consumableDataList.add(consumableData);
                 } catch (Exception e) {
-                    logger.log(Level.SEVERE, String.format("Failed to load Consumable %d \"%s\"", i+numEquipment, App.itemNames.size() > i ? App.itemNames.get(i).getValue() : ""));
+                    logger.log(Level.SEVERE, String.format("Failed to load Consumable %d \"%s\"", i+numEquipment, App.itemNames.size() > i ? App.itemNames.get(i).string().getValue() : ""));
                     throw e;
                 }
             }
@@ -424,7 +426,7 @@ public class EquipmentController {
                     LootData lootData = new LootData(lootDataBytes, i+numEquipment+numConsumables);
                     lootDataList.add(lootData);
                 } catch (Exception e) {
-                    logger.log(Level.SEVERE, String.format("Failed to load Loot %d \"%s\"", i+numEquipment+numConsumables, App.itemNames.size() > i ? App.itemNames.get(i).getValue() : ""));
+                    logger.log(Level.SEVERE, String.format("Failed to load Loot %d \"%s\"", i+numEquipment+numConsumables, App.itemNames.size() > i ? App.itemNames.get(i).string().getValue() : ""));
                     throw e;
                 }
             }
@@ -445,8 +447,8 @@ public class EquipmentController {
             sprite.setItems(App.unitSprites);
 
             bonusEffect.setItems(App.bonusEffects);
-            bonusEffect.setCellFactory(x -> new StringPropertyCell());
-            bonusEffect.setButtonCell(new StringPropertyCell());
+            bonusEffect.setCellFactory(x -> new StringWithIdCell());
+            bonusEffect.setButtonCell(new StringWithIdCell());
 
             ability1.setData(App.abilityList);
             ability1.setCellFactory(x -> new AbilityCell<>());

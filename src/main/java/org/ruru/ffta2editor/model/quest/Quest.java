@@ -3,6 +3,7 @@ package org.ruru.ffta2editor.model.quest;
 import java.nio.ByteBuffer;
 
 import org.ruru.ffta2editor.App;
+import org.ruru.ffta2editor.TextController.StringWithId;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -18,12 +19,12 @@ public class Quest {
 
     public Quest(ByteBuffer infoBytes, ByteBuffer dataBytes, int id) {
         if (id < App.questNames.size()) {
-            this.name = App.questNames.get(id);
+            this.name = App.questNames.get(id).string();
         } else {
             this.name = new SimpleStringProperty("");
         }
         if (id < App.questDescriptions.size()) {
-            this.description = App.questDescriptions.get(id);
+            this.description = App.questDescriptions.get(id).string();
         } else {
             this.description = new SimpleStringProperty("\\var2:00\\\\end\\");
         }
@@ -35,16 +36,16 @@ public class Quest {
 
     public Quest(String name, int id) {
         if (id < App.questNames.size()) {
-            this.name = App.questNames.get(id);
+            this.name = App.questNames.get(id).string();
         } else {
             this.name = new SimpleStringProperty(name);
-            App.questNames.add(this.name);
+            App.questNames.add(new StringWithId(id, this.name));
         }
         if (id < App.questDescriptions.size()) {
-            this.description = App.questDescriptions.get(id);
+            this.description = App.questDescriptions.get(id).string();
         } else {
             this.description = new SimpleStringProperty("\\var2:00\\\\end\\");
-            App.questDescriptions.add(this.description);
+            App.questDescriptions.add(new StringWithId(id, this.description));
         }
         this.id = id;
 

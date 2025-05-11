@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
+import org.ruru.ffta2editor.TextController.StringWithId;
 import org.ruru.ffta2editor.model.ability.AbilityData;
 import org.ruru.ffta2editor.model.ability.ActiveAbilityData;
 import org.ruru.ffta2editor.model.ability.SPAbilityData;
@@ -92,25 +93,26 @@ public class App extends Application {
     public static ObservableList<AuctionPrizeTable> auctionPrizeTableList;
     public static ObservableList<AuctionPrizeTable> auctionGrandPrizeTableList;
 
-    public static ObservableList<StringProperty> characterNames;
-    public static ObservableList<StringProperty> jobNames;
-    public static ObservableList<StringProperty> abilitySetNames;
-    public static ObservableList<StringProperty> abilityNames;
-    public static ObservableList<StringProperty> jobDescriptions;
-    public static ObservableList<StringProperty> abilitySetDescriptions;
-    public static ObservableList<StringProperty> abilityDescriptions;
-    public static ObservableList<StringProperty> itemNames;
-    public static ObservableList<StringProperty> itemDescriptions;
-    public static ObservableList<StringProperty> bonusEffects;
-    public static ObservableList<StringProperty> lawNames;
-    public static ObservableList<StringProperty> questNames;
-    public static ObservableList<StringProperty> questDescriptions;
-    public static ObservableList<StringProperty> regionNames;
-    public static ObservableList<StringProperty> locationNames;
-    public static ObservableList<StringProperty> bazaarSetNames;
-    public static ObservableList<StringProperty> bazaarSetDescriptions;
-    public static ObservableList<StringProperty> noticeNames;
-    public static ObservableList<StringProperty> rumorNames;
+    public static ObservableList<StringWithId> characterNames;
+    public static ObservableList<StringWithId> jobNames;
+    public static ObservableList<StringWithId> abilitySetNames;
+    public static ObservableList<StringWithId> abilityNames;
+    public static ObservableList<StringWithId> jobDescriptions;
+    public static ObservableList<StringWithId> abilitySetDescriptions;
+    public static ObservableList<StringWithId> abilityDescriptions;
+    public static ObservableList<StringWithId> abilityHelpText;
+    public static ObservableList<StringWithId> itemNames;
+    public static ObservableList<StringWithId> itemDescriptions;
+    public static ObservableList<StringWithId> bonusEffects;
+    public static ObservableList<StringWithId> lawNames;
+    public static ObservableList<StringWithId> questNames;
+    public static ObservableList<StringWithId> questDescriptions;
+    public static ObservableList<StringWithId> regionNames;
+    public static ObservableList<StringWithId> locationNames;
+    public static ObservableList<StringWithId> bazaarSetNames;
+    public static ObservableList<StringWithId> bazaarSetDescriptions;
+    public static ObservableList<StringWithId> noticeNames;
+    public static ObservableList<StringWithId> rumorNames;
     public static Map<Integer, StringProperty> evMsgNames;
     
 

@@ -4,6 +4,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 import org.ruru.ffta2editor.App;
+import org.ruru.ffta2editor.TextController.StringWithId;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -18,12 +19,12 @@ public class LootData extends ItemData {
 
     public LootData(ByteBuffer bytes, int id) {
         if (id < App.itemNames.size()) {
-            this.name = App.itemNames.get(id);
+            this.name = App.itemNames.get(id).string();
         } else {
             this.name = new SimpleStringProperty("");
         }
         if (id < App.itemDescriptions.size()) {
-            this.description = App.itemDescriptions.get(id);
+            this.description = App.itemDescriptions.get(id).string();
         } else {
             this.description = new SimpleStringProperty("\\var2:00\\\\end\\");
         }
@@ -38,16 +39,16 @@ public class LootData extends ItemData {
 
     public LootData(String name, int id) {
         if (id < App.itemNames.size()) {
-            this.name = App.itemNames.get(id);
+            this.name = App.itemNames.get(id).string();
         } else {
             this.name = new SimpleStringProperty(name);
-            App.itemNames.add(this.name);
+            App.itemNames.add(new StringWithId(id, this.name));
         }
         if (id < App.itemDescriptions.size()) {
-            this.description = App.itemDescriptions.get(id);
+            this.description = App.itemDescriptions.get(id).string();
         } else {
             this.description = new SimpleStringProperty("\\var2:00\\\\end\\");
-            App.itemDescriptions.add(this.description);
+            App.itemDescriptions.add(new StringWithId(id, this.description));
         }
         this.id = id;
 

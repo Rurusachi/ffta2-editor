@@ -10,6 +10,9 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.ruru.ffta2editor.TextController.StringPropertyCell;
+import org.ruru.ffta2editor.TextController.StringWithId;
+import org.ruru.ffta2editor.TextController.StringWithIdCell;
 import org.ruru.ffta2editor.model.Race;
 import org.ruru.ffta2editor.model.ability.AbilityAnimation;
 import org.ruru.ffta2editor.model.ability.AbilityData;
@@ -28,8 +31,10 @@ import org.ruru.ffta2editor.utility.ByteStringConverter;
 import org.ruru.ffta2editor.utility.UnsignedShortStringConverter;
 
 import javafx.beans.binding.Bindings;
+import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -61,7 +66,7 @@ public class AbilityController {
         @Override protected void updateItem(T ability, boolean empty) {
             super.updateItem(ability, empty);
             if (ability != null) {
-                label.setText(String.format("%X: %s", ability.id , ability.name.getValue()));
+                label.setText(ability.toString());
             } else {
                 label.setText("");
             }
@@ -79,7 +84,7 @@ public class AbilityController {
         @Override protected void updateItem(Short id, boolean empty) {
             super.updateItem(id, empty);
             if (id != null) {
-                label.setText(String.format("%X: %s", id, App.abilityNames.get(id).getValue()));
+                label.setText(App.abilityNames.get(id).toString());
             } else {
                 label.setText("None");
             }
@@ -136,7 +141,7 @@ public class AbilityController {
     @FXML AutoCompleteComboBox<AbilityEffect.Modifier> modifier4;
 
     
-    @FXML TextField unknownByte0;
+    @FXML ComboBox<StringWithId> abilityHelp;
     @FXML TextField unknownByte4;
     @FXML TextField unknownByte5;
     @FXML TextField unknownByte30;
@@ -355,7 +360,6 @@ public class AbilityController {
         menuRoutine.setData(menuRoutineEnums);
         
         // Data validators
-        unknownByte0.textProperty().addListener(new ShortChangeListener(unknownByte0));
         unknownByte4.textProperty().addListener(new ByteChangeListener(unknownByte4));
         unknownByte5.textProperty().addListener(new ByteChangeListener(unknownByte5));
         unknownByte30.textProperty().addListener(new ByteChangeListener(unknownByte30));
@@ -406,6 +410,8 @@ public class AbilityController {
     private void unbindAbilityData() {
         abilityName.textProperty().unbindBidirectional(abilityProperty.getValue().name);
         abilityDescription.textProperty().unbindBidirectional(abilityProperty.getValue().description);
+        
+        abilityHelp.valueProperty().unbindBidirectional(abilityProperty.getValue().abilityHelp);
 
         targets1.valueProperty().unbindBidirectional(abilityProperty.getValue().effect1.targetsProperty);
         targets2.valueProperty().unbindBidirectional(abilityProperty.getValue().effect2.targetsProperty);
@@ -427,7 +433,6 @@ public class AbilityController {
         modifier3.valueProperty().unbindBidirectional(abilityProperty.getValue().effect3.modifierProperty);
         modifier4.valueProperty().unbindBidirectional(abilityProperty.getValue().effect4.modifierProperty);
 
-        unknownByte0.textProperty().unbindBidirectional(abilityProperty.getValue()._0x0);
         unknownByte4.textProperty().unbindBidirectional(abilityProperty.getValue()._0x4);
         unknownByte5.textProperty().unbindBidirectional(abilityProperty.getValue()._0x5);
         unknownByte30.textProperty().unbindBidirectional(abilityProperty.getValue()._0x30);
@@ -523,6 +528,21 @@ public class AbilityController {
         abilityName.textProperty().bindBidirectional(abilityProperty.getValue().name);
         abilityDescription.textProperty().bindBidirectional(abilityProperty.getValue().description);
 
+        //if (Short.toUnsignedInt(abilityProperty.getValue().abilityHelp.getValue()) >= 0xB798) {
+        //    abilityHelp.getSelectionModel().select(Short.toUnsignedInt(abilityProperty.getValue().abilityHelp.getValue()) - 0xB798);
+        //} else {
+        //    abilityHelp.getSelectionModel().select(0);
+        //}
+        //abilityProperty.getValue().abilityHelp.bind(new ObjectBinding<Short>() {
+        //    {bind(abilityHelp.valueProperty());}
+        //    @Override
+        //    protected Short computeValue() {
+        //        return (short)(abilityHelp.valueProperty().getValue().id() + 0xB798);
+        //    }
+        //    
+        //});
+        abilityHelp.valueProperty().bindBidirectional(abilityProperty.getValue().abilityHelp);
+
         targets1.valueProperty().bindBidirectional(abilityProperty.getValue().effect1.targetsProperty);
         targets2.valueProperty().bindBidirectional(abilityProperty.getValue().effect2.targetsProperty);
         targets3.valueProperty().bindBidirectional(abilityProperty.getValue().effect3.targetsProperty);
@@ -546,7 +566,6 @@ public class AbilityController {
 
         StringConverter<Byte> unsignedByteConverter = new ByteStringConverter();
         StringConverter<Short> unsignedShortConverter = new UnsignedShortStringConverter();
-        Bindings.bindBidirectional(unknownByte0.textProperty(), abilityProperty.getValue()._0x0, unsignedShortConverter);
         Bindings.bindBidirectional(unknownByte4.textProperty(), abilityProperty.getValue()._0x4, unsignedByteConverter);
         Bindings.bindBidirectional(unknownByte5.textProperty(), abilityProperty.getValue()._0x5, unsignedByteConverter);
         Bindings.bindBidirectional(unknownByte30.textProperty(), abilityProperty.getValue()._0x30, unsignedByteConverter);
@@ -725,7 +744,7 @@ public class AbilityController {
                     ActiveAbilityData activeAbilityData = new ActiveAbilityData(activeAbilityDataBytes, i);
                     activeAbilityDataList.add(activeAbilityData);
                 } catch (Exception e) {
-                    logger.log(Level.SEVERE, String.format("Failed to load Active Ability %d \"%s\"", i, App.abilityNames.size() > i ? App.abilityNames.get(i).getValue() : ""));
+                    logger.log(Level.SEVERE, String.format("Failed to load Active Ability %d \"%s\"", i, App.abilityNames.size() > i ? App.abilityNames.get(i).string().getValue() : ""));
                     throw e;
                 }
             }
@@ -781,7 +800,7 @@ public class AbilityController {
                     SPAbilityData reactionAbilityData = new SPAbilityData(reactionAbilityDataBytes, i + 0x336);
                     reactionAbilityDataList.add(reactionAbilityData);
                 } catch (Exception e) {
-                    logger.log(Level.SEVERE, String.format("Failed to load Reaction Ability %d \"%s\"", i + 0x336, App.abilityNames.size() > i ? App.abilityNames.get(i).getValue() : ""));
+                    logger.log(Level.SEVERE, String.format("Failed to load Reaction Ability %d \"%s\"", i + 0x336, App.abilityNames.size() > i ? App.abilityNames.get(i).string().getValue() : ""));
                     throw e;
                 }
             }
@@ -810,7 +829,7 @@ public class AbilityController {
                     SPAbilityData passiveAbilityData = new SPAbilityData(passiveAbilityDataBytes, i + 0x353);
                     passiveAbilityDataList.add(passiveAbilityData);
                 } catch (Exception e) {
-                    logger.log(Level.SEVERE, String.format("Failed to load Passive Ability %d \"%s\"", i + 0x353, App.abilityNames.size() > i ? App.abilityNames.get(i).getValue() : ""));
+                    logger.log(Level.SEVERE, String.format("Failed to load Passive Ability %d \"%s\"", i + 0x353, App.abilityNames.size() > i ? App.abilityNames.get(i).string().getValue() : ""));
                     throw e;
                 }
             }
@@ -940,6 +959,11 @@ public class AbilityController {
             apIndex6.setItems(apSlotItems);
             apIndex6.setButtonCell(new AbilitySlotCell(race6));
             apIndex6.setCellFactory(x -> new AbilitySlotCell(race6));
+
+            
+            abilityHelp.setItems(App.abilityHelpText);
+            abilityHelp.setButtonCell(new StringWithIdCell());
+            abilityHelp.setCellFactory(x -> new StringWithIdCell());
         }
     }
 

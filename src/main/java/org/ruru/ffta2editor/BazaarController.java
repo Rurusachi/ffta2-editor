@@ -236,7 +236,7 @@ public class BazaarController {
                     BazaarSet bazaarSetData = new BazaarSet(bazaarSetBytes, i);
                     bazaarSetDataList.add(bazaarSetData);
                 } catch (Exception e) {
-                    logger.log(Level.SEVERE, String.format("Failed to load Bazaar Set %d \"%s\"", i, App.bazaarSetNames.size() > i ? App.bazaarSetNames.get(i).getValue() : ""));
+                    logger.log(Level.SEVERE, String.format("Failed to load Bazaar Set %d \"%s\"", i, App.bazaarSetNames.size() > i ? App.bazaarSetNames.get(i).string().getValue() : ""));
                     throw e;
                 }
             }

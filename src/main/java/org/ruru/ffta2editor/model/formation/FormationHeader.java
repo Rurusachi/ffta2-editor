@@ -168,7 +168,7 @@ public class FormationHeader {
             protected String computeValue() {
                 int index = Short.toUnsignedInt(law.getValue());
                 if (index < App.lawNames.size()) {
-                    return App.lawNames.get(index).getValue();
+                    return App.lawNames.get(index).string().getValue();
                 } else {
                     return "";
                 }
@@ -252,7 +252,7 @@ public class FormationHeader {
             protected String computeValue() {
                 int index = Short.toUnsignedInt(law.getValue());
                 if (index < App.lawNames.size()) {
-                    return App.lawNames.get(index).getValue();
+                    return App.lawNames.get(index).string().getValue();
                 } else {
                     return "";
                 }

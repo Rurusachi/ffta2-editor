@@ -71,7 +71,7 @@ public class AuctionInfo {
             protected String computeValue() {
                 int index = Byte.toUnsignedInt(region.getValue());
                 if (index < App.regionNames.size()) {
-                    return App.regionNames.get(index).getValue();
+                    return App.regionNames.get(index).string().getValue();
                 } else {
                     return "";
                 }
@@ -84,7 +84,7 @@ public class AuctionInfo {
             protected String computeValue() {
                 int index = Byte.toUnsignedInt(otherRegion1.getValue());
                 if (index < App.regionNames.size()) {
-                    return App.regionNames.get(index).getValue();
+                    return App.regionNames.get(index).string().getValue();
                 } else {
                     return "";
                 }
@@ -97,7 +97,7 @@ public class AuctionInfo {
             protected String computeValue() {
                 int index = Byte.toUnsignedInt(otherRegion2.getValue());
                 if (index < App.regionNames.size()) {
-                    return App.regionNames.get(index).getValue();
+                    return App.regionNames.get(index).string().getValue();
                 } else {
                     return "";
                 }
@@ -134,7 +134,7 @@ public class AuctionInfo {
             protected String computeValue() {
                 int index = Byte.toUnsignedInt(region.getValue());
                 if (index < App.regionNames.size()) {
-                    return App.regionNames.get(index).getValue();
+                    return App.regionNames.get(index).string().getValue();
                 } else {
                     return "";
                 }
@@ -147,7 +147,7 @@ public class AuctionInfo {
             protected String computeValue() {
                 int index = Byte.toUnsignedInt(otherRegion1.getValue());
                 if (index < App.regionNames.size()) {
-                    return App.regionNames.get(index).getValue();
+                    return App.regionNames.get(index).string().getValue();
                 } else {
                     return "";
                 }
@@ -160,7 +160,7 @@ public class AuctionInfo {
             protected String computeValue() {
                 int index = Byte.toUnsignedInt(otherRegion2.getValue());
                 if (index < App.regionNames.size()) {
-                    return App.regionNames.get(index).getValue();
+                    return App.regionNames.get(index).string().getValue();
                 } else {
                     return "";
                 }

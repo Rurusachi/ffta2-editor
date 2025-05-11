@@ -5,6 +5,7 @@ import java.nio.ByteOrder;
 import java.util.BitSet;
 
 import org.ruru.ffta2editor.App;
+import org.ruru.ffta2editor.TextController.StringWithId;
 
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleListProperty;
@@ -201,12 +202,12 @@ public class AbilitySet {
 
     public AbilitySet(ByteBuffer setBytes, ByteBuffer abilityBytes, int id) {
         if (id < App.abilitySetNames.size()) {
-            this.name = App.abilitySetNames.get(id);
+            this.name = App.abilitySetNames.get(id).string();
         } else {
             this.name = new SimpleStringProperty("");
         }
         if (id < App.abilitySetDescriptions.size()) {
-            this.description = App.abilitySetDescriptions.get(id);
+            this.description = App.abilitySetDescriptions.get(id).string();
         } else {
             this.description = new SimpleStringProperty("\\var2:00\\\\end\\");
         }
@@ -230,16 +231,16 @@ public class AbilitySet {
 
     public AbilitySet(String name, int id) {
         if (id < App.abilitySetNames.size()) {
-            this.name = App.abilitySetNames.get(id);
+            this.name = App.abilitySetNames.get(id).string();
         } else {
             this.name = new SimpleStringProperty(name);
-            App.abilitySetNames.add(this.name);
+            App.abilitySetNames.add(new StringWithId(id, this.name));
         }
         if (id < App.abilitySetDescriptions.size()) {
-            this.description = App.abilitySetDescriptions.get(id);
+            this.description = App.abilitySetDescriptions.get(id).string();
         } else {
             this.description = new SimpleStringProperty("\\var2:00\\\\end\\");
-            App.abilitySetDescriptions.add(this.description);
+            App.abilitySetDescriptions.add(new StringWithId(id, this.description));
         }
         this.id = id;
         firstAbilityIndex = 0;

@@ -5,6 +5,7 @@ import java.nio.ByteOrder;
 import java.util.BitSet;
 
 import org.ruru.ffta2editor.App;
+import org.ruru.ffta2editor.TextController.StringWithId;
 import org.ruru.ffta2editor.model.Race;
 import org.ruru.ffta2editor.model.ability.AbilityEffect.Accuracy;
 import org.ruru.ffta2editor.model.ability.AbilityEffect.Effect;
@@ -64,7 +65,7 @@ public class ActiveAbilityData extends AbilityData {
     public AbilityEffect effect3;
     public AbilityEffect effect4;
 
-    public SimpleObjectProperty<Short> _0x0 = new SimpleObjectProperty<>();
+    public SimpleObjectProperty<StringWithId> abilityHelp = new SimpleObjectProperty<>(); // Ability Help text. Raw offset into text tables? (Table 2F starts at 0xB798)
     public SimpleObjectProperty<AbilityElement> abilityElement = new SimpleObjectProperty<>();
     public SimpleObjectProperty<Byte> mpCost = new SimpleObjectProperty<>();
     public SimpleObjectProperty<Byte> _0x4 = new SimpleObjectProperty<>();
@@ -260,17 +261,22 @@ public class ActiveAbilityData extends AbilityData {
 
     public ActiveAbilityData(ByteBuffer bytes, int id) {
         if (id < App.abilityNames.size()) {
-            this.name = App.abilityNames.get(id);
+            this.name = App.abilityNames.get(id).string();
         } else {
             this.name = new SimpleStringProperty("");
         }
         if (id < App.abilityDescriptions.size()) {
-            this.description = App.abilityDescriptions.get(id);
+            this.description = App.abilityDescriptions.get(id).string();
         } else {
             this.description = new SimpleStringProperty("\\var2:00\\\\end\\");
         }
         this.id = id;
-        _0x0.set(bytes.getShort()); 
+        int abilityHelpId = Short.toUnsignedInt(bytes.getShort()) - 0xB798;
+        if (abilityHelpId >= 0) {
+            abilityHelp.set(App.abilityHelpText.get(abilityHelpId)); 
+        } else {
+            abilityHelp.set(App.abilityHelpText.get(0)); 
+        }
         abilityElement.set(AbilityElement.fromInteger(bytes.get()));
         mpCost.set(bytes.get());
         _0x4.set(bytes.get());
@@ -318,19 +324,19 @@ public class ActiveAbilityData extends AbilityData {
 
     public ActiveAbilityData(String name, int id) {
         if (id < App.abilityNames.size()) {
-            this.name = App.abilityNames.get(id);
+            this.name = App.abilityNames.get(id).string();
         } else {
             this.name = new SimpleStringProperty(name);
-            App.abilityNames.add(this.name);
+            App.abilityNames.add(new StringWithId(id, this.name));
         }
         if (id < App.abilityDescriptions.size()) {
-            this.description = App.abilityDescriptions.get(id);
+            this.description = App.abilityDescriptions.get(id).string();
         } else {
             this.description = new SimpleStringProperty("\\var2:00\\\\end\\");
-            App.abilityDescriptions.add(this.description);
+            App.abilityDescriptions.add(new StringWithId(id, this.description));
         }
         this.id = id;
-        _0x0.set((short)0); 
+        abilityHelp.set(App.abilityHelpText.get(0));
         abilityElement.set(AbilityElement.fromInteger((byte)0));
         mpCost.set((byte)0);
         _0x4.set((byte)0);
@@ -377,7 +383,7 @@ public class ActiveAbilityData extends AbilityData {
     }
 
     public void copyFrom(ActiveAbilityData source) {
-        _0x0.set(source._0x0.getValue());
+        abilityHelp.set(source.abilityHelp.getValue());
         abilityElement.set(source.abilityElement.getValue());
         mpCost.set(source.mpCost.getValue());
         _0x4.set(source._0x4.getValue());
@@ -416,8 +422,9 @@ public class ActiveAbilityData extends AbilityData {
 
     public byte[] toBytes() {
         ByteBuffer buffer = ByteBuffer.allocate(0x34).order(ByteOrder.LITTLE_ENDIAN);
+        if (this.id == 0) return buffer.array();
 
-        buffer.putShort(_0x0.getValue());
+        buffer.putShort((short)(abilityHelp.getValue().id() + 0xB798));
         buffer.put(abilityElement.getValue().value);
         buffer.put(mpCost.getValue());
         buffer.put(_0x4.getValue());

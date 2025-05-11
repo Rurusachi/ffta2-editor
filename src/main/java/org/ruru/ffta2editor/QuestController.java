@@ -11,6 +11,8 @@ import org.ruru.ffta2editor.EquipmentController.ItemCell;
 import org.ruru.ffta2editor.FormationController.FormationCell;
 import org.ruru.ffta2editor.JobController.JobCell;
 import org.ruru.ffta2editor.TextController.StringPropertyCell;
+import org.ruru.ffta2editor.TextController.StringWithId;
+import org.ruru.ffta2editor.TextController.StringWithIdCell;
 import org.ruru.ffta2editor.model.ability.AbilityData;
 import org.ruru.ffta2editor.model.formation.FormationData;
 import org.ruru.ffta2editor.model.item.ItemData;
@@ -89,7 +91,7 @@ public class QuestController {
     @FXML AutoCompleteComboBox<ItemData> itemReward2;
     @FXML AutoCompleteComboBox<ItemData> itemReward3;
     @FXML AutoCompleteComboBox<ItemData> itemReward4;
-    @FXML ComboBox<StringProperty> questLocation;
+    @FXML ComboBox<StringWithId> questLocation;
     @FXML AutoCompleteComboBox<JobData> recommendedDispatch;
 
     // Short
@@ -431,7 +433,7 @@ public class QuestController {
             {bind(questLocation.valueProperty());}
             @Override
             protected Byte computeValue() {
-                return (byte)App.locationNames.indexOf(questLocation.valueProperty().getValue());
+                return (byte)questLocation.valueProperty().getValue().id();
             }
 
         });
@@ -580,7 +582,7 @@ public class QuestController {
                     Quest quest = new Quest(questInfoBytes, questDataBytes, i);
                     questDataList.add(quest);
                 } catch (Exception e) {
-                    logger.log(Level.SEVERE, String.format("Failed to load Quest %d \"%s\"", i, App.questNames.size() > i ? App.questNames.get(i).getValue() : ""));
+                    logger.log(Level.SEVERE, String.format("Failed to load Quest %d \"%s\"", i, App.questNames.size() > i ? App.questNames.get(i).string().getValue() : ""));
                     throw e;
                 }
             }
@@ -641,8 +643,8 @@ public class QuestController {
             recommendedDispatch.setButtonCell(new JobCell());
 
             questLocation.setItems(App.locationNames);
-            questLocation.setCellFactory(x -> new StringPropertyCell());
-            questLocation.setButtonCell(new StringPropertyCell());
+            questLocation.setCellFactory(x -> new StringWithIdCell());
+            questLocation.setButtonCell(new StringWithIdCell());
         }
     }
 

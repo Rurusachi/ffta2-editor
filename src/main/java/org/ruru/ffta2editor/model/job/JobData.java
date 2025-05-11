@@ -6,6 +6,7 @@ import java.util.BitSet;
 
 import org.ruru.ffta2editor.App;
 import org.ruru.ffta2editor.PatchesController;
+import org.ruru.ffta2editor.TextController.StringWithId;
 import org.ruru.ffta2editor.model.Race;
 import org.ruru.ffta2editor.model.topSprite.TopSprite;
 import org.ruru.ffta2editor.model.unitFace.UnitFace;
@@ -289,12 +290,12 @@ public class JobData {
 
     public JobData(ByteBuffer bytes, int id) {
         if (id < App.jobNames.size()) {
-            this.name = App.jobNames.get(id);
+            this.name = App.jobNames.get(id).string();
         } else {
             this.name = new SimpleStringProperty("");
         }
         if (id < App.jobDescriptions.size()) {
-            this.description = App.jobDescriptions.get(id);
+            this.description = App.jobDescriptions.get(id).string();
         } else {
             this.description = new SimpleStringProperty("\\var2:00\\\\end\\");
         }
@@ -387,16 +388,16 @@ public class JobData {
 
     public JobData(String name, int id) {
         if (id < App.jobNames.size()) {
-            this.name = App.jobNames.get(id);
+            this.name = App.jobNames.get(id).string();
         } else {
             this.name = new SimpleStringProperty(name);
-            App.jobNames.add(this.name);
+            App.jobNames.add(new StringWithId(id, this.name));
         }
         if (id < App.jobDescriptions.size()) {
-            this.description = App.jobDescriptions.get(id);
+            this.description = App.jobDescriptions.get(id).string();
         } else {
             this.description = new SimpleStringProperty("\\var2:00\\\\end\\");
-            App.jobDescriptions.add(this.description);
+            App.jobDescriptions.add(new StringWithId(id, this.description));
         }
         this.id = id;
 

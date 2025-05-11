@@ -4,6 +4,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 import org.ruru.ffta2editor.App;
+import org.ruru.ffta2editor.TextController.StringWithId;
 import org.ruru.ffta2editor.model.item.EquipmentData;
 
 import javafx.beans.property.ListProperty;
@@ -69,12 +70,12 @@ public class BazaarSet {
 
     public BazaarSet(ByteBuffer bytes, int id) {
         if (id < App.bazaarSetNames.size()) {
-            this.name = App.bazaarSetNames.get(id);
+            this.name = App.bazaarSetNames.get(id).string();
         } else {
             this.name = new SimpleStringProperty("");
         }
         if (id < App.bazaarSetDescriptions.size()) {
-            this.description = App.bazaarSetDescriptions.get(id);
+            this.description = App.bazaarSetDescriptions.get(id).string();
         } else {
             this.description = new SimpleStringProperty("\\var2:00\\\\end\\");
         }
@@ -93,16 +94,16 @@ public class BazaarSet {
 
     public BazaarSet(String name, int id) {
         if (id < App.bazaarSetNames.size()) {
-            this.name = App.bazaarSetNames.get(id);
+            this.name = App.bazaarSetNames.get(id).string();
         } else {
             this.name = new SimpleStringProperty(name);
-            App.bazaarSetNames.add(this.name);
+            App.bazaarSetNames.add(new StringWithId(id, this.name));
         }
         if (id < App.bazaarSetDescriptions.size()) {
-            this.description = App.bazaarSetDescriptions.get(id);
+            this.description = App.bazaarSetDescriptions.get(id).string();
         } else {
             this.description = new SimpleStringProperty("\\var2:00\\\\end\\");
-            App.bazaarSetDescriptions.add(this.description);
+            App.bazaarSetDescriptions.add(new StringWithId(id, this.description));
         }
         this.id = id;
 

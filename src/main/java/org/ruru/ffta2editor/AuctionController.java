@@ -8,6 +8,8 @@ import java.util.logging.Logger;
 
 import org.ruru.ffta2editor.EquipmentController.ItemCell;
 import org.ruru.ffta2editor.TextController.StringPropertyCell;
+import org.ruru.ffta2editor.TextController.StringWithId;
+import org.ruru.ffta2editor.TextController.StringWithIdCell;
 import org.ruru.ffta2editor.model.auction.AuctionInfo;
 import org.ruru.ffta2editor.model.auction.AuctionPrizeTable;
 import org.ruru.ffta2editor.model.auction.AuctionPrizeTable.AuctionPrizeItem;
@@ -99,9 +101,9 @@ public class AuctionController {
 
     // Auction Info
     // AutoCompleteComboBox
-    @FXML ComboBox<StringProperty> region;
-    @FXML ComboBox<StringProperty> otherRegion1;
-    @FXML ComboBox<StringProperty> otherRegion2;
+    @FXML ComboBox<StringWithId> region;
+    @FXML ComboBox<StringWithId> otherRegion1;
+    @FXML ComboBox<StringWithId> otherRegion2;
 
     // Short
     @FXML TextField auctionStoryRequirement;
@@ -367,16 +369,16 @@ public class AuctionController {
             grandPrize.setButtonCell(new ItemCell<>());
 
             region.setItems(App.regionNames);
-            region.setCellFactory(x -> new StringPropertyCell());
-            region.setButtonCell(new StringPropertyCell());
+            region.setCellFactory(x -> new StringWithIdCell());
+            region.setButtonCell(new StringWithIdCell());
 
             otherRegion1.setItems(App.regionNames);
-            otherRegion1.setCellFactory(x -> new StringPropertyCell());
-            otherRegion1.setButtonCell(new StringPropertyCell());
+            otherRegion1.setCellFactory(x -> new StringWithIdCell());
+            otherRegion1.setButtonCell(new StringWithIdCell());
 
             otherRegion2.setItems(App.regionNames);
-            otherRegion2.setCellFactory(x -> new StringPropertyCell());
-            otherRegion2.setButtonCell(new StringPropertyCell());
+            otherRegion2.setCellFactory(x -> new StringWithIdCell());
+            otherRegion2.setButtonCell(new StringWithIdCell());
             
             auctionPrizeTableItemList.setCellFactory(x -> new AuctionPrizeCell());
             

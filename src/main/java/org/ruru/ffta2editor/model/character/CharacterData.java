@@ -98,7 +98,7 @@ public class CharacterData {
             protected String computeValue() {
                 int index = Short.toUnsignedInt(name.getValue());
                 if (index < App.characterNames.size()) {
-                    return App.characterNames.get(index).getValue();
+                    return App.characterNames.get(index).string().getValue();
                 } else {
                     return "";
                 }
@@ -144,7 +144,7 @@ public class CharacterData {
             {bind(name);}
             @Override
             protected String computeValue() {
-                return App.characterNames.get(Short.toUnsignedInt(name.getValue())).getValue();
+                return App.characterNames.get(Short.toUnsignedInt(name.getValue())).string().getValue();
             }
         });
     }

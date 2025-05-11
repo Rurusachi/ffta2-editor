@@ -4,6 +4,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 import org.ruru.ffta2editor.App;
+import org.ruru.ffta2editor.TextController.StringWithId;
 
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -16,12 +17,12 @@ public class SPAbilityData extends AbilityData {
 
     public SPAbilityData(ByteBuffer bytes, int id) {
         if (id < App.abilityNames.size()) {
-            this.name = App.abilityNames.get(id);
+            this.name = App.abilityNames.get(id).string();
         } else {
             this.name = new SimpleStringProperty("");
         }
         if (id < App.abilityDescriptions.size()) {
-            this.description = App.abilityDescriptions.get(id);
+            this.description = App.abilityDescriptions.get(id).string();
         } else {
             this.description = new SimpleStringProperty("\\var2:00\\\\end\\");
         }
@@ -34,16 +35,16 @@ public class SPAbilityData extends AbilityData {
 
     public SPAbilityData(String name, int id) {
         if (id < App.abilityNames.size()) {
-            this.name = App.abilityNames.get(id);
+            this.name = App.abilityNames.get(id).string();
         } else {
             this.name = new SimpleStringProperty(name);
-            App.abilityNames.add(this.name);
+            App.abilityNames.add(new StringWithId(id, this.name));
         }
         if (id < App.abilityDescriptions.size()) {
-            this.description = App.abilityDescriptions.get(id);
+            this.description = App.abilityDescriptions.get(id).string();
         } else {
             this.description = new SimpleStringProperty("\\var2:00\\\\end\\");
-            App.abilityDescriptions.add(this.description);
+            App.abilityDescriptions.add(new StringWithId(id, this.description));
         }
         this.id = id;
 

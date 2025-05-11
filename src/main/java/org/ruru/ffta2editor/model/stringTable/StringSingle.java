@@ -49,10 +49,14 @@ public class StringSingle {
         }
     }
 
+    private int align16(int d) {
+        return (d + 0x1f) & ~0x1f;
+    }
     public byte[] toBytes() throws Exception {
         ByteBuffer stringBytes = ByteBuffer.allocate(0xe + (text.getValue().length()+1)*2).order(ByteOrder.LITTLE_ENDIAN);
         stringBytes.position(0xe);
         int endPosition;
+        byte[] zeroes = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
         try {
             byte[] bytes = FFTA2Charset.encode(text.getValue());
             
@@ -89,6 +93,9 @@ public class StringSingle {
         stringBytes.putInt(stringLength.getValue());
         stringBytes.putInt(_0x08.getValue());
         stringBytes.putShort(numLines.getValue());
+        
+        endPosition += align16(endPosition) - endPosition;
+        stringBytes.put(zeroes, 0, align16(endPosition) - endPosition);
         return Arrays.copyOf(stringBytes.array(), endPosition);
     }
 }

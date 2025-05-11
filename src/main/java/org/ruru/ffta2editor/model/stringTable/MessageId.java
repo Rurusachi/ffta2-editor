@@ -64,7 +64,7 @@ public class MessageId {
         "Auction House text",
         "Pub text",
         "Doesn't exist?",
-        "Ability help text?",
+        "Ability help text",
         "Unit dismiss text + some intro text",
         "New notice text",
         "Shop text",

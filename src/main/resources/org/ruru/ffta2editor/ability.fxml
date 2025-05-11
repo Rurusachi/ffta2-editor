@@ -87,6 +87,12 @@
                                     </VBox>
                                     <VBox alignment="CENTER" prefHeight="200.0">
                                        <children>
+                                          <Label text="Ability Help" />
+                                          <ComboBox fx:id="abilityHelp" minWidth="100.0" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="CENTER" prefHeight="200.0">
+                                       <children>
                                           <Label text="Power" />
                                           <TextField fx:id="power" />
                                        </children>
@@ -411,12 +417,6 @@
                            <children>
                               <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
                                  <children>
-                                    <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
-                                       <children>
-                                          <Label text="0x00" />
-                                          <TextField fx:id="unknownByte0" />
-                                       </children>
-                                    </VBox>
                                     <VBox alignment="CENTER" layoutX="110.0" layoutY="10.0" prefHeight="200.0" prefWidth="100.0">
                                        <children>
                                           <Label text="0x04" />

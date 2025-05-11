@@ -59,7 +59,7 @@ public class JobController {
         @Override protected void updateItem(JobData job, boolean empty) {
             super.updateItem(job, empty);
             if (job != null) {
-                label.setText(String.format("%X: %s", job.id , job.name.getValue()));
+                label.setText(job.toString());
             } else {
                 label.setText("");
             }
@@ -77,7 +77,7 @@ public class JobController {
         @Override protected void updateItem(Short id, boolean empty) {
             super.updateItem(id, empty);
             if (id != null) {
-                label.setText(String.format("%X: %s", id, App.jobNames.get(id).getValue()));
+                label.setText(App.jobNames.get(id).toString());
             } else {
                 label.setText("None");
             }
@@ -96,7 +96,7 @@ public class JobController {
             super.updateItem(abilitySet, empty);
             if (abilitySet != null) {
                 //label.setText(id + ": " + AbilityId.abilityNames[id]);
-                label.setText(String.format("%X: %s", abilitySet.id , abilitySet.name.getValue()));
+                label.setText(abilitySet.toString());
             } else {
                 label.setText("None");
             }
@@ -114,7 +114,7 @@ public class JobController {
             super.updateItem(abilitySet, empty);
             if (abilitySet != null && abilitySet.ability.getValue() != null) {
                 //label.setText(id + ": " + AbilityId.abilityNames[id]);
-                label.setText(String.format("%X: %s", abilitySet.ability.getValue().id , abilitySet.ability.getValue().name.getValue()));
+                label.setText(abilitySet.ability.getValue().toString());
             } else {
                 label.setText("");
             }
@@ -952,7 +952,7 @@ public class JobController {
                     AbilitySet abilitySet = new AbilitySet(abilitySetBytes, abilitySetAbilityBytes, i);
                     abilitySetDataList.add(abilitySet);
                 } catch (Exception e) {
-                    logger.log(Level.SEVERE, String.format("Failed to load Ability Set %d \"%s\"", i, App.abilitySetNames.size() > i ? App.abilitySetNames.get(i).getValue() : ""));
+                    logger.log(Level.SEVERE, String.format("Failed to load Ability Set %d \"%s\"", i, App.abilitySetNames.size() > i ? App.abilitySetNames.get(i).string().getValue() : ""));
                     throw e;
                 }
             }
@@ -990,7 +990,7 @@ public class JobController {
                     JobData abilityData = new JobData(jobDataBytes, i);
                     jobDataList.add(abilityData);
                 } catch (Exception e) {
-                    logger.log(Level.SEVERE, String.format("Failed to load Job %d \"%s\"", i, App.jobNames.size() > i ? App.jobNames.get(i).getValue() : ""));
+                    logger.log(Level.SEVERE, String.format("Failed to load Job %d \"%s\"", i, App.jobNames.size() > i ? App.jobNames.get(i).string().getValue() : ""));
                     throw e;
                 }
             }

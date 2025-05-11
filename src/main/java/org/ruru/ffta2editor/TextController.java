@@ -5,7 +5,9 @@ import java.nio.ByteOrder;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
+import org.ruru.ffta2editor.TextController.StringWithId;
 import org.ruru.ffta2editor.model.stringTable.MessageId;
 import org.ruru.ffta2editor.model.stringTable.StringSingle;
 import org.ruru.ffta2editor.model.stringTable.StringTable;
@@ -82,6 +84,32 @@ public class TextController {
             setGraphic(label);
         }
     }
+    
+    public record StringWithId(int id, StringProperty string){
+        
+        @Override
+        public String toString() {
+            return String.format("%X: %s", id, string.getValue());
+        }
+    };
+    public static class StringWithIdCell extends ListCell<StringWithId> {
+        Label label = new Label();
+
+
+        public StringWithIdCell() {
+            label.setStyle("-fx-text-fill: black");
+        }
+
+        @Override protected void updateItem(StringWithId property, boolean empty) {
+            super.updateItem(property, empty);
+            if (property != null) {
+                label.setText(property.toString());
+            } else {
+                label.setText("");
+            }
+            setGraphic(label);
+        }
+    }
 
     //List<StringTable> messageList;
 
@@ -90,8 +118,8 @@ public class TextController {
     @FXML ListView<StringSingle> questList;
     @FXML ListView<StringSingle> rumorList;
     @FXML ListView<StringSingle> noticeList;
-    @FXML ListView<StringProperty> messageStringList;
-    @FXML ListView<StringProperty> eventStringList;
+    @FXML ListView<StringWithId> messageStringList;
+    @FXML ListView<StringWithId> eventStringList;
     @FXML TextArea stringArea;
 
 
@@ -132,18 +160,18 @@ public class TextController {
         
         messageStringList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (stringProperty != null) unbindStringData();
-            stringProperty = newValue;
+            stringProperty = newValue != null ? newValue.string() : null;
             if (stringProperty != null) bindStringData();
         });
         
         eventStringList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (stringProperty != null) unbindStringData();
-            stringProperty = newValue;
+            stringProperty = newValue != null ? newValue.string() : null;
             if (stringProperty != null) bindStringData();
         });
 
-        messageStringList.setCellFactory(x -> new StringPropertyCell());
-        eventStringList.setCellFactory(x -> new StringPropertyCell());
+        messageStringList.setCellFactory(x -> new StringWithIdCell());
+        eventStringList.setCellFactory(x -> new StringWithIdCell());
     }
 
     private void unbindMessageStringTableData() {
@@ -173,7 +201,8 @@ public class TextController {
     @FXML
     public void addMessageString() {
         if (messageStringList.getItems() != null) {
-            messageStringList.getItems().add(new SimpleStringProperty(""));
+            int nextIndex = messageStringList.getItems().size();
+            messageStringList.getItems().add(new StringWithId(nextIndex, new SimpleStringProperty("")));
             messageStringList.getSelectionModel().selectLast();
         }
     }
@@ -188,7 +217,8 @@ public class TextController {
     @FXML
     public void addEventString() {
         if (eventStringList.getItems() != null) {
-            eventStringList.getItems().add(new SimpleStringProperty(""));
+            int nextIndex = eventStringList.getItems().size();
+            eventStringList.getItems().add(new StringWithId(nextIndex, new SimpleStringProperty("")));
             eventStringList.getSelectionModel().selectLast();
         }
     }
@@ -205,6 +235,7 @@ public class TextController {
             ObservableList<StringTable> tempMessageList = FXCollections.observableArrayList();
 
             logger.info("Loading jdMessage");
+            int currPos = 0;
             for (int i = 0; i < App.jdMessage.numFiles(); i++) {
                 ByteBuffer stringTableBytes = App.jdMessage.getFile(i);
                 //System.out.println(i);
@@ -213,10 +244,12 @@ public class TextController {
                     continue;
                 }
 
+                //System.out.println(String.format("%s: %d to %d", MessageId.messageNames[i],  currPos, currPos+stringTableBytes.remaining()));
+                currPos += stringTableBytes.remaining();
                 StringTable stringTable = new StringTable(stringTableBytes, new SimpleStringProperty(MessageId.messageNames[i]), i);
                 tempMessageList.add(stringTable);
 
-                ObservableList<StringProperty> tempList;
+                ObservableList<StringWithId> tempList;
                 switch (i) {
                     case 0:
                         App.characterNames = stringTable.strings.getValue();
@@ -253,7 +286,7 @@ public class TextController {
                         break;
                     case 18:
                         tempList = FXCollections.observableArrayList(stringTable.strings.getValue().subList(0x75, 0xC8));
-                        tempList.addFirst(new SimpleStringProperty("None"));
+                        tempList.addFirst(new StringWithId(0, new SimpleStringProperty("None")));
                         App.bonusEffects = tempList;
                         break;
                     case 24:
@@ -273,6 +306,10 @@ public class TextController {
                         break;
                     case 39:
                         App.itemDescriptions = stringTable.strings.getValue();
+                        break;
+                    case 47:
+                        //ObservableList<StringWithId> abilityHelpStrings = FXCollections.observableArrayList(IntStream.range(0, App.abilityHelpText.size()).mapToObj(i -> new StringWithId(i, App.abilityHelpText.get(i))).toList());
+                        App.abilityHelpText = stringTable.strings.getValue();
                         break;
                     case 53:
                         App.bazaarSetDescriptions = stringTable.strings.getValue();
@@ -352,7 +389,7 @@ public class TextController {
                     continue;
                 }
 
-                StringSingle stringTable = new StringSingle(stringTableBytes, App.questNames.get(i), i);
+                StringSingle stringTable = new StringSingle(stringTableBytes, App.questNames.get(i).string(), i);
                 tempQuestList.add(stringTable);
             }
             questList.getItems().setAll(tempQuestList);
@@ -370,7 +407,7 @@ public class TextController {
                     continue;
                 }
 
-                StringSingle stringTable = new StringSingle(stringTableBytes, App.rumorNames.get(i), i);
+                StringSingle stringTable = new StringSingle(stringTableBytes, App.rumorNames.get(i).string(), i);
                 tempRumorList.add(stringTable);
             }
             rumorList.getItems().setAll(tempRumorList);
@@ -388,7 +425,7 @@ public class TextController {
                     continue;
                 }
 
-                StringSingle stringTable = new StringSingle(stringTableBytes, App.noticeNames.get(i), i);
+                StringSingle stringTable = new StringSingle(stringTableBytes, App.noticeNames.get(i).string(), i);
                 tempNoticeList.add(stringTable);
             }
             noticeList.getItems().setAll(tempNoticeList);
@@ -400,10 +437,13 @@ public class TextController {
         List<StringTable> messages = messageList.getItems();
         //ArrayList<byte[]> encodedMessages = new ArrayList<>();
         logger.info("saving jdMessage");
+        int currPos = 0;
         for (StringTable table : messages) {
             //encodedMessages.add(table.toBytes());
             //System.out.println(table.id);
             byte[] tableBytes = table.toBytes();
+            System.out.println(String.format("%s: %d to %d", table.name.getValue(), currPos, currPos + tableBytes.length));
+            currPos += tableBytes.length;
             if (tableBytes.length == 0) continue;
             //System.out.println(String.format("%d -> %d", App.jdMessage.getFile(table.id).rewind().remaining(), tableBytes.length));
             App.jdMessage.setFile(table.id, ByteBuffer.wrap(tableBytes).order(ByteOrder.LITTLE_ENDIAN));
@@ -412,7 +452,7 @@ public class TextController {
         logger.info("saving evMsg");
         List<StringTable> events = eventMsgList.getItems();
         for (StringTable table : events) {
-            byte[] tableBytes = table.toBytes();
+            byte[] tableBytes = table.toBytes(false);
             if (tableBytes.length == 0) continue;
             App.evMsg.setFile(table.id, ByteBuffer.wrap(tableBytes).order(ByteOrder.LITTLE_ENDIAN));
         }

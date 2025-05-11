@@ -136,7 +136,7 @@ public class FormationUnit {
             protected String computeValue() {
                 int index = Short.toUnsignedInt(name.getValue());
                 if (index < App.characterNames.size()) {
-                    return App.characterNames.get(index).getValue();
+                    return App.characterNames.get(index).string().getValue();
                 } else {
                     return "";
                 }
@@ -200,7 +200,7 @@ public class FormationUnit {
             protected String computeValue() {
                 int index = Short.toUnsignedInt(name.getValue());
                 if (index < App.characterNames.size()) {
-                    return App.characterNames.get(index).getValue();
+                    return App.characterNames.get(index).string().getValue();
                 } else {
                     return "";
                 }

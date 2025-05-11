@@ -11,6 +11,8 @@ import org.ruru.ffta2editor.EquipmentController.ItemCell;
 import org.ruru.ffta2editor.JobController.AbilitySetCell;
 import org.ruru.ffta2editor.JobController.JobCell;
 import org.ruru.ffta2editor.TextController.StringPropertyCell;
+import org.ruru.ffta2editor.TextController.StringWithId;
+import org.ruru.ffta2editor.TextController.StringWithIdCell;
 import org.ruru.ffta2editor.model.ability.AbilityData;
 import org.ruru.ffta2editor.model.ability.SPAbilityData;
 import org.ruru.ffta2editor.model.character.CharacterData;
@@ -100,7 +102,7 @@ public class FormationController {
     @FXML ListView<FormationData> formationList;
     @FXML ListView<FormationUnit> formationUnitList;
 
-    @FXML ComboBox<StringProperty> law;
+    @FXML ComboBox<StringWithId> law;
     @FXML TextField partyLimit;
     @FXML TextField _0x02;
     @FXML TextField _0x04;
@@ -171,7 +173,7 @@ public class FormationController {
     // Unit
     @FXML AutoCompleteComboBox<CharacterData> character;
     @FXML AutoCompleteComboBox<JobData> job;
-    @FXML ComboBox<StringProperty> name;
+    @FXML ComboBox<StringWithId> name;
     @FXML TextField minLevel;
     @FXML TextField maxLevel;
     @FXML TextField unit_0x06;
@@ -692,8 +694,8 @@ public class FormationController {
             job.setButtonCell(new JobCell());
         
             name.setItems(App.characterNames);
-            name.setButtonCell(new StringPropertyCell());
-            name.setCellFactory(x -> new StringPropertyCell());
+            name.setButtonCell(new StringWithIdCell());
+            name.setCellFactory(x -> new StringWithIdCell());
             
             equipment1.setData(App.equipmentList);
             equipment1.setButtonCell(new ItemCell<>());
@@ -716,8 +718,8 @@ public class FormationController {
             equipment5.setCellFactory(x -> new ItemCell<>());
         
             law.setItems(App.lawNames);
-            law.setButtonCell(new StringPropertyCell());
-            law.setCellFactory(x -> new StringPropertyCell());
+            law.setButtonCell(new StringWithIdCell());
+            law.setCellFactory(x -> new StringWithIdCell());
         
             secondaryAbilitySet.setData(App.abilitySetList);
             secondaryAbilitySet.setCellFactory(x -> new AbilitySetCell());

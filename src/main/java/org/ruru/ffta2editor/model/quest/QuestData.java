@@ -307,7 +307,7 @@ public class QuestData {
             protected String computeValue() {
                 int index = Byte.toUnsignedInt(questLocation.getValue());
                 if (index < App.locationNames.size()) {
-                    return App.locationNames.get(index).getValue();
+                    return App.locationNames.get(index).string().getValue();
                 } else {
                     return "";
                 }
@@ -423,7 +423,7 @@ public class QuestData {
             protected String computeValue() {
                 int index = Byte.toUnsignedInt(questLocation.getValue());
                 if (index < App.locationNames.size()) {
-                    return App.locationNames.get(index).getValue();
+                    return App.locationNames.get(index).string().getValue();
                 } else {
                     return "";
                 }
