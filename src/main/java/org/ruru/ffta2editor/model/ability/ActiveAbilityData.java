@@ -272,10 +272,12 @@ public class ActiveAbilityData extends AbilityData {
         }
         this.id = id;
         int abilityHelpId = Short.toUnsignedInt(bytes.getShort()) - 0xB798;
-        if (abilityHelpId >= 0) {
+        if (0 <= abilityHelpId && abilityHelpId < App.abilityHelpText.size()) {
             abilityHelp.set(App.abilityHelpText.get(abilityHelpId)); 
+        } else if (0 <= this.id && this.id < AbilityId.vanillaAbilityHelp.length) {
+            abilityHelp.set(App.abilityHelpText.get(AbilityId.vanillaAbilityHelp[this.id]));
         } else {
-            abilityHelp.set(App.abilityHelpText.get(0)); 
+            abilityHelp.set(App.abilityHelpText.get(0));
         }
         abilityElement.set(AbilityElement.fromInteger(bytes.get()));
         mpCost.set(bytes.get());
