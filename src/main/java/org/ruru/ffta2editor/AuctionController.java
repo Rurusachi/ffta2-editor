@@ -10,6 +10,7 @@ import org.ruru.ffta2editor.EquipmentController.ItemCell;
 import org.ruru.ffta2editor.TextController.StringPropertyCell;
 import org.ruru.ffta2editor.TextController.StringWithId;
 import org.ruru.ffta2editor.TextController.StringWithIdCell;
+import org.ruru.ffta2editor.model.auction.AuctionVanillaData;
 import org.ruru.ffta2editor.model.auction.AuctionInfo;
 import org.ruru.ffta2editor.model.auction.AuctionPrizeTable;
 import org.ruru.ffta2editor.model.auction.AuctionPrizeTable.AuctionPrizeItem;
@@ -319,13 +320,27 @@ public class AuctionController {
 
             logger.info("Loading Auction Grand Prize Tables");
             int numAuctionGrandPrizeTables = Byte.toUnsignedInt(App.arm9.get(0x000cb840))+1;
-            for (int i = 0; i < numAuctionGrandPrizeTables; i++) {
-                try {
-                    AuctionPrizeTable auctionGrandPrizeTableData = new AuctionPrizeTable(auctionGrandPrizeTableBytes, i);
+            if (auctionGrandPrizeTableBytes.remaining() / 0x20 != numAuctionGrandPrizeTables) {
+                logger.log(Level.WARNING, "Resetting Grand Prizes");
+                System.out.println("Resetting Grand Prizes");
+                for (int i = 0; i < AuctionVanillaData.grandPrizes.length; i++) {
+                    AuctionPrizeTable auctionGrandPrizeTableData = new AuctionPrizeTable(i);
+                    var items = AuctionVanillaData.grandPrizes[i];
+                    for (int j = 0; j < items.length; j++) {
+                        var vanillaItem = items[j];
+                        auctionGrandPrizeTableData.prizes.set(j, new AuctionPrizeItem(vanillaItem[0], vanillaItem[1]));
+                    }
                     auctionGrandPrizeTableDataList.add(auctionGrandPrizeTableData);
-                } catch (Exception e) {
-                    logger.log(Level.SEVERE, String.format("Failed to load Auction Grand Prize Table %d", i));
-                    throw e;
+                }
+            } else {
+                for (int i = 0; i < numAuctionGrandPrizeTables; i++) {
+                    try {
+                        AuctionPrizeTable auctionGrandPrizeTableData = new AuctionPrizeTable(auctionGrandPrizeTableBytes, i);
+                        auctionGrandPrizeTableDataList.add(auctionGrandPrizeTableData);
+                    } catch (Exception e) {
+                        logger.log(Level.SEVERE, String.format("Failed to load Auction Grand Prize Table %d", i));
+                        throw e;
+                    }
                 }
             }
             App.auctionGrandPrizeTableList = auctionGrandPrizeTableDataList;
