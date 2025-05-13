@@ -846,6 +846,10 @@ public class MainController {
             filtered.forEach(x -> stringTable.strings.get(x.id()).string().set(x.string().get()));
         }
 
+        // The only instance of ` in the game apparently
+        numAffected++;
+        textTabController.messageList.getItems().get(0x15).strings.get(0x15).string().setValue("`");
+
         for (int i = 0; i < evMsg.numFiles(); i++) {
             ByteBuffer stringTableBytes = evMsg.getFile(i);
             if (stringTableBytes == null || stringTableBytes.rewind().remaining() == 0) {
