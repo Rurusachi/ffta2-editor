@@ -52,6 +52,11 @@
             <MenuItem fx:id="saveMenuItem" disable="true" mnemonicParsing="false" onAction="#saveToLast" text="Save" />
           </items>
         </Menu>
+        <Menu mnemonicParsing="false" text="Fixes">
+          <items>
+            <MenuItem mnemonicParsing="false" onAction="#resetTextFileSelector" text="Fix pre-v1.3.2 text encoding bug" />
+          </items>
+        </Menu>
       </menus>
     </MenuBar>
       <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">

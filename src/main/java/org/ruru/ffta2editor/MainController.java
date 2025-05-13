@@ -15,7 +15,11 @@ import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.ruru.ffta2editor.model.stringTable.MessageId;
+import org.ruru.ffta2editor.model.stringTable.StringSingle;
+import org.ruru.ffta2editor.model.stringTable.StringTable;
 import org.ruru.ffta2editor.utility.Archive;
+import org.ruru.ffta2editor.utility.FFTA2Charset;
 import org.ruru.ffta2editor.utility.IdxAndPak;
 import org.ruru.ffta2editor.utility.LZSS;
 import org.ruru.ffta2editor.utility.Archive.ArchiveEntry;
@@ -23,6 +27,7 @@ import org.ruru.ffta2editor.utility.Archive.ArchiveEntry;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -253,7 +258,7 @@ public class MainController {
             System.err.println(e);
         }
         
-        chooser.setTitle("Open Directory");
+        chooser.setTitle("Open ROM");
         File loadPath = chooser.showOpenDialog(abilityTab.getScene().getWindow());
         if (loadPath == null) {
             setDim(false);
@@ -735,4 +740,175 @@ public class MainController {
         ndsTool.start().waitFor();
     }
 
+    
+    @FXML
+    private void resetTextFileSelector() {
+        if (App.archive == null) return;
+        setDim(true);
+
+        Alert confirmAlert = new Alert(AlertType.CONFIRMATION);
+        confirmAlert.setContentText("This fix is for ROMs saved with editors older than v1.3.2 which had a text encoding bug that replaced \"*\" with \"ー\".\nThis will load text from an original ROM to reset affected text.");
+        //confirmAlert.setTitle("Fix pre-v1.3.2 text encoding bug");
+        confirmAlert.setHeaderText("Fix pre-v1.3.2 text encoding bug");
+
+        var result = confirmAlert.showAndWait();
+
+        if (!result.isPresent() || result.get() != ButtonType.OK) {
+            setDim(false);
+            return;
+        }
+
+
+        FileChooser chooser = new FileChooser();
+        try {
+            File lastPath = Path.of(App.config.getProperty("lastPath")).toFile();
+            if (!lastPath.exists()) throw new FileNotFoundException("Last path doesn't exist");
+            chooser.setInitialDirectory(lastPath);
+        } catch (Exception e) {
+            App.config.setProperty("lastPath", System.getProperty("user.dir"));
+            chooser.setInitialDirectory(Path.of(System.getProperty("user.dir")).toFile());
+            System.err.println(e);
+        }
+        
+        chooser.setTitle("Open Original ROM");
+        File loadPath = chooser.showOpenDialog(abilityTab.getScene().getWindow());
+        if (loadPath == null) {
+            setDim(false);
+            return;
+        }
+        try {
+            resetText(loadPath);
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, String.format("Failed to reset text"), e);
+            System.err.println(e);
+            Alert loadAlert = new Alert(AlertType.ERROR);
+            loadAlert.setTitle("Resetting text");
+            loadAlert.setHeaderText("Reset failed");
+            loadAlert.setContentText(e.toString());
+            loadAlert.show();
+        }
+        setDim(false);
+    }
+
+
+    public void resetText(File loadPath) throws Exception {
+        logger.info("Unpacking rom with ndstool");
+        romFile = loadPath;
+        Path dataPath = Path.of("vanilla");
+        ProcessBuilder ndsTool = new ProcessBuilder("ndstool.exe", "-x", loadPath.toPath().toString(),
+                                               "-9", dataPath.resolve("arm9.bin").toString(),
+                                               "-7", dataPath.resolve("arm7.bin").toString(),
+                                               "-y9", dataPath.resolve("y9.bin").toString(),
+                                               "-y7", dataPath.resolve("y7.bin").toString(),
+                                               "-d", dataPath.resolve("data").toString(),
+                                               "-y", dataPath.resolve("overlay").toString(),
+                                               "-t", dataPath.resolve("banner.bin").toString(),
+                                               "-h", dataPath.resolve("header.bin").toString());
+        ndsTool.redirectOutput(Redirect.INHERIT);
+        ndsTool.redirectError(Redirect.INHERIT);
+        Files.createDirectories(dataPath);
+        ndsTool.start().waitFor();
+
+        logger.info("Parsing archive");
+        File pcIdx = dataPath.resolve("data\\master\\pc.idx").toFile();
+        File pcBin = dataPath.resolve("data\\master\\pc.bin").toFile();
+        
+        Archive vanillaArchive = new Archive(pcIdx, pcBin);
+
+        logger.info("Parsing JD_message");
+        IdxAndPak jdMessage = new IdxAndPak(vanillaArchive.getFile(IdxPaks.jdMessage.idx()), vanillaArchive.getFile(IdxPaks.jdMessage.pak()));
+
+        logger.info("Parsing JH_questtext");
+        IdxAndPak jhQuest = new IdxAndPak(vanillaArchive.getFile(IdxPaks.jhQuest.idx()), vanillaArchive.getFile(IdxPaks.jhQuest.pak()));
+        
+        logger.info("Parsing JH_uwasatext");
+        IdxAndPak jhRumor = new IdxAndPak(vanillaArchive.getFile(IdxPaks.jhRumor.idx()), vanillaArchive.getFile(IdxPaks.jhRumor.pak()));
+        
+        logger.info("Parsing JH_freepapermes");
+        IdxAndPak jhNotice = new IdxAndPak(vanillaArchive.getFile(IdxPaks.jhNotice.idx()), vanillaArchive.getFile(IdxPaks.jhNotice.pak()));
+        
+        logger.info("Parsing ev_msg");
+        IdxAndPak evMsg = new IdxAndPak(vanillaArchive.getFile(IdxPaks.evMsg.idx()), vanillaArchive.getFile(IdxPaks.evMsg.pak()));
+
+        int numAffected = 0;
+        for (int i = 0; i < jdMessage.numFiles(); i++) {
+            ByteBuffer stringTableBytes = jdMessage.getFile(i);
+            if (stringTableBytes == null || stringTableBytes.rewind().remaining() == 0) {
+                continue;
+            }
+
+            StringTable vanillaStringTable = new StringTable(stringTableBytes, new SimpleStringProperty(MessageId.messageNames[i]), i);
+
+            int curr = i;
+            var stringTable = textTabController.messageList.getItems().filtered(x -> x.id == curr).getFirst();
+            var filtered = vanillaStringTable.strings.filtered(x -> x.string().getValue().contains("*"));
+            numAffected += filtered.size();
+            filtered.forEach(x -> stringTable.strings.get(x.id()).string().set(x.string().get()));
+        }
+
+        for (int i = 0; i < evMsg.numFiles(); i++) {
+            ByteBuffer stringTableBytes = evMsg.getFile(i);
+            if (stringTableBytes == null || stringTableBytes.rewind().remaining() == 0) {
+                continue;
+            }
+
+            StringTable vanillaStringTable = new StringTable(stringTableBytes, new SimpleStringProperty("Unknown"), i);
+
+            int curr = i;
+            var stringTable = textTabController.eventMsgList.getItems().filtered(x -> x.id == curr).getFirst();
+            var filtered = vanillaStringTable.strings.filtered(x -> x.string().getValue().contains("*"));
+            numAffected += filtered.size();
+            filtered.forEach(x -> stringTable.strings.get(x.id()).string().set(x.string().get()));
+        }
+
+        for (int i = 0; i < jhQuest.numFiles(); i++) {
+            ByteBuffer stringTableBytes = jhQuest.getFile(i);
+            if (stringTableBytes == null || stringTableBytes.rewind().remaining() == 0) {
+                continue;
+            }
+
+            StringSingle vanillaStringTable = new StringSingle(stringTableBytes, App.questNames.get(i).string(), i);
+
+            int curr = i;
+            var stringTable = textTabController.questList.getItems().filtered(x -> x.id == curr).getFirst();
+            if (vanillaStringTable.text.getValue().contains("*")) {
+                numAffected++;
+                stringTable.text.set(vanillaStringTable.text.get());
+            }
+        }
+
+        for (int i = 0; i < jhRumor.numFiles(); i++) {
+            ByteBuffer stringTableBytes = jhRumor.getFile(i);
+            if (stringTableBytes == null || stringTableBytes.rewind().remaining() == 0) {
+                continue;
+            }
+
+            StringSingle vanillaStringTable = new StringSingle(stringTableBytes, App.rumorNames.get(i).string(), i);
+
+            int curr = i;
+            var stringTable = textTabController.rumorList.getItems().filtered(x -> x.id == curr).getFirst();
+            if (vanillaStringTable.text.getValue().contains("*")) {
+                numAffected++;
+                stringTable.text.set(vanillaStringTable.text.get());
+            }
+        }
+
+        for (int i = 0; i < jhNotice.numFiles(); i++) {
+            ByteBuffer stringTableBytes = jhNotice.getFile(i);
+            if (stringTableBytes == null || stringTableBytes.rewind().remaining() == 0) {
+                continue;
+            }
+
+            StringSingle vanillaStringTable = new StringSingle(stringTableBytes, App.noticeNames.get(i).string(), i);
+
+            int curr = i;
+            var stringTable = textTabController.noticeList.getItems().filtered(x -> x.id == curr).getFirst();
+            if (vanillaStringTable.text.getValue().contains("*")) {
+                numAffected++;
+                stringTable.text.set(vanillaStringTable.text.get());
+            }
+        }
+        System.out.println(String.format("Reset %d strings", numAffected));
+        
+    }
 }
