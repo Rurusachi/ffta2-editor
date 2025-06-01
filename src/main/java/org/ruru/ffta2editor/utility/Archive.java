@@ -8,10 +8,16 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.Logger;
+import java.util.stream.Stream;
 
 import org.ruru.ffta2editor.utility.Archive.ArchiveEntry.ArchiveEntryList;
 
+import javafx.util.Pair;
+
 public class Archive {
+    private static Logger logger = Logger.getLogger("org.ruru.ffta2editor");
+    
     private static class EncodedTableId {
         public int a;
         public int b;
@@ -296,17 +302,37 @@ public class Archive {
         return (d + 0x1f) & ~0x1f;
     }
 
-    public void repack(ByteBuffer newPcIdx, ByteBuffer newPcBin) {
-        newPcIdx.order(ByteOrder.LITTLE_ENDIAN);
-        newPcBin.order(ByteOrder.LITTLE_ENDIAN);
-        newPcIdx.putInt(files.size());
-        newPcIdx.putInt(0);
+    public Pair<ByteBuffer, ByteBuffer> repack() {
         int currentOffset = 0;
         int bottomTableEntriesOffset = files.size()*9 + 8;
-        ByteBuffer bottomTableEntries = ByteBuffer.allocate(256*1024*1024).order(ByteOrder.LITTLE_ENDIAN); // Twice the size of original rom. Should be more than enough
         byte[] zeroes = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+
+        int idxSize = files.size() * 9 + 8;
+
+        int bottomTableSize = 0;
+        int binSize = 0;
+        for (ArchiveEntry archiveEntry : files) {
+            if (archiveEntry == null) continue;
+            if (archiveEntry.isList) {
+                bottomTableSize += (archiveEntry.files.size()-1)*15 + 8;
+                binSize += archiveEntry.files.stream().mapToInt(entry -> {
+                                    int fileSize = entry.file.rewind().remaining();
+                                    return fileSize + align16(fileSize)-(fileSize);
+                                 }).sum();
+            } else {
+                int fileSize = archiveEntry.file.rewind().remaining();
+                binSize += fileSize + align16(fileSize)-(fileSize);
+            }
+        }
+
+        ByteBuffer newPcIdx = ByteBuffer.allocate(idxSize + bottomTableSize).order(ByteOrder.LITTLE_ENDIAN);
+        ByteBuffer newPcBin = ByteBuffer.allocate(binSize).order(ByteOrder.LITTLE_ENDIAN);
+        ByteBuffer bottomTableEntries = newPcIdx.slice(idxSize, bottomTableSize).order(ByteOrder.LITTLE_ENDIAN);
         
-        //for (int index = 0; index < files.size(); index++) {
+        newPcIdx.putInt(files.size());
+        newPcIdx.putInt(0);
+
+        
         for (ArchiveEntry archiveEntry : files) {
             if (archiveEntry == null) {
                 newPcIdx.put(zeroes, 0, 9);
@@ -337,18 +363,6 @@ public class Archive {
 
                     newPcBin.put(entry.file);
 
-                    // currentOffset += size;
-                    // if (Integer.remainderUnsigned(currentOffset, 0x10) != 0) {
-                    //     int padding = 0x10 - Integer.remainderUnsigned(currentOffset, 0x10);
-                    //     System.out.println(String.format("%d + %d", currentOffset, padding));
-                    //     System.out.println(padding);
-                    //     newPcBin.put(zeroes, 0, padding);
-                    //     currentOffset += padding;
-                    //     assert Integer.remainderUnsigned(currentOffset, 0x10) == 0;
-                    // } else {
-                    //     newPcBin.put(zeroes, 0, 0x10);
-                    //     currentOffset += 0x10;
-                    // }
                     int newOffset = align16(currentOffset+size);
                     newPcBin.put(zeroes, 0, newOffset-(currentOffset+size));
                     currentOffset = newOffset;
@@ -367,28 +381,26 @@ public class Archive {
                 newPcIdx.put((byte)0x42);
                 newPcIdx.put((byte)0);
                 newPcIdx.put((byte)0);
-
-                
-                // currentOffset += size;
-                // if (Integer.remainderUnsigned(currentOffset, 0x10) != 0) {
-                //     int padding = 0x10 - Integer.remainderUnsigned(currentOffset, 0x10);
-                //     System.out.println(String.format("%d + %d", currentOffset, padding));
-                //     newPcBin.put(zeroes, 0, padding);
-                //     currentOffset += padding;
-                //     assert Integer.remainderUnsigned(currentOffset, 0x10) == 0;
-                // } else {
-                //     newPcBin.put(zeroes, 0, 0x10);
-                //     currentOffset += 0x10;
-                // }
                 
                 int newOffset = align16(currentOffset+size);
                 newPcBin.put(zeroes, 0, newOffset-(currentOffset+size));
                 currentOffset = newOffset;
             }
         }
-        newPcIdx.put(bottomTableEntries.limit(bottomTableEntries.position()).rewind());
-        newPcIdx.limit(newPcIdx.position());
-        newPcBin.limit(newPcBin.position());
+        if (bottomTableEntries.position() != bottomTableEntries.limit()) {
+            System.err.println(String.format("bottomTableEntries size wrong (%d != %d)", bottomTableEntries.position(), bottomTableEntries.limit()));
+            logger.warning(String.format("bottomTableEntries size wrong (%d != %d)", bottomTableEntries.position(), bottomTableEntries.limit()));
+        }
+
+        if (newPcIdx.position() != newPcIdx.limit() - bottomTableSize) {
+            System.err.println(String.format("Idx size wrong (%d != %d)", newPcIdx.position(), newPcIdx.limit()));
+            logger.warning(String.format("Idx size wrong (%d != %d)", newPcIdx.position(), newPcIdx.limit()));
+        }
+        if (newPcBin.position() != newPcBin.limit()) {
+            System.err.println(String.format("Bin size wrong (%d != %d)", newPcBin.position(), newPcBin.limit()));
+            logger.warning(String.format("Bin size wrong (%d != %d)", newPcBin.position(), newPcBin.limit()));
+        }
+        return new Pair<ByteBuffer,ByteBuffer>(newPcIdx.rewind(), newPcBin.rewind());
     }
 
 

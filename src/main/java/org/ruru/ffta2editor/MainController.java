@@ -697,9 +697,9 @@ public class MainController {
 
         // Repack archive
         logger.info("Repacking archive");
-        ByteBuffer newIdx = ByteBuffer.allocate(256*1024*1024).order(ByteOrder.LITTLE_ENDIAN);
-        ByteBuffer newBin = ByteBuffer.allocate(256*1024*1024).order(ByteOrder.LITTLE_ENDIAN);
-        App.archive.repack(newIdx, newBin);
+        var archivePair = App.archive.repack();
+        ByteBuffer newIdx = archivePair.getKey();
+        ByteBuffer newBin = archivePair.getValue();
         System.out.println("Archive successfully repacked");
 
         Path dataPath = Path.of("data");
@@ -710,11 +710,11 @@ public class MainController {
 
 
         FileOutputStream newIdxStream = new FileOutputStream(pcIdx);
-        newIdxStream.write(newIdx.array(), 0, newIdx.position());
+        newIdxStream.write(newIdx.array());
         newIdxStream.close();
         
         FileOutputStream newBinStream = new FileOutputStream(pcBin);
-        newBinStream.write(newBin.array(), 0, newBin.position());
+        newBinStream.write(newBin.array());
         newBinStream.close();
 
         FileOutputStream newArm9Stream = new FileOutputStream(arm9);
