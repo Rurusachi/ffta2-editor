@@ -1,16 +1,13 @@
 package org.ruru.ffta2editor;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.IOException;
 import java.lang.ProcessBuilder.Redirect;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,10 +16,8 @@ import org.ruru.ffta2editor.model.stringTable.MessageId;
 import org.ruru.ffta2editor.model.stringTable.StringSingle;
 import org.ruru.ffta2editor.model.stringTable.StringTable;
 import org.ruru.ffta2editor.utility.Archive;
-import org.ruru.ffta2editor.utility.FFTA2Charset;
 import org.ruru.ffta2editor.utility.IdxAndPak;
 import org.ruru.ffta2editor.utility.LZSS;
-import org.ruru.ffta2editor.utility.Archive.ArchiveEntry;
 
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
@@ -30,8 +25,8 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.MenuItem;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.layout.AnchorPane;
@@ -91,21 +86,6 @@ public class MainController {
         saveMenuItem.disableProperty().bind(lastSavePath.isNull());
     }
 
-    //public static HashMap<String, Pair<String,String>> idxPakMap = new HashMap<>();
-    //static {
-    //    idxPakMap.put("sysdata", new Pair<>("system/rom/sysdata_rom.idx", "system/rom/sysdata.pak"));
-    //    idxPakMap.put("unitSsts", new Pair<>("char/rom/rom_idx/UnitSst.rom_idx", "char/rom/pak/UnitSst.pak"));
-    //    idxPakMap.put("unitCgs", new Pair<>("char/rom/rom_idx/UnitCg.rom_idx", "char/rom/pak/UnitCg.pak"));
-    //    idxPakMap.put("jdMessage", new Pair<>(String.format("system/rom/JD_message_rom_%d.idx", 0), String.format("system/rom/JD_message_%d.pak", 0)));
-    //    idxPakMap.put("jhQuest", new Pair<>(String.format("system/rom/JH_questtext_rom_%d.idx", 0), String.format("system/rom/JH_questtext_%d.pak", 0)));
-    //    idxPakMap.put("jhRumor", new Pair<>(String.format("system/rom/JH_uwasatext_rom_%d.idx", 0), String.format("system/rom/JH_uwasatext_%d.pak", 0)));
-    //    idxPakMap.put("jhNotice", new Pair<>(String.format("system/rom/JH_freepapermes_rom_%d.idx", 0), String.format("system/rom/JH_freepapermes_%d.pak", 0)));
-    //    idxPakMap.put("evMsg", new Pair<>(String.format("event/rom/ev_msg%d_rom.idx", 0), String.format("event/rom/ev_msg%d.pak", 0)));
-    //    idxPakMap.put("entrydata", new Pair<>("system/rom/entrydata_rom.idx", "system/rom/entrydata.pak"));
-    //    idxPakMap.put("atl", new Pair<>("menu/atl_rom/atl_rom.idx", "menu/atl_rom/atl.pak"));
-    //    idxPakMap.put("face", new Pair<>("menu/face_rom/face_rom.idx", "menu/face_rom/face.pak"));
-    //}
-
     public static class IdxPaks {
         public static record IdxPakPaths(String idx, String pak){};
         public static IdxPakPaths sysdata = new IdxPakPaths("system/rom/sysdata_rom.idx", "system/rom/sysdata.pak");
@@ -120,19 +100,6 @@ public class MainController {
         public static IdxPakPaths atl = new IdxPakPaths("menu/atl_rom/atl_rom.idx", "menu/atl_rom/atl.pak");
         public static IdxPakPaths face = new IdxPakPaths("menu/face_rom/face_rom.idx", "menu/face_rom/face.pak");
     }
-    //ArrayList<Pair<String,String>> idxPakPaths = new ArrayList<>() {{
-    //    new Pair<>("system/rom/sysdata_rom.idx", "system/rom/sysdata.pak");
-    //    new Pair<>("char/rom/rom_idx/UnitSst.rom_idx", "char/rom/pak/UnitSst.pak");
-    //    new Pair<>("char/rom/rom_idx/UnitCg.rom_idx", "char/rom/pak/UnitCg.pak");
-    //    new Pair<>(String.format("system/rom/JD_message_rom_%d.idx", 0), String.format("system/rom/JD_message_%d.pak", 0));
-    //    new Pair<>(String.format("system/rom/JH_questtext_rom_%d.idx", 0), String.format("system/rom/JH_questtext_%d.pak", 0));
-    //    new Pair<>(String.format("system/rom/JH_uwasatext_rom_%d.idx", 0), String.format("system/rom/JH_uwasatext_%d.pak", 0));
-    //    new Pair<>(String.format("system/rom/JH_freepapermes_rom_%d.idx", 0), String.format("system/rom/JH_freepapermes_%d.pak", 0));
-    //    new Pair<>(String.format("event/rom/ev_msg%d_rom.idx", 0), String.format("event/rom/ev_msg%d.pak", 0));
-    //    new Pair<>("system/rom/entrydata_rom.idx", "system/rom/entrydata.pak");
-    //    new Pair<>("menu/atl_rom/atl_rom.idx", "menu/atl_rom/atl.pak");
-    //    new Pair<>("menu/face_rom/face_rom.idx", "menu/face_rom/face.pak");
-    //}};
 
     private void compareIdxPaks(IdxAndPak original, IdxAndPak repacked, String name) throws Exception {
 
@@ -243,6 +210,10 @@ public class MainController {
 
     }
 
+    private ByteBuffer loadAsBuffer(Path p) throws IOException {
+        return ByteBuffer.wrap(Files.readAllBytes(p)).order(ByteOrder.LITTLE_ENDIAN);
+    }
+
     @FXML
     private void openFileSelector() {
 
@@ -265,6 +236,7 @@ public class MainController {
             return;
         }
         App.config.setProperty("lastPath", loadPath.getParent());
+        App.saveConfig();
         lastSavePath.set(loadPath);
         try {
             load(loadPath);
@@ -276,8 +248,9 @@ public class MainController {
             loadAlert.setHeaderText("Loading failed");
             loadAlert.setContentText(e.toString());
             loadAlert.show();
+        } finally {
+            setDim(false);
         }
-        setDim(false);
 
         //if (!load(loadPath)) {
         //    Alert loadAlert = new Alert(AlertType.ERROR);
@@ -441,15 +414,11 @@ public class MainController {
         File pcBin = dataPath.resolve("data\\master\\pc.bin").toFile();
         
         App.archive = new Archive(pcIdx, pcBin);
-        FileInputStream arm9 = new FileInputStream(dataPath.resolve("arm9.bin").toFile());
-        App.arm9 = ByteBuffer.wrap(arm9.readAllBytes()).order(ByteOrder.LITTLE_ENDIAN);
-        arm9.close();
-        FileInputStream overlay11 = new FileInputStream(dataPath.resolve("overlay\\overlay_0011.bin").toFile());
-        App.overlay11 = ByteBuffer.wrap(overlay11.readAllBytes()).order(ByteOrder.LITTLE_ENDIAN);
-        overlay11.close();
-        FileInputStream overlay8 = new FileInputStream(dataPath.resolve("overlay\\overlay_0008.bin").toFile());
-        App.overlay8 = ByteBuffer.wrap(overlay8.readAllBytes()).order(ByteOrder.LITTLE_ENDIAN);
-        overlay8.close();
+        App.arm9 = loadAsBuffer(dataPath.resolve("arm9.bin"));
+        App.overlay11 = loadAsBuffer(dataPath.resolve("overlay\\overlay_0011.bin"));
+        App.overlay8 = loadAsBuffer(dataPath.resolve("overlay\\overlay_0008.bin"));
+
+        
 
 
         
@@ -570,6 +539,7 @@ public class MainController {
             return;
         }
         App.config.setProperty("lastPath", savePath.getParent());
+        App.saveConfig();
         lastSavePath.set(savePath);
 
         saveTo(savePath);
@@ -703,27 +673,15 @@ public class MainController {
         System.out.println("Archive successfully repacked");
 
         Path dataPath = Path.of("data");
-        File pcIdx = dataPath.resolve("data\\master\\pc.idx").toFile();
-        File pcBin = dataPath.resolve("data\\master\\pc.bin").toFile();
-        File arm9 = dataPath.resolve("arm9.bin").toFile();
-        File overlay11 = dataPath.resolve("overlay\\overlay_0011.bin").toFile();
+        Path pcIdx = dataPath.resolve("data\\master\\pc.idx");
+        Path pcBin = dataPath.resolve("data\\master\\pc.bin");
+        Path arm9 = dataPath.resolve("arm9.bin");
+        Path overlay11 = dataPath.resolve("overlay\\overlay_0011.bin");
 
-
-        FileOutputStream newIdxStream = new FileOutputStream(pcIdx);
-        newIdxStream.write(newIdx.array());
-        newIdxStream.close();
-        
-        FileOutputStream newBinStream = new FileOutputStream(pcBin);
-        newBinStream.write(newBin.array());
-        newBinStream.close();
-
-        FileOutputStream newArm9Stream = new FileOutputStream(arm9);
-        newArm9Stream.write(App.arm9.array());
-        newArm9Stream.close();
-
-        FileOutputStream newOverlay11Stream = new FileOutputStream(overlay11);
-        newOverlay11Stream.write(App.overlay11.array());
-        newOverlay11Stream.close();
+        Files.write(pcIdx, newIdx.array());
+        Files.write(pcBin, newBin.array());
+        Files.write(arm9, App.arm9.array());
+        Files.write(overlay11, App.overlay11.array());
 
         logger.info("Repacking rom with ndstool");
         ProcessBuilder ndsTool = new ProcessBuilder("ndstool.exe", "-c", savePath.toPath().toString(),
@@ -748,7 +706,6 @@ public class MainController {
 
         Alert confirmAlert = new Alert(AlertType.CONFIRMATION);
         confirmAlert.setContentText("This fix is for ROMs saved with editors older than v1.3.2 which had a text encoding bug that replaced \"*\" with \"ー\".\nThis will load text from an original ROM to reset affected text.");
-        //confirmAlert.setTitle("Fix pre-v1.3.2 text encoding bug");
         confirmAlert.setHeaderText("Fix pre-v1.3.2 text encoding bug");
 
         var result = confirmAlert.showAndWait();
@@ -786,8 +743,9 @@ public class MainController {
             loadAlert.setHeaderText("Reset failed");
             loadAlert.setContentText(e.toString());
             loadAlert.show();
+        } finally {
+            setDim(false);
         }
-        setDim(false);
     }
 
 

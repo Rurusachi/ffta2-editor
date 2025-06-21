@@ -1,6 +1,7 @@
 package org.ruru.ffta2editor;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -122,18 +123,32 @@ public class App extends Application {
     private static final Properties properties = new Properties();
     public static final Properties config = new Properties();
 
-    @Override
-    public void start(Stage stage) throws IOException {
-        if (!logPath.toFile().exists()) {
-            Files.createDirectory(logPath);
+    private static void loadConfig() {
+        try (FileInputStream fs = new FileInputStream(configPath.toFile())){
+            config.load(fs);
+        } catch (FileNotFoundException e) {
+            logger.log(Level.INFO, "Config not found", e);
+        } catch (IOException e) {
+            logger.log(Level.WARNING, "Failed to load config", e);
         }
-        if (!configPath.toFile().exists()) {
-            configPath.toFile().createNewFile();
-            config.load(new FileInputStream(configPath.toFile()));
-        } else {
-            config.load(new FileInputStream(configPath.toFile()));
+    }
+
+    public static void saveConfig() {
+        try (FileOutputStream fs = new FileOutputStream(configPath.toFile())){
+            config.store(fs, "");
+        } catch (Exception e) {
+            logger.log(Level.WARNING, "Failed to save config", e);
         }
-        FileHandler fh = new FileHandler(String.format("logs/%s.log", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"))));
+    }
+
+    private void setupLogger() throws IOException {
+        try {
+            Files.createDirectories(logPath);
+        } catch (Exception e) {
+            System.err.println("Failed to create log folder");
+            return;
+        }
+        FileHandler fh = new FileHandler(String.format("%s/%s.log", logPath, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"))));
         fh.setFormatter(new SimpleFormatter());
         logger.addHandler(fh);
         logger.setLevel(Level.ALL);
@@ -142,6 +157,13 @@ public class App extends Application {
         for (Handler handler : handlers) {
             globalLogger.removeHandler(handler);
         }
+    }
+
+    @Override
+    public void start(Stage stage) throws IOException {
+        setupLogger();
+        loadConfig();
+
         properties.load(this.getClass().getClassLoader().getResourceAsStream("project.properties"));
         
         scene = new Scene(loadFXML("main"), 1280, 720);
@@ -161,12 +183,7 @@ public class App extends Application {
 
     public static void main(String[] args) {
         launch();
-        try {
-            config.store(new FileOutputStream(configPath.toFile()), "");
-        } catch (Exception e) {
-            System.err.println(e);
-            logger.log(Level.WARNING, "Failed to save config", e);
-        }
+        saveConfig();
     }
 
 }
