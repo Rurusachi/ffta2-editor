@@ -99,7 +99,7 @@ public class JobData {
         public SimpleBooleanProperty propertyBit4 = new SimpleBooleanProperty();
         public SimpleBooleanProperty propertyBit5 = new SimpleBooleanProperty();
         public SimpleBooleanProperty canAlwaysUseItems = new SimpleBooleanProperty();
-        public SimpleBooleanProperty propertyBit7 = new SimpleBooleanProperty();
+        public SimpleBooleanProperty cannotAttack = new SimpleBooleanProperty();
 
         public PropertyFlags() {
             flags = new BitSet(1*8);
@@ -118,7 +118,7 @@ public class JobData {
             propertyBit4.setValue(flags.get(4));
             propertyBit5.setValue(flags.get(5));
             canAlwaysUseItems.setValue(flags.get(6));
-            propertyBit7.setValue(flags.get(7));
+            cannotAttack.setValue(flags.get(7));
         }
 
         public byte[] toBytes() {
@@ -129,7 +129,7 @@ public class JobData {
             flags.set(4, propertyBit4.getValue());
             flags.set(5, propertyBit5.getValue());
             flags.set(6, canAlwaysUseItems.getValue());
-            flags.set(7, propertyBit7.getValue());
+            flags.set(7, cannotAttack.getValue());
 
             ByteBuffer newBytes = ByteBuffer.allocate(length);
             newBytes.put(flags.toByteArray());

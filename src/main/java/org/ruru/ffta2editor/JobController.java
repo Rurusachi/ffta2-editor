@@ -200,7 +200,7 @@ public class JobController {
     @FXML CheckBox propertyBit4;
     @FXML CheckBox propertyBit5;
     @FXML CheckBox canAlwaysUseItems;
-    @FXML CheckBox propertyBit7;
+    @FXML CheckBox cannotAttack;
 
     @FXML TextField hpBase;
     @FXML TextField mpBase;
@@ -520,7 +520,7 @@ public class JobController {
         propertyBit4.selectedProperty().unbindBidirectional(jobProperty.getValue().propertyFlags.propertyBit4);
         propertyBit5.selectedProperty().unbindBidirectional(jobProperty.getValue().propertyFlags.propertyBit5);
         canAlwaysUseItems.selectedProperty().unbindBidirectional(jobProperty.getValue().propertyFlags.canAlwaysUseItems);
-        propertyBit7.selectedProperty().unbindBidirectional(jobProperty.getValue().propertyFlags.propertyBit7);
+        cannotAttack.selectedProperty().unbindBidirectional(jobProperty.getValue().propertyFlags.cannotAttack);
 
         fireResistance.valueProperty().unbindBidirectional(jobProperty.getValue().fireResistance);
         airResistance.valueProperty().unbindBidirectional(jobProperty.getValue().airResistance);
@@ -640,7 +640,7 @@ public class JobController {
         propertyBit4.selectedProperty().bindBidirectional(jobProperty.getValue().propertyFlags.propertyBit4);
         propertyBit5.selectedProperty().bindBidirectional(jobProperty.getValue().propertyFlags.propertyBit5);
         canAlwaysUseItems.selectedProperty().bindBidirectional(jobProperty.getValue().propertyFlags.canAlwaysUseItems);
-        propertyBit7.selectedProperty().bindBidirectional(jobProperty.getValue().propertyFlags.propertyBit7);
+        cannotAttack.selectedProperty().bindBidirectional(jobProperty.getValue().propertyFlags.cannotAttack);
 
         fireResistance.valueProperty().bindBidirectional(jobProperty.getValue().fireResistance);
         airResistance.valueProperty().bindBidirectional(jobProperty.getValue().airResistance);

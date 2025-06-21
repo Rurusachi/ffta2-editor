@@ -706,7 +706,7 @@
                                     <CheckBox fx:id="propertyBit4" mnemonicParsing="false" text="Bit 4" />
                                     <CheckBox fx:id="propertyBit5" mnemonicParsing="false" text="Bit 5" />
                                     <CheckBox fx:id="canAlwaysUseItems" mnemonicParsing="false" text="Can always use Items" />
-                                    <CheckBox fx:id="propertyBit7" mnemonicParsing="false" text="Bit 7" />
+                                    <CheckBox fx:id="cannotAttack" mnemonicParsing="false" text="Cannot use normal Attack" />
                                  </children>
                                  <opaqueInsets>
                                     <Insets />
