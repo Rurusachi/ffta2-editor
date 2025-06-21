@@ -109,7 +109,7 @@
                                     <VBox alignment="TOP_CENTER">
                                        <children>
                                           <Label text="Movable Places" />
-                                          <TextField fx:id="movablePlaces" />
+                                          <AutoCompleteComboBox fx:id="movablePlaces" prefWidth="150.0" />
                                        </children>
                                     </VBox>
                                  </children>

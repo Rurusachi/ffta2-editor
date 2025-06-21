@@ -35,7 +35,7 @@ public class JobData {
     public SimpleObjectProperty<Byte> enemyPalette = new SimpleObjectProperty<>();
     public SimpleObjectProperty<Race> race = new SimpleObjectProperty<>();
     public SimpleObjectProperty<JobMoveType> moveType = new SimpleObjectProperty<>();
-    public SimpleObjectProperty<Byte> movablePlaces = new SimpleObjectProperty<>();
+    public SimpleObjectProperty<JobMovablePlaces> movablePlaces = new SimpleObjectProperty<>();
 
     
     public SimpleObjectProperty<Byte> move = new SimpleObjectProperty<>();
@@ -320,7 +320,7 @@ public class JobData {
         enemyPalette.set(bytes.get());
         race.set(Race.fromInteger(bytes.get()));
         moveType.set(JobMoveType.fromInteger(bytes.get()));
-        movablePlaces.set(bytes.get());
+        movablePlaces.set(JobMovablePlaces.fromInteger(bytes.get()));
 
         move.set(bytes.get());
         jump.set(bytes.get());
@@ -414,9 +414,9 @@ public class JobData {
 
         unitPalette.set((byte)0);
         enemyPalette.set((byte)0);
-        race.set(Race.fromInteger((byte)0));
-        moveType.set(JobMoveType.fromInteger((byte)0));
-        movablePlaces.set((byte)0);
+        race.set(Race.fromInteger(0));
+        moveType.set(JobMoveType.fromInteger(0));
+        movablePlaces.set(JobMovablePlaces.fromInteger(0));
 
         move.set((byte)0);
         jump.set((byte)0);
@@ -434,14 +434,14 @@ public class JobData {
         magickGrowth.set((byte)0);
         resistanceBase.set((byte)0);
         resistanceGrowth.set((byte)0);
-        fireResistance.set(JobElementalResistance.fromInteger((byte)1));
-        airResistance.set(JobElementalResistance.fromInteger((byte)1));
-        earthResistance.set(JobElementalResistance.fromInteger((byte)1));
-        waterResistance.set(JobElementalResistance.fromInteger((byte)1));
-        iceResistance.set(JobElementalResistance.fromInteger((byte)1));
-        electricityResistance.set(JobElementalResistance.fromInteger((byte)1));
-        holyResistance.set(JobElementalResistance.fromInteger((byte)1));
-        darkResistance.set(JobElementalResistance.fromInteger((byte)1));
+        fireResistance.set(JobElementalResistance.fromInteger(1));
+        airResistance.set(JobElementalResistance.fromInteger(1));
+        earthResistance.set(JobElementalResistance.fromInteger(1));
+        waterResistance.set(JobElementalResistance.fromInteger(1));
+        iceResistance.set(JobElementalResistance.fromInteger(1));
+        electricityResistance.set(JobElementalResistance.fromInteger(1));
+        holyResistance.set(JobElementalResistance.fromInteger(1));
+        darkResistance.set(JobElementalResistance.fromInteger(1));
         evasion.set((byte)100);
         _0x2a.set((byte)0);
         _0x2b.set((byte)0);
@@ -495,7 +495,7 @@ public class JobData {
         buffer.put(enemyPalette.getValue());
         buffer.put(race.getValue().value);
         buffer.put(moveType.getValue().value);
-        buffer.put(movablePlaces.getValue());
+        buffer.put(movablePlaces.getValue().value);
         buffer.put(move.getValue());
         buffer.put(jump.getValue());
         buffer.put(hpBase.getValue());

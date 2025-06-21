@@ -17,6 +17,7 @@ import org.ruru.ffta2editor.model.job.AbilitySetAbility;
 import org.ruru.ffta2editor.model.job.JobData;
 import org.ruru.ffta2editor.model.job.JobElementalResistance;
 import org.ruru.ffta2editor.model.job.JobGender;
+import org.ruru.ffta2editor.model.job.JobMovablePlaces;
 import org.ruru.ffta2editor.model.job.JobMoveType;
 import org.ruru.ffta2editor.model.topSprite.TopSprite;
 import org.ruru.ffta2editor.model.unitFace.UnitFace;
@@ -217,7 +218,6 @@ public class JobController {
     @FXML TextField magickGrowth;
     @FXML TextField resistanceGrowth;
 
-    @FXML TextField movablePlaces;
     @FXML TextField move;
     @FXML TextField jump;
     @FXML TextField evasion;
@@ -238,6 +238,7 @@ public class JobController {
     @FXML AutoCompleteComboBox<JobGender> gender;
     @FXML AutoCompleteComboBox<Race> race;
     @FXML AutoCompleteComboBox<JobMoveType> moveType;
+    @FXML AutoCompleteComboBox<JobMovablePlaces> movablePlaces;
 
     @FXML TextField raceSomethingMaybe;
     @FXML TextField _0x32;
@@ -367,8 +368,11 @@ public class JobController {
         });
         ObservableList<Race> raceEnums = FXCollections.observableArrayList(Race.values());
         race.setData(raceEnums);
+        
         ObservableList<JobMoveType> moveTypeEnums = FXCollections.observableArrayList(JobMoveType.values());
         moveType.setData(moveTypeEnums);
+        ObservableList<JobMovablePlaces> movablePlacesEnums = FXCollections.observableArrayList(JobMovablePlaces.values());
+        movablePlaces.setData(movablePlacesEnums);
         ObservableList<JobElementalResistance> elementalResistanceEnums = FXCollections.observableArrayList(JobElementalResistance.values());
         fireResistance.setData(elementalResistanceEnums);
         airResistance.setData(elementalResistanceEnums);
@@ -433,7 +437,6 @@ public class JobController {
         defenseGrowth.textProperty().addListener(new ByteChangeListener(defenseGrowth));
         magickGrowth.textProperty().addListener(new ByteChangeListener(magickGrowth));
         resistanceGrowth.textProperty().addListener(new ByteChangeListener(resistanceGrowth));
-        movablePlaces.textProperty().addListener(new ByteChangeListener(movablePlaces));
         move.textProperty().addListener(new ByteChangeListener(move));
         jump.textProperty().addListener(new ByteChangeListener(jump));
         evasion.textProperty().addListener(new ByteChangeListener(evasion));
@@ -534,6 +537,7 @@ public class JobController {
         gender.valueProperty().unbindBidirectional(jobProperty.getValue().gender);
         race.valueProperty().unbindBidirectional(jobProperty.getValue().race);
         moveType.valueProperty().unbindBidirectional(jobProperty.getValue().moveType);
+        movablePlaces.valueProperty().unbindBidirectional(jobProperty.getValue().movablePlaces);
 
         hpBase.textProperty().unbindBidirectional(jobProperty.getValue().hpBase);
         mpBase.textProperty().unbindBidirectional(jobProperty.getValue().mpBase);
@@ -549,7 +553,6 @@ public class JobController {
         defenseGrowth.textProperty().unbindBidirectional(jobProperty.getValue().defenseGrowth);
         magickGrowth.textProperty().unbindBidirectional(jobProperty.getValue().magickGrowth);
         resistanceGrowth.textProperty().unbindBidirectional(jobProperty.getValue().resistanceGrowth);
-        movablePlaces.textProperty().unbindBidirectional(jobProperty.getValue().movablePlaces);
         move.textProperty().unbindBidirectional(jobProperty.getValue().move);
         jump.textProperty().unbindBidirectional(jobProperty.getValue().jump);
         evasion.textProperty().unbindBidirectional(jobProperty.getValue().evasion);
@@ -654,6 +657,7 @@ public class JobController {
         gender.valueProperty().bindBidirectional(jobProperty.getValue().gender);
         race.valueProperty().bindBidirectional(jobProperty.getValue().race);
         moveType.valueProperty().bindBidirectional(jobProperty.getValue().moveType);
+        movablePlaces.valueProperty().bindBidirectional(jobProperty.getValue().movablePlaces);
 
         StringConverter<Byte> unsignedByteConverter = new ByteStringConverter();
         Bindings.bindBidirectional(hpBase.textProperty(), jobProperty.getValue().hpBase, unsignedByteConverter);
@@ -670,7 +674,6 @@ public class JobController {
         Bindings.bindBidirectional(defenseGrowth.textProperty(), jobProperty.getValue().defenseGrowth, unsignedByteConverter);
         Bindings.bindBidirectional(magickGrowth.textProperty(), jobProperty.getValue().magickGrowth, unsignedByteConverter);
         Bindings.bindBidirectional(resistanceGrowth.textProperty(), jobProperty.getValue().resistanceGrowth, unsignedByteConverter);
-        Bindings.bindBidirectional(movablePlaces.textProperty(), jobProperty.getValue().movablePlaces, unsignedByteConverter);
         Bindings.bindBidirectional(move.textProperty(), jobProperty.getValue().move, unsignedByteConverter);
         Bindings.bindBidirectional(jump.textProperty(), jobProperty.getValue().jump, unsignedByteConverter);
         Bindings.bindBidirectional(evasion.textProperty(), jobProperty.getValue().evasion, unsignedByteConverter);
