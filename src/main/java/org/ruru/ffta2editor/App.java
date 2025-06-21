@@ -1,5 +1,6 @@
 package org.ruru.ffta2editor;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -116,12 +117,45 @@ public class App extends Application {
     public static ObservableList<StringWithId> rumorNames;
     public static Map<Integer, StringProperty> evMsgNames;
     
-
+    private static String editorVersion;
     private static Logger logger = Logger.getLogger("org.ruru.ffta2editor");
     private static final Path logPath = Path.of("logs");
     private static final Path configPath = Path.of("ffta2-editor.properties");
     private static final Properties properties = new Properties();
     public static final Properties config = new Properties();
+
+
+    public static void saveLastRomPath(File romFile) {
+        config.setProperty("lastRomPath", romFile.getParent());
+        App.saveConfig();
+    }
+    
+    public static File getLastRomPath() {
+        try {
+            File lastPath = Path.of(config.getProperty("lastRomPath")).toFile();
+            if (!lastPath.exists()) throw new FileNotFoundException("Last path doesn't exist");
+            return lastPath;
+        } catch (Exception e) {
+            config.setProperty("lastRomPath", System.getProperty("user.dir"));
+            return Path.of(System.getProperty("user.dir")).toFile();
+        }
+    }
+
+    public static void saveLastFile(File romFile) {
+        config.setProperty("lastFilePath", romFile.getParent());
+        App.saveConfig();
+    }
+
+    public static File getLastFile() {
+        try {
+            File lastFile = Path.of(config.getProperty("lastFilePath")).toFile();
+            if (!lastFile.exists()) throw new FileNotFoundException("Last file doesn't exist");
+            return lastFile;
+        } catch (Exception e) {
+            config.setProperty("lastFilePath", System.getProperty("user.dir"));
+            return Path.of(System.getProperty("user.dir")).toFile();
+        }
+    }
 
     private static void loadConfig() {
         try (FileInputStream fs = new FileInputStream(configPath.toFile())){
@@ -131,11 +165,23 @@ public class App extends Application {
         } catch (IOException e) {
             logger.log(Level.WARNING, "Failed to load config", e);
         }
+        String lastVersion = config.getProperty("editorVersion");
+
+        if (lastVersion == null) {
+            // Pre-1.3.4
+            // Rename lastPath to lastRomPath
+            String lastPath = config.getProperty("lastPath");
+            config.setProperty("lastRomPath", lastPath);
+            config.remove("lastPath");
+        } else if (lastVersion != editorVersion) {
+            
+        }
+        config.setProperty("editorVersion", editorVersion);
     }
 
     public static void saveConfig() {
         try (FileOutputStream fs = new FileOutputStream(configPath.toFile())){
-            config.store(fs, "");
+            config.store(fs, null);
         } catch (Exception e) {
             logger.log(Level.WARNING, "Failed to save config", e);
         }
@@ -161,14 +207,15 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
+        properties.load(this.getClass().getClassLoader().getResourceAsStream("project.properties"));
+        editorVersion = properties.getProperty("version");
         setupLogger();
         loadConfig();
 
-        properties.load(this.getClass().getClassLoader().getResourceAsStream("project.properties"));
-        
+
         scene = new Scene(loadFXML("main"), 1280, 720);
         stage.setScene(scene);
-        stage.setTitle(String.format("FFTA2 Editor %s", properties.getProperty("version")));
+        stage.setTitle(String.format("FFTA2 Editor %s", editorVersion));
         stage.show();
     }
 

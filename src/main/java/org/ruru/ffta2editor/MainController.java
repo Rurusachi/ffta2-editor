@@ -219,24 +219,14 @@ public class MainController {
 
         setDim(true);
         FileChooser chooser = new FileChooser();
-        try {
-            File lastPath = Path.of(App.config.getProperty("lastPath")).toFile();
-            if (!lastPath.exists()) throw new FileNotFoundException("Last path doesn't exist");
-            chooser.setInitialDirectory(lastPath);
-        } catch (Exception e) {
-            App.config.setProperty("lastPath", System.getProperty("user.dir"));
-            chooser.setInitialDirectory(Path.of(System.getProperty("user.dir")).toFile());
-            System.err.println(e);
-        }
-        
         chooser.setTitle("Open ROM");
+        chooser.setInitialDirectory(App.getLastRomPath());
         File loadPath = chooser.showOpenDialog(abilityTab.getScene().getWindow());
         if (loadPath == null) {
             setDim(false);
             return;
         }
-        App.config.setProperty("lastPath", loadPath.getParent());
-        App.saveConfig();
+        App.saveLastRomPath(loadPath);
         lastSavePath.set(loadPath);
         try {
             load(loadPath);
@@ -521,25 +511,15 @@ public class MainController {
         if (romFile == null) return;
         setDim(true);
         FileChooser chooser = new FileChooser();
-        try {
-            File lastPath = Path.of(App.config.getProperty("lastPath")).toFile();
-            if (!lastPath.exists()) throw new FileNotFoundException("Last path doesn't exist");
-            chooser.setInitialDirectory(lastPath);
-        } catch (Exception e) {
-            App.config.setProperty("lastPath", System.getProperty("user.dir"));
-            chooser.setInitialDirectory(Path.of(System.getProperty("user.dir")).toFile());
-            System.err.println(e);
-        }
-
         chooser.setTitle("Save as");
         chooser.setInitialFileName(romFile.getName());
+        chooser.setInitialDirectory(App.getLastRomPath());
         File savePath = chooser.showSaveDialog(abilityTab.getScene().getWindow());
         if (savePath == null) {
             setDim(false);
             return;
         }
-        App.config.setProperty("lastPath", savePath.getParent());
-        App.saveConfig();
+        App.saveLastRomPath(savePath);
         lastSavePath.set(savePath);
 
         saveTo(savePath);
@@ -717,17 +697,8 @@ public class MainController {
 
 
         FileChooser chooser = new FileChooser();
-        try {
-            File lastPath = Path.of(App.config.getProperty("lastPath")).toFile();
-            if (!lastPath.exists()) throw new FileNotFoundException("Last path doesn't exist");
-            chooser.setInitialDirectory(lastPath);
-        } catch (Exception e) {
-            App.config.setProperty("lastPath", System.getProperty("user.dir"));
-            chooser.setInitialDirectory(Path.of(System.getProperty("user.dir")).toFile());
-            System.err.println(e);
-        }
-        
         chooser.setTitle("Open Original ROM");
+        chooser.setInitialDirectory(App.getLastRomPath());
         File loadPath = chooser.showOpenDialog(abilityTab.getScene().getWindow());
         if (loadPath == null) {
             setDim(false);

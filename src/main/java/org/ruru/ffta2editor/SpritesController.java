@@ -189,6 +189,34 @@ public class SpritesController {
         animationTimeline.setCycleCount(Timeline.INDEFINITE);
     }
 
+    private FileChooser getImageFileDialog(String title, String initialFilename) {
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Export Sprite");
+        chooser.getExtensionFilters().add(new ExtensionFilter("Image", "*.png"));
+        chooser.setInitialFileName(initialFilename);
+        chooser.setInitialDirectory(App.getLastFile());
+
+        return chooser;
+    }
+
+    private File showSaveImageFileDialog(String title, String initialFilename) {
+        File filePath = getImageFileDialog(title, initialFilename).showSaveDialog(unitList.getScene().getWindow());
+        if (filePath != null) {
+            App.saveLastFile(filePath);
+            App.saveConfig();
+        }
+        return filePath;
+    }
+
+    private File showOpenImageFileDialog(String title, String initialFilename) {
+        File filePath = getImageFileDialog(title, initialFilename).showOpenDialog(unitList.getScene().getWindow());
+        if (filePath != null) {
+            App.saveLastFile(filePath);
+            App.saveConfig();
+        }
+        return filePath;
+    }
+
     public void refresh() {
         UnitSst sst = App.unitSstList.get(unitProperty.getValue().unitIndex);
         List<UnitAnimation> animations = sst.asList().stream().filter(node -> node.key != 0xFF && node.key != 0xF0).map(node -> sst.getAnimation(node.key)).filter(x -> x != null).sorted(Comparator.comparingInt(x -> x.key)).toList();
@@ -208,11 +236,8 @@ public class SpritesController {
             spriteFlow.getChildren().setAll(unitSpriteRecords.stream().map(spriteRecord -> {
                 Button exportSpriteButton = new Button("Export");
                 exportSpriteButton.setOnAction(event -> {
-                    FileChooser chooser = new FileChooser();
-                    chooser.setTitle("Export Sprite");
-                    chooser.getExtensionFilters().add(new ExtensionFilter("Image", "*.png"));
-                    chooser.setInitialFileName(String.format("unit%03d_%d_%d",  spriteRecord.unitIndex(), spriteRecord.spriteIndex(), spriteRecord.paletteIndex()));
-                    File savePath = chooser.showSaveDialog(spriteFlow.getScene().getWindow());
+
+                    File savePath = showSaveImageFileDialog("Export Sprite", String.format("unit%03d_%d_%d",  spriteRecord.unitIndex(), spriteRecord.spriteIndex(), spriteRecord.paletteIndex()));
                     if (savePath == null) {
                         return;
                     }
@@ -230,11 +255,7 @@ public class SpritesController {
                 });
                 Button importSpriteButton = new Button("Import");
                 importSpriteButton.setOnAction(event -> {
-                    FileChooser chooser = new FileChooser();
-                    chooser.setTitle("Import Sprite");
-                    chooser.getExtensionFilters().add(new ExtensionFilter("Image", "*.png"));
-                    chooser.setInitialFileName(String.format("unit%03d_%d_%d",  spriteRecord.unitIndex(), spriteRecord.spriteIndex(), spriteRecord.paletteIndex()));
-                    File loadPath = chooser.showOpenDialog(spriteFlow.getScene().getWindow());
+                    File loadPath = showOpenImageFileDialog("Import Sprite", String.format("unit%03d_%d_%d",  spriteRecord.unitIndex(), spriteRecord.spriteIndex(), spriteRecord.paletteIndex()));
                     if (loadPath == null) {
                         return;
                     }
@@ -261,11 +282,7 @@ public class SpritesController {
             Button replacePaletteButton = new Button("Replace palette");
             final int paletteIndex = p;
             replacePaletteButton.setOnAction(event -> {
-                FileChooser chooser = new FileChooser();
-                chooser.setTitle("Import Palette from sprite");
-                chooser.getExtensionFilters().add(new ExtensionFilter("Image", "*.png"));
-                chooser.setInitialFileName("sprite");
-                File loadPath = chooser.showOpenDialog(spriteFlow.getScene().getWindow());
+                File loadPath = showOpenImageFileDialog("Import Palette from sprite", "sprite");
                 if (loadPath == null) {
                     return;
                 }
@@ -286,11 +303,7 @@ public class SpritesController {
             });
             Button addPaletteButton = new Button("Add palette");
             addPaletteButton.setOnAction(event -> {
-                FileChooser chooser = new FileChooser();
-                chooser.setTitle("Import Palette from sprite");
-                chooser.getExtensionFilters().add(new ExtensionFilter("Image", "*.png"));
-                chooser.setInitialFileName("sprite");
-                File loadPath = chooser.showOpenDialog(spriteFlow.getScene().getWindow());
+                File loadPath = showOpenImageFileDialog("Import Palette from sprite", "sprite");
                 if (loadPath == null) {
                     return;
                 }
@@ -340,11 +353,7 @@ public class SpritesController {
         spriteFlow.getChildren().setAll(topSpriteRecords.stream().map(topSpriteRecord -> {
             Button exportSpriteButton = new Button("Export");
             exportSpriteButton.setOnAction(event -> {
-                FileChooser chooser = new FileChooser();
-                chooser.setTitle("Export Sprite");
-                chooser.getExtensionFilters().add(new ExtensionFilter("Image", "*.png"));
-                chooser.setInitialFileName(String.format("topSprite%03d_%d",  topSpriteRecord.id(), topSpriteRecord.spriteIndex()));
-                File savePath = chooser.showSaveDialog(spriteFlow.getScene().getWindow());
+                File savePath = showSaveImageFileDialog("Export Sprite", String.format("topSprite%03d_%d",  topSpriteRecord.id(), topSpriteRecord.spriteIndex()));
                 if (savePath == null) {
                     return;
                 }
@@ -362,11 +371,7 @@ public class SpritesController {
             });
             Button importSpriteButton = new Button("Import");
             importSpriteButton.setOnAction(event -> {
-                FileChooser chooser = new FileChooser();
-                chooser.setTitle("Import Sprite");
-                chooser.getExtensionFilters().add(new ExtensionFilter("Image", "*.png"));
-                chooser.setInitialFileName(String.format("unit%03d_%d",  topSpriteRecord.id(), topSpriteRecord.spriteIndex()));
-                File loadPath = chooser.showOpenDialog(spriteFlow.getScene().getWindow());
+                File loadPath = showOpenImageFileDialog("Import Sprite", String.format("unit%03d_%d",  topSpriteRecord.id(), topSpriteRecord.spriteIndex()));
                 if (loadPath == null) {
                     return;
                 }
@@ -391,11 +396,7 @@ public class SpritesController {
         }).toList());
         Button replacePaletteButton = new Button("Replace palette");
         replacePaletteButton.setOnAction(event -> {
-            FileChooser chooser = new FileChooser();
-            chooser.setTitle("Import Palette from sprite");
-            chooser.getExtensionFilters().add(new ExtensionFilter("Image", "*.png"));
-            chooser.setInitialFileName("sprite");
-            File loadPath = chooser.showOpenDialog(spriteFlow.getScene().getWindow());
+            File loadPath = showOpenImageFileDialog("Import Palette from sprite", "sprite");
             if (loadPath == null) {
                 return;
             }
@@ -436,11 +437,7 @@ public class SpritesController {
 
         Button exportSpriteButton = new Button("Export Image");
         exportSpriteButton.setOnAction(event -> {
-            FileChooser chooser = new FileChooser();
-            chooser.setTitle("Export Sprite");
-            chooser.getExtensionFilters().add(new ExtensionFilter("Image", "*.png"));
-            chooser.setInitialFileName(String.format("face%03d",  face.id));
-            File savePath = chooser.showSaveDialog(faceList.getScene().getWindow());
+            File savePath = showSaveImageFileDialog("Export Image", String.format("face%03d",  face.id));
             if (savePath == null) {
                 return;
             }
@@ -458,11 +455,7 @@ public class SpritesController {
         });
         Button exportTextureButton = new Button("Export Texture");
         exportTextureButton.setOnAction(event -> {
-            FileChooser chooser = new FileChooser();
-            chooser.setTitle("Export Texture");
-            chooser.getExtensionFilters().add(new ExtensionFilter("Image", "*.png"));
-            chooser.setInitialFileName(String.format("face%03d",  face.id));
-            File savePath = chooser.showSaveDialog(faceList.getScene().getWindow());
+            File savePath = showSaveImageFileDialog("Export Texture", String.format("face%03d",  face.id));
             if (savePath == null) {
                 return;
             }
@@ -480,11 +473,7 @@ public class SpritesController {
         });
         Button importSpriteButton = new Button("Import");
         importSpriteButton.setOnAction(event -> {
-            FileChooser chooser = new FileChooser();
-            chooser.setTitle("Import Sprite");
-            chooser.getExtensionFilters().add(new ExtensionFilter("Image", "*.png"));
-            chooser.setInitialFileName(String.format("unit%03d",  face.id));
-            File loadPath = chooser.showOpenDialog(faceList.getScene().getWindow());
+            File loadPath = showOpenImageFileDialog("Import Sprite", String.format("unit%03d",  face.id));
             if (loadPath == null) {
                 return;
             }
@@ -519,11 +508,7 @@ public class SpritesController {
 
         Button replacePaletteButton = new Button("Replace palette");
         replacePaletteButton.setOnAction(event -> {
-            FileChooser chooser = new FileChooser();
-            chooser.setTitle("Import Palette from sprite");
-            chooser.getExtensionFilters().add(new ExtensionFilter("Image", "*.png"));
-            chooser.setInitialFileName("sprite");
-            File loadPath = chooser.showOpenDialog(faceBox.getScene().getWindow());
+            File loadPath = showOpenImageFileDialog("Import Palette from sprite", "sprite");
             if (loadPath == null) {
                 return;
             }
