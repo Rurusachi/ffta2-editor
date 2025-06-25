@@ -162,8 +162,10 @@ public class App extends Application {
             config.load(fs);
         } catch (FileNotFoundException e) {
             logger.log(Level.INFO, "Config not found", e);
+            return;
         } catch (IOException e) {
             logger.log(Level.WARNING, "Failed to load config", e);
+            return;
         }
         String lastVersion = config.getProperty("editorVersion");
 
@@ -176,7 +178,6 @@ public class App extends Application {
         } else if (lastVersion != editorVersion) {
             
         }
-        config.setProperty("editorVersion", editorVersion);
     }
 
     public static void saveConfig() {
@@ -211,6 +212,7 @@ public class App extends Application {
         editorVersion = properties.getProperty("version");
         setupLogger();
         loadConfig();
+        config.setProperty("editorVersion", editorVersion);
 
 
         scene = new Scene(loadFXML("main"), 1280, 720);
