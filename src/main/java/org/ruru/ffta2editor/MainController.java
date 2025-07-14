@@ -8,9 +8,11 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import org.ruru.ffta2editor.model.stringTable.MessageId;
 import org.ruru.ffta2editor.model.stringTable.StringSingle;
@@ -76,6 +78,7 @@ public class MainController {
     
     @FXML MenuItem saveMenuItem;
 
+    Path dataPath;
     File romFile;
     ObjectProperty<File> lastSavePath = new SimpleObjectProperty<>();
     
@@ -241,6 +244,18 @@ public class MainController {
         } finally {
             setDim(false);
         }
+        if (!App.loadWarningList.isEmpty()) {
+            Alert loadAlert = new Alert(AlertType.ERROR);
+            loadAlert.setTitle("Loading");
+            loadAlert.setHeaderText(String.format("Loading succeeded with %d warnings", App.loadWarningList.size()));
+            String warningMessages = App.loadWarningList.stream().limit(10).collect(Collectors.joining("\n"));
+            if (App.loadWarningList.size() > 10) {
+                warningMessages = warningMessages.concat(String.format("\n+ %d addtional warnings", App.loadWarningList.size()-10));
+            }
+            App.loadWarningList.clear();
+            loadAlert.setContentText(warningMessages);
+            loadAlert.show();
+        }
 
         //if (!load(loadPath)) {
         //    Alert loadAlert = new Alert(AlertType.ERROR);
@@ -372,9 +387,24 @@ public class MainController {
     }
 
     private void load(File loadPath) throws Exception {
+        App.loadWarningList.clear();
         logger.info("Unpacking rom with ndstool");
         romFile = loadPath;
-        Path dataPath = Path.of("data");
+
+        dataPath = Files.createTempDirectory(Path.of("."), loadPath.getName());
+        Path dataPathCapture = dataPath;
+        Runtime.getRuntime().addShutdownHook((new Thread() {
+            @Override
+            public void run() {
+                try (var stream = Files.walk(dataPathCapture)) {
+                    stream.sorted(Comparator.reverseOrder()).forEach(p -> p.toFile().delete());
+                    
+                } catch (Exception e) {
+                    System.err.println(String.format("Failed to delete temp folder %s", dataPathCapture));
+                }
+            }
+        }));
+        //Path dataPath = Path.of("data");
         ProcessBuilder ndsTool = new ProcessBuilder("ndstool.exe", "-x", loadPath.toPath().toString(),
                                                "-9", dataPath.resolve("arm9.bin").toString(),
                                                "-7", dataPath.resolve("arm7.bin").toString(),
@@ -652,7 +682,6 @@ public class MainController {
         ByteBuffer newBin = archivePair.getValue();
         System.out.println("Archive successfully repacked");
 
-        Path dataPath = Path.of("data");
         Path pcIdx = dataPath.resolve("data\\master\\pc.idx");
         Path pcBin = dataPath.resolve("data\\master\\pc.bin");
         Path arm9 = dataPath.resolve("arm9.bin");
@@ -723,24 +752,36 @@ public class MainController {
     public void resetText(File loadPath) throws Exception {
         logger.info("Unpacking rom with ndstool");
         romFile = loadPath;
-        Path dataPath = Path.of("vanilla");
+        
+        Path vanillaDataPath = Files.createTempDirectory(Path.of("."), loadPath.getName());
+        Runtime.getRuntime().addShutdownHook((new Thread() {
+            @Override
+            public void run() {
+                try (var stream = Files.walk(vanillaDataPath)) {
+                    stream.sorted(Comparator.reverseOrder()).forEach(p -> p.toFile().delete());
+                    
+                } catch (Exception e) {
+                    System.err.println(String.format("Failed to delete temp folder %s", dataPath));
+                }
+            }
+        }));
         ProcessBuilder ndsTool = new ProcessBuilder("ndstool.exe", "-x", loadPath.toPath().toString(),
-                                               "-9", dataPath.resolve("arm9.bin").toString(),
-                                               "-7", dataPath.resolve("arm7.bin").toString(),
-                                               "-y9", dataPath.resolve("y9.bin").toString(),
-                                               "-y7", dataPath.resolve("y7.bin").toString(),
-                                               "-d", dataPath.resolve("data").toString(),
-                                               "-y", dataPath.resolve("overlay").toString(),
-                                               "-t", dataPath.resolve("banner.bin").toString(),
-                                               "-h", dataPath.resolve("header.bin").toString());
+                                               "-9", vanillaDataPath.resolve("arm9.bin").toString(),
+                                               "-7", vanillaDataPath.resolve("arm7.bin").toString(),
+                                               "-y9", vanillaDataPath.resolve("y9.bin").toString(),
+                                               "-y7", vanillaDataPath.resolve("y7.bin").toString(),
+                                               "-d", vanillaDataPath.resolve("data").toString(),
+                                               "-y", vanillaDataPath.resolve("overlay").toString(),
+                                               "-t", vanillaDataPath.resolve("banner.bin").toString(),
+                                               "-h", vanillaDataPath.resolve("header.bin").toString());
         ndsTool.redirectOutput(Redirect.INHERIT);
         ndsTool.redirectError(Redirect.INHERIT);
-        Files.createDirectories(dataPath);
+        Files.createDirectories(vanillaDataPath);
         ndsTool.start().waitFor();
 
         logger.info("Parsing archive");
-        File pcIdx = dataPath.resolve("data\\master\\pc.idx").toFile();
-        File pcBin = dataPath.resolve("data\\master\\pc.bin").toFile();
+        File pcIdx = vanillaDataPath.resolve("data\\master\\pc.idx").toFile();
+        File pcBin = vanillaDataPath.resolve("data\\master\\pc.bin").toFile();
         
         Archive vanillaArchive = new Archive(pcIdx, pcBin);
 

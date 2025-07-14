@@ -21,7 +21,7 @@ public class FormationData {
         header = new FormationHeader(headerBytes);
         units = FXCollections.observableArrayList();
         for (int i = 0; i < Byte.toUnsignedInt(header.numUnits.getValue()); i++) {
-            units.add(new FormationUnit(unitBytes));
+            units.add(new FormationUnit(unitBytes, i, this.id));
         }
     }
 

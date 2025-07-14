@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.FileHandler;
@@ -124,6 +125,8 @@ public class App extends Application {
     private static final Properties properties = new Properties();
     public static final Properties config = new Properties();
 
+
+    public static ArrayList<String> loadWarningList = new ArrayList<>();
 
     public static void saveLastRomPath(File romFile) {
         config.setProperty("lastRomPath", romFile.getParent());

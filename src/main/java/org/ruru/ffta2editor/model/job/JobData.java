@@ -3,6 +3,7 @@ package org.ruru.ffta2editor.model.job;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.BitSet;
+import java.util.logging.Logger;
 
 import org.ruru.ffta2editor.App;
 import org.ruru.ffta2editor.PatchesController;
@@ -18,6 +19,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public class JobData {
+    private static Logger logger = Logger.getLogger("org.ruru.ffta2editor");
     
     //public String name;
     public StringProperty name;
@@ -352,7 +354,15 @@ public class JobData {
         _0x2c.set(bytes.get());
         resilience.set(bytes.get());
 
-        abilitySet.set(App.abilitySetList.get(Short.toUnsignedInt(bytes.getShort())));
+        int abilitySetIndex = Short.toUnsignedInt(bytes.getShort());
+        if (abilitySetIndex < App.abilitySetList.size()) {
+            abilitySet.set(App.abilitySetList.get(abilitySetIndex));
+        } else {
+            String warningMessage = String.format("Job %d (%s): Ability Set %d not found. Defaulting to 0", this.id, this.name.get(), abilitySetIndex);
+            logger.warning(warningMessage);
+            App.loadWarningList.add(warningMessage);
+            abilitySet.set(App.abilitySetList.get(0));
+        }
 
         unarmedBonus.set(bytes.get());
         raceSomethingMaybe.set(bytes.get());

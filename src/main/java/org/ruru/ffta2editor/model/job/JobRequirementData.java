@@ -2,6 +2,7 @@ package org.ruru.ffta2editor.model.job;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.logging.Logger;
 
 import org.ruru.ffta2editor.App;
 import org.ruru.ffta2editor.model.character.CharacterData;
@@ -10,6 +11,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
 public class JobRequirementData {
+    private static Logger logger = Logger.getLogger("org.ruru.ffta2editor");
 
     public int id;
 
@@ -33,12 +35,39 @@ public class JobRequirementData {
         jobId.set(App.jobDataList.get(Byte.toUnsignedInt(bytes.get())));
         character1.set(App.characterList.get(Byte.toUnsignedInt(bytes.get())));
         character2.set(App.characterList.get(Byte.toUnsignedInt(bytes.get())));
-        byte jobId = bytes.get();
-        job1.set(App.abilitySetList.get(Byte.toUnsignedInt(jobId)));
+        
+
+        int abilitySetIndex = Byte.toUnsignedInt(bytes.get());
+        if (abilitySetIndex < App.abilitySetList.size()) {
+            job1.set(App.abilitySetList.get(abilitySetIndex));
+        } else {
+            String warningMessage = String.format("Job Requirement %d: Ability Set %d not found. Defaulting to 0", this.id, abilitySetIndex);
+            logger.warning(warningMessage);
+            App.loadWarningList.add(warningMessage);
+            job1.set(App.abilitySetList.get(0));
+        }
         abilityNum1.set(bytes.get());
-        job2.set(App.abilitySetList.get(Byte.toUnsignedInt(bytes.get())));
+        
+        abilitySetIndex = Byte.toUnsignedInt(bytes.get());
+        if (abilitySetIndex < App.abilitySetList.size()) {
+            job2.set(App.abilitySetList.get(abilitySetIndex));
+        } else {
+            String warningMessage = String.format("Job Requirement %d: Ability Set %d not found. Defaulting to 0", this.id, abilitySetIndex);
+            logger.warning(warningMessage);
+            App.loadWarningList.add(warningMessage);
+            job2.set(App.abilitySetList.get(0));
+        }
         abilityNum2.set(bytes.get());
-        job3.set(App.abilitySetList.get(Byte.toUnsignedInt(bytes.get())));
+
+        abilitySetIndex = Byte.toUnsignedInt(bytes.get());
+        if (abilitySetIndex < App.abilitySetList.size()) {
+            job3.set(App.abilitySetList.get(abilitySetIndex));
+        } else {
+            String warningMessage = String.format("Job Requirement %d: Ability Set %d not found. Defaulting to 0", this.id, abilitySetIndex);
+            logger.warning(warningMessage);
+            App.loadWarningList.add(warningMessage);
+            job3.set(App.abilitySetList.get(0));
+        }
         abilityNum3.set(bytes.get());
     }
 
