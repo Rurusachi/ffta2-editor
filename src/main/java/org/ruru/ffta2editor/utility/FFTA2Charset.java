@@ -2,10 +2,16 @@ package org.ruru.ffta2editor.utility;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
+
+import org.ruru.ffta2editor.App;
 
 public class FFTA2Charset {
+    private static Logger logger = Logger.getLogger("org.ruru.ffta2editor");
     public static HashMap<Integer, String> decodingMap = new HashMap<>();
     static {
         decodingMap.put(0x00,"\r");
@@ -385,6 +391,7 @@ public class FFTA2Charset {
 
     public static String decode(ByteBuffer bytes) throws Exception {
         StringBuilder sb = new StringBuilder();
+        ArrayList<String> unknownCharacters = new ArrayList<>();
         while(bytes.remaining() > 0) {
             int b = 0;
             String s = null;
@@ -403,12 +410,17 @@ public class FFTA2Charset {
                 } else {
                     s = String.format("<unknown:%02X>", unknownByte);
                 }
-                System.out.println(s);
+                unknownCharacters.add(s);
             } else if (s.startsWith("\\") && s.endsWith("%02X\\")) {
                 s = String.format(s, bytes.get());
             }
             if (s.equals("\r") ) continue;
             sb.append(s);
+        }
+        if (!unknownCharacters.isEmpty()) {
+            String warningMessage = String.format("Unknown characters [%s] in \"%s\"", unknownCharacters.stream().collect(Collectors.joining("\", \"", "\"", "\"")), sb.toString());
+            logger.warning(warningMessage);
+            App.loadWarningList.add(warningMessage);
         }
         return sb.toString();
     }
