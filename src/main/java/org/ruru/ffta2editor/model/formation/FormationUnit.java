@@ -46,6 +46,7 @@ public class FormationUnit {
     public ObjectProperty<AbilityData> primaryAbility6 = new SimpleObjectProperty<>();
     
     public ObjectProperty<AbilitySet> secondaryAbilitySet = new SimpleObjectProperty<>();
+    public ObjectProperty<Byte>       _0x1b = new SimpleObjectProperty<>();
     public ObjectProperty<AbilityData> secondaryAbility1 = new SimpleObjectProperty<>();
     public ObjectProperty<AbilityData> secondaryAbility2 = new SimpleObjectProperty<>();
     public ObjectProperty<AbilityData> secondaryAbility3 = new SimpleObjectProperty<>();
@@ -95,7 +96,7 @@ public class FormationUnit {
         primaryAbility5.set(App.abilityList.get(Short.toUnsignedInt(bytes.getShort())));
         primaryAbility6.set(App.abilityList.get(Short.toUnsignedInt(bytes.getShort())));
 
-        int abilitySetIndex = Short.toUnsignedInt(bytes.getShort());
+        int abilitySetIndex = Byte.toUnsignedInt(bytes.get());
         if (abilitySetIndex < App.abilitySetList.size()) {
             secondaryAbilitySet.set(App.abilitySetList.get(abilitySetIndex));
         } else {
@@ -104,6 +105,8 @@ public class FormationUnit {
             App.loadWarningList.add(warningMessage);
             secondaryAbilitySet.set(App.abilitySetList.get(0));
         }
+
+        _0x1b.set(bytes.get()); // TODO: Create GUI field
         
         secondaryAbility1.set(App.abilityList.get(Short.toUnsignedInt(bytes.getShort())));
         secondaryAbility2.set(App.abilityList.get(Short.toUnsignedInt(bytes.getShort())));

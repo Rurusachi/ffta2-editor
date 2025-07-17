@@ -71,6 +71,7 @@ public class JobData {
     public SimpleObjectProperty<Byte> resilience = new SimpleObjectProperty<>();
 
     public SimpleObjectProperty<AbilitySet> abilitySet = new SimpleObjectProperty<>();
+    public SimpleObjectProperty<Byte> _0x2f = new SimpleObjectProperty<>();
     
     public SimpleObjectProperty<Byte> unarmedBonus = new SimpleObjectProperty<>();
     public SimpleObjectProperty<Byte> raceSomethingMaybe = new SimpleObjectProperty<>();
@@ -354,7 +355,7 @@ public class JobData {
         _0x2c.set(bytes.get());
         resilience.set(bytes.get());
 
-        int abilitySetIndex = Short.toUnsignedInt(bytes.getShort());
+        int abilitySetIndex = Byte.toUnsignedInt(bytes.get());
         if (abilitySetIndex < App.abilitySetList.size()) {
             abilitySet.set(App.abilitySetList.get(abilitySetIndex));
         } else {
@@ -363,6 +364,8 @@ public class JobData {
             App.loadWarningList.add(warningMessage);
             abilitySet.set(App.abilitySetList.get(0));
         }
+
+        _0x2f.set(bytes.get()); // TODO: Create GUI field
 
         unarmedBonus.set(bytes.get());
         raceSomethingMaybe.set(bytes.get());
