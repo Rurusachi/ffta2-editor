@@ -253,6 +253,13 @@ public class FormationController {
                 primaryAbility4.setData(abilityList);
                 primaryAbility5.setData(abilityList);
                 primaryAbility6.setData(abilityList);
+                
+                primaryAbility1.getSelectionModel().select(0);
+                primaryAbility2.getSelectionModel().select(0);
+                primaryAbility3.getSelectionModel().select(0);
+                primaryAbility4.getSelectionModel().select(0);
+                primaryAbility5.getSelectionModel().select(0);
+                primaryAbility6.getSelectionModel().select(0);
             }
         });
         secondaryAbilitySet.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
@@ -263,6 +270,11 @@ public class FormationController {
                 secondaryAbility2.setData(abilityList);
                 secondaryAbility3.setData(abilityList);
                 secondaryAbility4.setData(abilityList);
+                
+                secondaryAbility1.getSelectionModel().select(0);
+                secondaryAbility2.getSelectionModel().select(0);
+                secondaryAbility3.getSelectionModel().select(0);
+                secondaryAbility4.getSelectionModel().select(0);
             }
         });
 
