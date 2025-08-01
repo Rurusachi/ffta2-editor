@@ -31,3 +31,4 @@ vanilla/*
 ffta2-editor/*
 .vscode/*
 logs/*
+*.nds*/*
