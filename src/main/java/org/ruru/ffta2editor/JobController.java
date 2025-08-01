@@ -876,9 +876,9 @@ public class JobController {
 
     @FXML
     public void addAbilitySet() {
-        if (abilitySetList.getItems() != null) {
-            int newIndex = abilitySetList.getItems().size();
-            abilitySetList.getItems().add(new AbilitySet("", newIndex));
+        if (abilitySetList.getData() != null) {
+            int newIndex = abilitySetList.getData().size();
+            abilitySetList.getData().add(new AbilitySet("", newIndex));
             abilitySetList.getSelectionModel().selectLast();;
         }
     }
@@ -887,8 +887,8 @@ public class JobController {
         //if (abilitySetList.getSelectionModel().getSelectedItem() != null && abilitySetList.getSelectionModel().getSelectedIndex() > 0) {
         //    abilitySetList.getItems().remove(abilitySetList.getSelectionModel().getSelectedIndex());
         //}
-        if (abilitySetList.getItems().size() > 0) {
-            abilitySetList.getItems().removeLast();
+        if (abilitySetList.getData().size() > 0) {
+            abilitySetList.getData().removeLast();
         }
     }
 
@@ -1062,7 +1062,7 @@ public class JobController {
         abilitySetAbilityBytes.rewind();
         
         int firstAbilityIndex = 0x0;
-        List<AbilitySet> abilitySets = abilitySetList.getItems();
+        List<AbilitySet> abilitySets = abilitySetList.getData();
         ByteBuffer newAbilitySetbytes = ByteBuffer.allocate(abilitySets.size()*0xc).order(ByteOrder.LITTLE_ENDIAN);
         ByteBuffer newAbilitySetAbilitybytes = ByteBuffer.allocate(abilitySets.stream().mapToInt(x -> x.abilities.size()).sum() * 0xc).order(ByteOrder.LITTLE_ENDIAN);
         //newAbilitySetAbilitybytes.put(abilitySetAbilityBytes.slice(0, 0xc*1)); // Copy the empty ability
@@ -1090,6 +1090,9 @@ public class JobController {
         App.arm9.put(0x000b81dc, (byte)abilitySets.size());
         App.overlay11.put(0x4898, (byte)abilitySets.size());
         App.overlay11.put(0x83f8, (byte)abilitySets.size());
+        // These require a change in the menus as well
+        // 0x0010f41c
+        // overlay_11 + 0x58
 
 
         App.sysdata.setFile(3, newAbilitySetAbilitybytes.rewind());
