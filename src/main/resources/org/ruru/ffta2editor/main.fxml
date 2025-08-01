@@ -91,6 +91,11 @@
                     <fx:include fx:id="consumableTab" source="consumable.fxml" />
                 </content>
             </Tab>
+          <Tab closable="false" text="Loot Data">
+                <content>
+                    <fx:include fx:id="lootTab" source="loot.fxml" />
+                </content>
+            </Tab>
           <Tab closable="false" text="Characters">
                 <content>
                     <fx:include fx:id="characterTab" source="character.fxml" />

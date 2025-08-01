@@ -14,7 +14,7 @@ public class LootData extends ItemData {
     public ObjectProperty<Short> buy = new SimpleObjectProperty<>();
     public ObjectProperty<Short> sell = new SimpleObjectProperty<>();
     public ObjectProperty<LootCategory> category = new SimpleObjectProperty<>();
-    public ObjectProperty<Byte> rank = new SimpleObjectProperty<>();
+    public ObjectProperty<LootRank> rank = new SimpleObjectProperty<>();
     public ObjectProperty<Short> _0x6 = new SimpleObjectProperty<>();
 
     public LootData(ByteBuffer bytes, int id) {
@@ -33,7 +33,7 @@ public class LootData extends ItemData {
         buy.set(bytes.getShort());
         sell.set(bytes.getShort());
         category.set(LootCategory.fromInteger(Byte.toUnsignedInt(bytes.get())));
-        rank.set(bytes.get());
+        rank.set(LootRank.fromInteger(Byte.toUnsignedInt(bytes.get())));
         _0x6.set(bytes.getShort());
     }
 
@@ -55,7 +55,7 @@ public class LootData extends ItemData {
         buy.set((short)0);
         sell.set((short)0);
         category.set(LootCategory.NONE);
-        rank.set((byte)0);
+        rank.set(LootRank.ZERO_STAR);
         _0x6.set((short)0);
     }
 
@@ -65,7 +65,7 @@ public class LootData extends ItemData {
         buffer.putShort(buy.getValue());
         buffer.putShort(sell.getValue());
         buffer.put(category.getValue().value);
-        buffer.put(rank.getValue());
+        buffer.put(rank.getValue().value);
         buffer.putShort(_0x6.getValue());
 
         return buffer.array();
