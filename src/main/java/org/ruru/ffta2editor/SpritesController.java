@@ -807,7 +807,7 @@ public class SpritesController {
         }
 
         logger.info("Saving Top Sprites");
-        App.atl.setNumFiles(topSpriteList.getItems().size());
+        App.atl.setNumFiles(topSpriteList.getItems().size()-1);
         for (TopSprite topSprite : topSpriteList.getItems()) {
             if (topSprite.id == 0 || !topSprite.hasChanged) continue;
             try {

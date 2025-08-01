@@ -442,7 +442,7 @@ public class TextController {
             //encodedMessages.add(table.toBytes());
             //System.out.println(table.id);
             byte[] tableBytes = table.toBytes();
-            System.out.println(String.format("%s: %d to %d", table.name.getValue(), currPos, currPos + tableBytes.length));
+            //System.out.println(String.format("%s: %d to %d", table.name.getValue(), currPos, currPos + tableBytes.length));
             currPos += tableBytes.length;
             if (tableBytes.length == 0) continue;
             //System.out.println(String.format("%d -> %d", App.jdMessage.getFile(table.id).rewind().remaining(), tableBytes.length));

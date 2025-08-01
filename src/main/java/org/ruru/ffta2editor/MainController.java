@@ -131,71 +131,71 @@ public class MainController {
         //    originalFiles.add(entry.copy());
         //}
 
-        IdxAndPak sysdata = new IdxAndPak(App.archive.getFile(IdxPaks.sysdata.idx()), App.archive.getFile(IdxPaks.sysdata.pak()));
+        IdxAndPak sysdata = new IdxAndPak("sysdata", App.archive.getFile(IdxPaks.sysdata.idx()), App.archive.getFile(IdxPaks.sysdata.pak()));
 
-        IdxAndPak unitSsts = new IdxAndPak(App.archive.getFile(IdxPaks.unitSsts.idx()), App.archive.getFile(IdxPaks.unitSsts.pak()));
+        IdxAndPak unitSsts = new IdxAndPak("unitSsts", App.archive.getFile(IdxPaks.unitSsts.idx()), App.archive.getFile(IdxPaks.unitSsts.pak()));
 
-        IdxAndPak unitCgs = new IdxAndPak(App.archive.getFile(IdxPaks.unitCgs.idx()), App.archive.getFile(IdxPaks.unitCgs.pak()));
+        IdxAndPak unitCgs = new IdxAndPak("unitCgs", App.archive.getFile(IdxPaks.unitCgs.idx()), App.archive.getFile(IdxPaks.unitCgs.pak()));
         
-        IdxAndPak jdMessage = new IdxAndPak(App.archive.getFile(IdxPaks.jdMessage.idx()), App.archive.getFile(IdxPaks.jdMessage.pak()));
+        IdxAndPak jdMessage = new IdxAndPak("jdMessage", App.archive.getFile(IdxPaks.jdMessage.idx()), App.archive.getFile(IdxPaks.jdMessage.pak()));
 
-        IdxAndPak jhQuest = new IdxAndPak(App.archive.getFile(IdxPaks.jhQuest.idx()), App.archive.getFile(IdxPaks.jhQuest.pak()));
+        IdxAndPak jhQuest = new IdxAndPak("jhQuest", App.archive.getFile(IdxPaks.jhQuest.idx()), App.archive.getFile(IdxPaks.jhQuest.pak()));
         
-        IdxAndPak jhRumor = new IdxAndPak(App.archive.getFile(IdxPaks.jhRumor.idx()), App.archive.getFile(IdxPaks.jhRumor.pak()));
+        IdxAndPak jhRumor = new IdxAndPak("jhRumor", App.archive.getFile(IdxPaks.jhRumor.idx()), App.archive.getFile(IdxPaks.jhRumor.pak()));
         
-        IdxAndPak jhNotice = new IdxAndPak(App.archive.getFile(IdxPaks.jhNotice.idx()), App.archive.getFile(IdxPaks.jhNotice.pak()));
+        IdxAndPak jhNotice = new IdxAndPak("jhNotice", App.archive.getFile(IdxPaks.jhNotice.idx()), App.archive.getFile(IdxPaks.jhNotice.pak()));
         
-        IdxAndPak evMsg = new IdxAndPak(App.archive.getFile(IdxPaks.evMsg.idx()), App.archive.getFile(IdxPaks.evMsg.pak()));
+        IdxAndPak evMsg = new IdxAndPak("evMsg", App.archive.getFile(IdxPaks.evMsg.idx()), App.archive.getFile(IdxPaks.evMsg.pak()));
 
-        IdxAndPak entrydata = new IdxAndPak(App.archive.getFile(IdxPaks.entrydata.idx()), App.archive.getFile(IdxPaks.entrydata.pak()));
+        IdxAndPak entrydata = new IdxAndPak("entrydata", App.archive.getFile(IdxPaks.entrydata.idx()), App.archive.getFile(IdxPaks.entrydata.pak()));
         
-        IdxAndPak atl = new IdxAndPak(App.archive.getFile(IdxPaks.atl.idx()), App.archive.getFile(IdxPaks.atl.pak()));
+        IdxAndPak atl = new IdxAndPak("atl", App.archive.getFile(IdxPaks.atl.idx()), App.archive.getFile(IdxPaks.atl.pak()));
         
-        IdxAndPak face = new IdxAndPak(App.archive.getFile(IdxPaks.face.idx()), App.archive.getFile(IdxPaks.face.pak()));
+        IdxAndPak face = new IdxAndPak("face", App.archive.getFile(IdxPaks.face.idx()), App.archive.getFile(IdxPaks.face.pak()));
 
 
         Pair<ByteBuffer, ByteBuffer> repackedBytes = App.sysdata.repack();
-        IdxAndPak repacked = new IdxAndPak(repackedBytes.getKey(),repackedBytes.getValue());
+        IdxAndPak repacked = new IdxAndPak("sysdata", repackedBytes.getKey(),repackedBytes.getValue());
         compareIdxPaks(sysdata, App.sysdata, "sysdata");
 
         repackedBytes = App.unitSsts.repack();
-        repacked = new IdxAndPak(repackedBytes.getKey(),repackedBytes.getValue());
+        repacked = new IdxAndPak("unitSsts", repackedBytes.getKey(),repackedBytes.getValue());
         compareIdxPaks(unitSsts, App.unitSsts, "unitSsts");
         
         repackedBytes = App.unitCgs.repack();
-        repacked = new IdxAndPak(repackedBytes.getKey(),repackedBytes.getValue());
+        repacked = new IdxAndPak("unitCgs", repackedBytes.getKey(),repackedBytes.getValue());
         compareIdxPaks(unitCgs, App.unitCgs, "unitCgs");
         
         repackedBytes = App.jdMessage.repack();
-        repacked = new IdxAndPak(repackedBytes.getKey(),repackedBytes.getValue());
+        repacked = new IdxAndPak("jdMessage", repackedBytes.getKey(),repackedBytes.getValue());
         compareIdxPaks(jdMessage, App.jdMessage, "jdMessage");
         
         repackedBytes = App.jhQuest.repack();
-        repacked = new IdxAndPak(repackedBytes.getKey(),repackedBytes.getValue());
+        repacked = new IdxAndPak("jhQuest", repackedBytes.getKey(),repackedBytes.getValue());
         compareIdxPaks(jhQuest, App.jhQuest, "jhQuest");
         
         repackedBytes = App.jhRumor.repack();
-        repacked = new IdxAndPak(repackedBytes.getKey(),repackedBytes.getValue());
+        repacked = new IdxAndPak("jhRumor", repackedBytes.getKey(),repackedBytes.getValue());
         compareIdxPaks(jhRumor, App.jhRumor, "jhRumor");
         
         repackedBytes = App.jhNotice.repack();
-        repacked = new IdxAndPak(repackedBytes.getKey(),repackedBytes.getValue());
+        repacked = new IdxAndPak("jhNotice", repackedBytes.getKey(),repackedBytes.getValue());
         compareIdxPaks(jhNotice, App.jhNotice, "jhNotice");
         
         repackedBytes = App.evMsg.repack();
-        repacked = new IdxAndPak(repackedBytes.getKey(),repackedBytes.getValue());
+        repacked = new IdxAndPak("evMsg", repackedBytes.getKey(),repackedBytes.getValue());
         compareIdxPaks(evMsg, App.evMsg, "evMsg");
         
         repackedBytes = App.entrydata.repack();
-        repacked = new IdxAndPak(repackedBytes.getKey(),repackedBytes.getValue());
+        repacked = new IdxAndPak("entrydata", repackedBytes.getKey(),repackedBytes.getValue());
         compareIdxPaks(entrydata, App.entrydata, "entrydata");
         
         repackedBytes = App.atl.repack();
-        repacked = new IdxAndPak(repackedBytes.getKey(),repackedBytes.getValue());
+        repacked = new IdxAndPak("atl", repackedBytes.getKey(),repackedBytes.getValue());
         compareIdxPaks(atl, App.atl, "atl");
         
         repackedBytes = App.face.repack();
-        repacked = new IdxAndPak(repackedBytes.getKey(),repackedBytes.getValue());
+        repacked = new IdxAndPak("face", repackedBytes.getKey(),repackedBytes.getValue());
         compareIdxPaks(face, App.face, "face");
 
         //App.sysdata.files.get(0).compareTo(null)
@@ -443,37 +443,37 @@ public class MainController {
 
         
         logger.info("Parsing sysdata");
-        App.sysdata = new IdxAndPak(App.archive.getFile(IdxPaks.sysdata.idx()), App.archive.getFile(IdxPaks.sysdata.pak()));
+        App.sysdata = new IdxAndPak("sysdata", App.archive.getFile(IdxPaks.sysdata.idx()), App.archive.getFile(IdxPaks.sysdata.pak()));
         
         logger.info("Parsing UnitSst");
-        App.unitSsts = new IdxAndPak(App.archive.getFile(IdxPaks.unitSsts.idx()), App.archive.getFile(IdxPaks.unitSsts.pak()));
+        App.unitSsts = new IdxAndPak("unitSsts", App.archive.getFile(IdxPaks.unitSsts.idx()), App.archive.getFile(IdxPaks.unitSsts.pak()));
 
         logger.info("Parsing UnitCg");
-        App.unitCgs = new IdxAndPak(App.archive.getFile(IdxPaks.unitCgs.idx()), App.archive.getFile(IdxPaks.unitCgs.pak()));
+        App.unitCgs = new IdxAndPak("unitCgs", App.archive.getFile(IdxPaks.unitCgs.idx()), App.archive.getFile(IdxPaks.unitCgs.pak()));
         
         logger.info("Parsing JD_message");
-        App.jdMessage = new IdxAndPak(App.archive.getFile(IdxPaks.jdMessage.idx()), App.archive.getFile(IdxPaks.jdMessage.pak()));
+        App.jdMessage = new IdxAndPak("jdMessage", App.archive.getFile(IdxPaks.jdMessage.idx()), App.archive.getFile(IdxPaks.jdMessage.pak()));
 
         logger.info("Parsing JH_questtext");
-        App.jhQuest = new IdxAndPak(App.archive.getFile(IdxPaks.jhQuest.idx()), App.archive.getFile(IdxPaks.jhQuest.pak()));
+        App.jhQuest = new IdxAndPak("jhQuest", App.archive.getFile(IdxPaks.jhQuest.idx()), App.archive.getFile(IdxPaks.jhQuest.pak()));
         
         logger.info("Parsing JH_uwasatext");
-        App.jhRumor = new IdxAndPak(App.archive.getFile(IdxPaks.jhRumor.idx()), App.archive.getFile(IdxPaks.jhRumor.pak()));
+        App.jhRumor = new IdxAndPak("jhRumor", App.archive.getFile(IdxPaks.jhRumor.idx()), App.archive.getFile(IdxPaks.jhRumor.pak()));
         
         logger.info("Parsing JH_freepapermes");
-        App.jhNotice = new IdxAndPak(App.archive.getFile(IdxPaks.jhNotice.idx()), App.archive.getFile(IdxPaks.jhNotice.pak()));
+        App.jhNotice = new IdxAndPak("jhNotice", App.archive.getFile(IdxPaks.jhNotice.idx()), App.archive.getFile(IdxPaks.jhNotice.pak()));
         
         logger.info("Parsing ev_msg");
-        App.evMsg = new IdxAndPak(App.archive.getFile(IdxPaks.evMsg.idx()), App.archive.getFile(IdxPaks.evMsg.pak()));
+        App.evMsg = new IdxAndPak("evMsg", App.archive.getFile(IdxPaks.evMsg.idx()), App.archive.getFile(IdxPaks.evMsg.pak()));
 
         logger.info("Parsing entrydata");
-        App.entrydata = new IdxAndPak(App.archive.getFile(IdxPaks.entrydata.idx()), App.archive.getFile(IdxPaks.entrydata.pak()));
+        App.entrydata = new IdxAndPak("entrydata", App.archive.getFile(IdxPaks.entrydata.idx()), App.archive.getFile(IdxPaks.entrydata.pak()));
         
         logger.info("Parsing atl");
-        App.atl = new IdxAndPak(App.archive.getFile(IdxPaks.atl.idx()), App.archive.getFile(IdxPaks.atl.pak()));
+        App.atl = new IdxAndPak("atl", App.archive.getFile(IdxPaks.atl.idx()), App.archive.getFile(IdxPaks.atl.pak()));
         
         logger.info("Parsing face");
-        App.face = new IdxAndPak(App.archive.getFile(IdxPaks.face.idx()), App.archive.getFile(IdxPaks.face.pak()));
+        App.face = new IdxAndPak("face", App.archive.getFile(IdxPaks.face.idx()), App.archive.getFile(IdxPaks.face.pak()));
 
 
         logger.info("Decoding NaUnitAnimTable");
@@ -533,7 +533,11 @@ public class MainController {
         saveAlert.setHeaderText(String.format("Save to \"%s\"?", lastSavePath.get().getPath()));
         var result = saveAlert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK)
+        {
             saveTo(lastSavePath.get());
+        } else {
+            setDim(false);
+        }
     }
 
     @FXML
@@ -670,7 +674,12 @@ public class MainController {
         
         logger.info("Saving NaUnitAnimTable");
         ByteBuffer encodedTable = LZSS.encode(App.naUnitAnimTable.rewind());
-        ByteBuffer newTable = ByteBuffer.allocate(encodedTable.capacity()+4);
+        int padding = 0;
+        if (encodedTable.capacity() % 4 != 0) {
+            logger.info("Padding NaUnitAnimTable");
+            padding = 4 - (encodedTable.capacity() % 4);
+        }
+        ByteBuffer newTable = ByteBuffer.allocate(encodedTable.capacity() + 4 + padding);
         newTable.putInt(encodedTable.getShort(1));
         newTable.put(encodedTable);
         App.archive.setFile("char/NaUnitAnimTable.bin", newTable);
@@ -786,19 +795,19 @@ public class MainController {
         Archive vanillaArchive = new Archive(pcIdx, pcBin);
 
         logger.info("Parsing JD_message");
-        IdxAndPak jdMessage = new IdxAndPak(vanillaArchive.getFile(IdxPaks.jdMessage.idx()), vanillaArchive.getFile(IdxPaks.jdMessage.pak()));
+        IdxAndPak jdMessage = new IdxAndPak("jdMessage", vanillaArchive.getFile(IdxPaks.jdMessage.idx()), vanillaArchive.getFile(IdxPaks.jdMessage.pak()));
 
         logger.info("Parsing JH_questtext");
-        IdxAndPak jhQuest = new IdxAndPak(vanillaArchive.getFile(IdxPaks.jhQuest.idx()), vanillaArchive.getFile(IdxPaks.jhQuest.pak()));
+        IdxAndPak jhQuest = new IdxAndPak("jhQuest", vanillaArchive.getFile(IdxPaks.jhQuest.idx()), vanillaArchive.getFile(IdxPaks.jhQuest.pak()));
         
         logger.info("Parsing JH_uwasatext");
-        IdxAndPak jhRumor = new IdxAndPak(vanillaArchive.getFile(IdxPaks.jhRumor.idx()), vanillaArchive.getFile(IdxPaks.jhRumor.pak()));
+        IdxAndPak jhRumor = new IdxAndPak("jhRumor", vanillaArchive.getFile(IdxPaks.jhRumor.idx()), vanillaArchive.getFile(IdxPaks.jhRumor.pak()));
         
         logger.info("Parsing JH_freepapermes");
-        IdxAndPak jhNotice = new IdxAndPak(vanillaArchive.getFile(IdxPaks.jhNotice.idx()), vanillaArchive.getFile(IdxPaks.jhNotice.pak()));
+        IdxAndPak jhNotice = new IdxAndPak("jhNotice", vanillaArchive.getFile(IdxPaks.jhNotice.idx()), vanillaArchive.getFile(IdxPaks.jhNotice.pak()));
         
         logger.info("Parsing ev_msg");
-        IdxAndPak evMsg = new IdxAndPak(vanillaArchive.getFile(IdxPaks.evMsg.idx()), vanillaArchive.getFile(IdxPaks.evMsg.pak()));
+        IdxAndPak evMsg = new IdxAndPak("evMsg", vanillaArchive.getFile(IdxPaks.evMsg.idx()), vanillaArchive.getFile(IdxPaks.evMsg.pak()));
 
         int numAffected = 0;
         for (int i = 0; i < jdMessage.numFiles(); i++) {

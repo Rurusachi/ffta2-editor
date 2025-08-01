@@ -272,6 +272,11 @@ public class Archive {
 
     
     public void setFile(int id, String name, ByteBuffer newFile) {
+        if (newFile.limit() % 4 != 0) {
+            String message = String.format("Size of file \"%s\" is not a multiple of 4 (%d)", name, newFile.limit());
+            System.err.println(message);
+            logger.warning(message);
+        }
         ArchiveEntry fileList = files.get(id);
         if (fileList.isList) {
             for (var archiveEntry : fileList.files) {
@@ -333,19 +338,25 @@ public class Archive {
         newPcIdx.putInt(0);
 
         
-        for (ArchiveEntry archiveEntry : files) {
+        for (int i = 0; i < files.size(); i++) {
+            ArchiveEntry archiveEntry = files.get(i);
             if (archiveEntry == null) {
                 newPcIdx.put(zeroes, 0, 9);
                 continue;
             }
             if (archiveEntry.isList) {
                 bottomTableEntries.put((byte)archiveEntry.files.size());
-                for (int i = 0; i < archiveEntry.files.size(); i++) {
-                    var entry = archiveEntry.files.get(i);
+                for (int j = 0; j < archiveEntry.files.size(); j++) {
+                    var entry = archiveEntry.files.get(j);
                     entry.file.rewind();
                     int size = entry.file.remaining();
+                    if (size % 4 != 0) {
+                        String message = String.format("Size of file (%d,%d) is not a multiple of 4 (%d)", i, j, size);
+                        System.err.println(message);
+                        logger.warning(message);
+                    }
                     bottomTableEntries.putInt(Integer.divideUnsigned(currentOffset, 4));
-                    if (i == 0) {
+                    if (j == 0) {
                         var encoded = new DecodedTableId(bottomTableEntriesOffset*4, size).encode();
                         newPcIdx.putInt(encoded.a + 1);
                         newPcIdx.putInt(encoded.b);
@@ -372,6 +383,11 @@ public class Archive {
             } else {
                 archiveEntry.file.rewind();
                 int size = archiveEntry.file.remaining();
+                if (size % 4 != 0) {
+                    String message = String.format("Size of file %d is not a multiple of 4 (%d)", i, size);
+                    System.err.println(message);
+                    logger.warning(message);
+                }
                 newPcBin.put(archiveEntry.file);
                 var encoded = new DecodedTableId(currentOffset, size).encode();
 

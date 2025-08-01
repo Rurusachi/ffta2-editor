@@ -3,14 +3,18 @@ package org.ruru.ffta2editor.utility;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 import javafx.util.Pair;
 
 public class IdxAndPak {
-    ByteBuffer Pak;
+    String name;
     ArrayList<ByteBuffer> files = new ArrayList<>();
 
-    public IdxAndPak(ByteBuffer idx, ByteBuffer pak) {
+    private static Logger logger = Logger.getLogger("org.ruru.ffta2editor");
+
+    public IdxAndPak(String name, ByteBuffer idx, ByteBuffer pak) {
+        this.name = name;
         idx.order(ByteOrder.LITTLE_ENDIAN).rewind();
         pak.order(ByteOrder.LITTLE_ENDIAN).rewind();
 
@@ -29,7 +33,10 @@ public class IdxAndPak {
             //ab1 = ((a1 << 5) & 0xFFFFFFFF) >> 8;
             ab1 = Integer.divideUnsigned((a1 << 5) & 0xFFFFFFFF, 0x100);
             if ((a1 & 7) != 0) {
-                files.add(null);
+                if (i != numEntries-1) {
+                    // Skip ending null file
+                    files.add(null);
+                }
                 continue;
             } 
 
@@ -41,7 +48,6 @@ public class IdxAndPak {
             size = (ab2-ab1) << 2;
             offset = (ab1) << 2;
 
-            //System.out.println(String.format("offset: %d, size: %d, ab1: %d, ab2: %d, a1: %d, a2: %d", offset, size, ab1, ab2, a1, a2));
             files.add(pak.slice(offset, size).order(ByteOrder.LITTLE_ENDIAN));
         }
     }
@@ -75,13 +81,20 @@ public class IdxAndPak {
     }
 
     public Pair<ByteBuffer, ByteBuffer> repack() {
-
-        int newIdxSize = 4 + 4 + 6*files.size();
+        // Always end with null file + pad size to multiple of 4
+        int newIdxSize = 4 + 6*(files.size()+1) + (files.size() % 2 != 1 ? 2 : 0);
         ByteBuffer newIdx = ByteBuffer.allocate(newIdxSize).order(ByteOrder.LITTLE_ENDIAN);
         int newPakSize = files.stream().filter(f -> f != null).mapToInt(f -> {
             f.rewind();
             return  align16(f.remaining());
         }).sum();
+        if (newPakSize % 4 != 0) {
+            // Not possible?
+            String message = String.format("%s: Pak size not multiple of 4", name);
+            logger.info(message);
+            System.out.println(message);
+            newPakSize += 4 - (newPakSize % 4);
+        }
         ByteBuffer newPak = ByteBuffer.allocate(newPakSize).order(ByteOrder.LITTLE_ENDIAN);
         byte[] zeroes = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
@@ -89,15 +102,11 @@ public class IdxAndPak {
         int offset = 0;
         int c;
         for (int i = 0; i < files.size(); i++) {
-        //for (ByteBuffer file : files) {
-            //System.out.println(i);
             ByteBuffer file = files.get(i);
             if (file == null) c = 7;
             else c = 0;
 
-            //System.out.println(String.format("i: %d, offset: %8X", i, 2*offset+c));
             newIdx.putInt((2*offset+c) & 0xFFFFFF);
-            //newIdx.put(zeroes, 0, 2);
             newIdx.putShort((short)0);
 
             if (file == null) continue;
@@ -105,20 +114,11 @@ public class IdxAndPak {
             int size = file.remaining();
             newPak.put(file);
             
-            /* 
-            offset += size;
-            if (offset % 0x10 != 0) {
-                int padding = 0x10 - (offset % 0x10);
-                newPak.put(zeroes, 0, padding);
-                offset += padding;
-            }
-            */
             newPak.put(zeroes, 0, align16(offset+size)-newPak.position());
             offset = align16(offset+size);
-
         }
         newIdx.putInt((2*offset+7) & 0xFFFFFF);
-        return new Pair<ByteBuffer,ByteBuffer>(newIdx.limit(newIdx.position()).rewind(), newPak.limit(newPak.position()).rewind());
+        return new Pair<ByteBuffer,ByteBuffer>(newIdx.rewind(), newPak.rewind());
     }
 
 }
