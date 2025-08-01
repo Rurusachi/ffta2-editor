@@ -35,6 +35,7 @@ public class PatchesController {
     public static BooleanProperty patchedSignedEquipmentStats = new SimpleBooleanProperty();
     public static BooleanProperty patchedStartingMp = new SimpleBooleanProperty();
     public static BooleanProperty patchedSequencerPeytral = new SimpleBooleanProperty();
+    public static BooleanProperty patchedAllConsumablesBuyable = new SimpleBooleanProperty();
     
     public static IntegerProperty maxLevel = new SimpleIntegerProperty();
     
@@ -99,6 +100,7 @@ public class PatchesController {
     @FXML ToggleButton signedEquipmentStats;
     @FXML ToggleButton startingMp;
     @FXML ToggleButton sequencerPeytral;
+    @FXML ToggleButton allConsumablesBuyable;
 
     @FXML
     private void applyAnimationFix() {
@@ -667,18 +669,39 @@ public class PatchesController {
         }
     }
 
+    @FXML 
+    public void applyAllConsumablesBuyablePatch() {
+        if (App.archive != null) {
+            List<PatchElement> arm9Patches = new ArrayList<>();
+
+            arm9Patches.add(new PatchElement(0x00108484, 0xe59f1058, 0xea00000a)); // ldr r1, [DAT_021084e4] -> b LAB_021084b4
+            
+            boolean newValue = patchedAllConsumablesBuyable.getValue();
+            applyPatchElements(arm9Patches, App.arm9, newValue);
+            String alertText = newValue ? "Patch applied" : "Patch removed";
+
+            Alert loadAlert = new Alert(AlertType.INFORMATION);
+            loadAlert.setTitle("All consumables buyable patch");
+            loadAlert.setHeaderText(alertText);
+            loadAlert.show();
+        }
+    }
+
     public void loadPatches() {
         patchedExpandedTopSprites.set(App.arm9.getInt(0x000b5ab4) != 0xe5d00018);
         patchedSignedEquipmentStats.set(App.arm9.getInt(0x000cfcd8) != 0xe5d01017);
         patchedStartingMp.set(App.arm9.getInt(0x000b9180) != 0xe3a01000);
         patchedSequencerPeytral.set(App.arm9.getInt(0x000b9b40) != 0xe358003f);
+        patchedAllConsumablesBuyable.set(App.arm9.getInt(0x00108484) != 0xe59f1058);
         maxLevel.set(App.arm9.get(0x000b9094));
+
         
         
         expandedTopSprites.selectedProperty().bindBidirectional(patchedExpandedTopSprites);
         signedEquipmentStats.selectedProperty().bindBidirectional(patchedSignedEquipmentStats);
         startingMp.selectedProperty().bindBidirectional(patchedStartingMp);
         sequencerPeytral.selectedProperty().bindBidirectional(patchedSequencerPeytral);
+        allConsumablesBuyable.selectedProperty().bindBidirectional(patchedAllConsumablesBuyable);
     }
     
     public void applyPatches() {

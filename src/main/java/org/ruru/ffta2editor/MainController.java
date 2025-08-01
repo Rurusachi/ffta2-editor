@@ -75,6 +75,9 @@ public class MainController {
 
     @FXML AnchorPane equipmentTab;
     @FXML EquipmentController equipmentTabController;
+
+    @FXML AnchorPane consumableTab;
+    @FXML ConsumableController consumableTabController;
     
     @FXML MenuItem saveMenuItem;
 
@@ -501,6 +504,8 @@ public class MainController {
         jobRequirementTabController.loadJobRequirements();
         logger.info("Loading Equipment");
         equipmentTabController.loadEquipment();
+        logger.info("Loading Consumables");
+        consumableTabController.loadConsumables();
         logger.info("Loading Formations");
         formationTabController.loadFormations();
         logger.info("Loading Quests");
@@ -604,6 +609,8 @@ public class MainController {
         jobRequirementTabController.saveJobRequirements();
         logger.info("Saving Equipment");
         equipmentTabController.saveEquipment();
+        logger.info("Saving Consumables");
+        consumableTabController.saveConsumables();
         logger.info("Saving Formations");
         formationTabController.saveFormations();
         logger.info("Saving Quests");
