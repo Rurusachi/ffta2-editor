@@ -64,6 +64,7 @@ public class UnitFace {
 
     public boolean hasChanged = false;
     BufferedImage cachedImage;
+    BufferedImage cachedTexture;
 
     public UnitFace(ByteBuffer bytes, int id) {
         this.id = id;
@@ -181,6 +182,9 @@ public class UnitFace {
     }
 
     public BufferedImage getTexture() {
+        if (image.length == 0) return new BufferedImage(64, 96, BufferedImage.TYPE_BYTE_INDEXED, new IndexColorModel(8, 256, new byte[256], new byte[256], new byte[256], 0));
+        if (cachedTexture != null) return cachedTexture;
+
         ByteBuffer paletteBytes = ByteBuffer.wrap(palette).order(ByteOrder.LITTLE_ENDIAN);
         ByteBuffer imageBytes = ByteBuffer.wrap(image).order(ByteOrder.LITTLE_ENDIAN);
 
@@ -208,6 +212,7 @@ public class UnitFace {
             int pixel = Byte.toUnsignedInt(imageBytes.get());
             bufferedImage.setRGB(x, y, indexColorModel.getRGB(pixel));
         }
+        cachedTexture = bufferedImage;
         return bufferedImage;
     }
 
@@ -399,6 +404,7 @@ public class UnitFace {
 
         hasChanged = true;
         cachedImage = null;
+        cachedTexture = null;
 
         return 0;
     }
@@ -603,6 +609,7 @@ public class UnitFace {
         image = spriteBytes.array();
         hasChanged = true;
         cachedImage = null;
+        cachedTexture = null;
     }
     
     public void setPalette(BufferedImage image) {
@@ -622,6 +629,7 @@ public class UnitFace {
         palette = paletteBytes.array();
         hasChanged = true;
         cachedImage = null;
+        cachedTexture = null;
     }
 
     public byte[] toBytes() {
