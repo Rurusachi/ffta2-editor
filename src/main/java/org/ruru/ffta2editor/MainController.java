@@ -81,6 +81,9 @@ public class MainController {
 
     @FXML AnchorPane lootTab;
     @FXML LootController lootTabController;
+
+    @FXML AnchorPane itemTableTab;
+    @FXML ItemTableController itemTableTabController;
     
     @FXML MenuItem saveMenuItem;
 
@@ -511,6 +514,8 @@ public class MainController {
         consumableTabController.loadConsumables();
         logger.info("Loading Loot");
         lootTabController.loadLoot();
+        logger.info("Loading Item Tables");
+        itemTableTabController.loadItemTables();
         logger.info("Loading Formations");
         formationTabController.loadFormations();
         logger.info("Loading Quests");
@@ -618,6 +623,8 @@ public class MainController {
         consumableTabController.saveConsumables();
         logger.info("Saving Loot");
         lootTabController.saveLoot();
+        logger.info("Saving Item Tables");
+        itemTableTabController.saveItemTables();
         logger.info("Saving Formations");
         formationTabController.saveFormations();
         logger.info("Saving Quests");

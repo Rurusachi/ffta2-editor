@@ -9,6 +9,7 @@ import org.ruru.ffta2editor.model.ability.AbilityData;
 import org.ruru.ffta2editor.model.ability.SPAbilityData;
 import org.ruru.ffta2editor.model.character.CharacterData;
 import org.ruru.ffta2editor.model.item.EquipmentData;
+import org.ruru.ffta2editor.model.item.ItemTable;
 import org.ruru.ffta2editor.model.job.AbilitySet;
 import org.ruru.ffta2editor.model.job.JobData;
 
@@ -63,12 +64,12 @@ public class FormationUnit {
 
     public ObjectProperty<Byte> _0x32 = new SimpleObjectProperty<>();
     public ObjectProperty<Byte> _0x33 = new SimpleObjectProperty<>();
-    public ObjectProperty<Byte> lootLevel1 = new SimpleObjectProperty<>();
-    public ObjectProperty<Byte> lootLevel2 = new SimpleObjectProperty<>();
-    public ObjectProperty<Byte> lootLevel3 = new SimpleObjectProperty<>();
-    public ObjectProperty<Byte> lootLevel4 = new SimpleObjectProperty<>();
-    public ObjectProperty<Byte> lootConsumable = new SimpleObjectProperty<>();
-    public ObjectProperty<Byte> lootGil = new SimpleObjectProperty<>();
+    public ObjectProperty<ItemTable> lootLevel1 = new SimpleObjectProperty<>();
+    public ObjectProperty<ItemTable> lootLevel2 = new SimpleObjectProperty<>();
+    public ObjectProperty<ItemTable> lootLevel3 = new SimpleObjectProperty<>();
+    public ObjectProperty<ItemTable> lootLevel4 = new SimpleObjectProperty<>();
+    public ObjectProperty<ItemTable> lootConsumable = new SimpleObjectProperty<>();
+    public ObjectProperty<ItemTable> lootGil = new SimpleObjectProperty<>();
     public ObjectProperty<Byte> faction = new SimpleObjectProperty<>();
     public ObjectProperty<Byte> _0x3b = new SimpleObjectProperty<>();
 
@@ -134,12 +135,12 @@ public class FormationUnit {
     
         _0x32.set(bytes.get());
         _0x33.set(bytes.get());
-        lootLevel1.set(bytes.get());
-        lootLevel2.set(bytes.get());
-        lootLevel3.set(bytes.get());
-        lootLevel4.set(bytes.get());
-        lootConsumable.set(bytes.get());
-        lootGil.set(bytes.get());
+        lootLevel1.set(App.itemTableList.get(Byte.toUnsignedInt(bytes.get())));
+        lootLevel2.set(App.itemTableList.get(Byte.toUnsignedInt(bytes.get())));
+        lootLevel3.set(App.itemTableList.get(Byte.toUnsignedInt(bytes.get())));
+        lootLevel4.set(App.itemTableList.get(Byte.toUnsignedInt(bytes.get())));
+        lootConsumable.set(App.itemTableList.get(Byte.toUnsignedInt(bytes.get())));
+        lootGil.set(App.itemTableList.get(Byte.toUnsignedInt(bytes.get())));
         faction.set(bytes.get());
         _0x3b.set(bytes.get());
 
@@ -198,12 +199,12 @@ public class FormationUnit {
     
         _0x32.set((byte)0);
         _0x33.set((byte)0);
-        lootLevel1.set((byte)0);
-        lootLevel2.set((byte)0);
-        lootLevel3.set((byte)0);
-        lootLevel4.set((byte)0);
-        lootConsumable.set((byte)0);
-        lootGil.set((byte)0);
+        lootLevel1.set(App.itemTableList.get(0));
+        lootLevel2.set(App.itemTableList.get(0));
+        lootLevel3.set(App.itemTableList.get(0));
+        lootLevel4.set(App.itemTableList.get(0));
+        lootConsumable.set(App.itemTableList.get(0));
+        lootGil.set(App.itemTableList.get(0));
         faction.set((byte)0);
         _0x3b.set((byte)0);
 
@@ -263,12 +264,12 @@ public class FormationUnit {
     
         buffer.put(_0x32.getValue());
         buffer.put(_0x33.getValue());
-        buffer.put(lootLevel1.getValue());
-        buffer.put(lootLevel2.getValue());
-        buffer.put(lootLevel3.getValue());
-        buffer.put(lootLevel4.getValue());
-        buffer.put(lootConsumable.getValue());
-        buffer.put(lootGil.getValue());
+        buffer.put((byte)lootLevel1.getValue().id);
+        buffer.put((byte)lootLevel2.getValue().id);
+        buffer.put((byte)lootLevel3.getValue().id);
+        buffer.put((byte)lootLevel4.getValue().id);
+        buffer.put((byte)lootConsumable.getValue().id);
+        buffer.put((byte)lootGil.getValue().id);
         buffer.put(faction.getValue());
         buffer.put(_0x3b.getValue());
 

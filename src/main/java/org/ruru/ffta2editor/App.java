@@ -30,6 +30,7 @@ import org.ruru.ffta2editor.model.formation.FormationData;
 import org.ruru.ffta2editor.model.item.ConsumableData;
 import org.ruru.ffta2editor.model.item.EquipmentData;
 import org.ruru.ffta2editor.model.item.ItemData;
+import org.ruru.ffta2editor.model.item.ItemTable;
 import org.ruru.ffta2editor.model.item.LootData;
 import org.ruru.ffta2editor.model.job.AbilitySet;
 import org.ruru.ffta2editor.model.job.JobData;
@@ -95,6 +96,7 @@ public class App extends Application {
     public static ObservableList<UnitSst> unitSstList;
     public static ObservableList<AuctionPrizeTable> auctionPrizeTableList;
     public static ObservableList<AuctionPrizeTable> auctionGrandPrizeTableList;
+    public static ObservableList<ItemTable> itemTableList;
 
     public static ObservableList<StringWithId> characterNames;
     public static ObservableList<StringWithId> jobNames;
