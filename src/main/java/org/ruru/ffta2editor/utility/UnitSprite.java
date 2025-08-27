@@ -44,7 +44,6 @@ public class UnitSprite {
                 while (decodedSprite.decodedData.remaining() > 0) {
                     byte color = decodedSprite.decodedData.get();
                     if (color != 0 && Byte.toUnsignedInt(color) != 126 && Byte.toUnsignedInt(color) != 191 && Byte.toUnsignedInt(color) < 224) {
-                        //System.out.println(String.format("%d: 128 colors", unitIndex));
                         paletteSize = 128;
                         break;
                     }
@@ -104,18 +103,18 @@ public class UnitSprite {
             SpritePiece bottomMost = Arrays.stream(spriteMap.pieces()).max(Comparator.comparingInt(x -> x.offsetY()  + x.height())).get();
             int fullWidth = (rightMost.offsetX() + rightMost.width()) - (leftMost.offsetX());
             int fullHeight = (bottomMost.offsetY() + bottomMost.height()) - (topMost.offsetY());
-            //System.out.println(String.format("%d, %d (%d, %d)", fullWidth, fullHeight, leftMost.offsetX(), topMost.offsetY()));
 
             BufferedImage fullImage = new BufferedImage(fullWidth, fullHeight, BufferedImage.TYPE_BYTE_INDEXED, (IndexColorModel)imagePieces[0].getColorModel());
-            Graphics2D graphics = fullImage.createGraphics();
             for (int j = 0; j < imagePieces.length; j++) {
                 SpritePiece piece = spriteMap.pieces()[j];
                 int xPos = piece.offsetX() - leftMost.offsetX();
                 int yPos = piece.offsetY() - topMost.offsetY();
-                //System.out.println(String.format("x: %d, y: %d (%d, %d)", xPos, yPos, spriteMap.pieces()[j].width(), spriteMap.pieces()[j].height()));
-                graphics.drawImage(imagePieces[j], xPos, yPos, null);
+                
+                //byte[] pixels = new byte[imagePieces[j].getWidth()*imagePieces[j].getHeight()];
+                //imagePieces[j].getRaster().getDataElements(0, 0, imagePieces[j].getWidth(), imagePieces[j].getHeight(), pixels);
+                byte[] pixels = (byte[])imagePieces[j].getRaster().getDataElements(0, 0, imagePieces[j].getWidth(), imagePieces[j].getHeight(), null);
+                fullImage.getRaster().setDataElements(xPos, yPos, imagePieces[j].getWidth(), imagePieces[j].getHeight(), pixels);
             }
-            graphics.dispose();
             cachedImages.get(paletteIndex).put(spriteIndex, fullImage);
             return fullImage;
         } catch (Exception e) {
@@ -123,7 +122,7 @@ public class UnitSprite {
             alert.setTitle("Error");
             alert.setHeaderText(null);
             alert.setContentText(e.getMessage());
-            alert.showAndWait();
+            alert.show();
             System.err.println(e);
             return null;
         }
@@ -144,15 +143,12 @@ public class UnitSprite {
         for (BufferedImage image : imagePieces) {
             for (int y = 0; y < image.getHeight(); y++) {
                 for (int x = 0; x < image.getWidth(); x++) {
-                    //IndexColorModel colorModel = (IndexColorModel)image.getColorModel();
-                    //var rgb = image.getRGB(x, y);
                     byte[] b = (byte[])image.getRaster().getDataElements(x, y, null);
                     spriteBytes.put(b[0]);
                 }
             }
         }
         ByteBuffer compressedSprite = LZSS.encode(spriteBytes.rewind(), true);
-        //newSprites.add(new Pair<Integer,ByteBuffer>(spriteIndex, compressedSprite));
         compressedSpriteList.set(spriteIndex, compressedSprite);
         hasChanged = true;
         for (HashMap<Integer, BufferedImage> cache : cachedImages) {
@@ -173,7 +169,6 @@ public class UnitSprite {
         int offset = spritePalettes.numColors == 32 ? 256-32 : 0;
         for (int i = 0; i < spritePalettes.numColors; i++) {
             int color = (((Byte.toUnsignedInt(blues[i+offset])*31)/255) << 10) | (((Byte.toUnsignedInt(greens[i+offset])*31)/255) << 5) | ((Byte.toUnsignedInt(reds[i+offset])*31)/255);
-            //System.out.println(String.format("red: %02X, green: %02X, blue: %02X, color: red: %04X", Byte.toUnsignedInt(reds[i+offset])*31/255, Byte.toUnsignedInt(greens[i+offset])*31/255, Byte.toUnsignedInt(blues[i+offset])*31/255, color));
             paletteBytes.putShort((short)color);
         }
 
@@ -196,15 +191,6 @@ public class UnitSprite {
      * Returns compressed sprite data and compressed sprites (unitsst 00FF and unitcg)
     */
     public Pair<ByteBuffer, ByteBuffer> saveSprites() {
-        //if (newSprites.size() == 0) return new Pair<byte[], byte[]>(spriteData.toBytes(), compressedSpriteBytes.array());
-        //
-        //
-        //
-        //List<Integer> replacedIndexes = newSprites.stream().mapToInt(x -> x.getKey()).boxed().toList();
-        //int combinedCompressedSize = IntStream.range(0, spriteData.spriteMaps.size())
-        //                            .filter(i -> !replacedIndexes.contains(i))
-        //                            .map(i -> compressedSpriteList.get(i).rewind().remaining())
-        //                            .sum(); //+ newSprites.stream().mapToInt(x -> x.getValue().rewind().remaining()).sum();
         //
 
         int combinedCompressedSize = compressedSpriteList.stream().mapToInt(x -> x.rewind().remaining()).sum();
@@ -245,23 +231,12 @@ public class UnitSprite {
             greens[i] = (byte)(green*255 / 31);
             blues[i] = (byte)(blue*255 / 31);
         }
-        //i = numColors == 32 ? 0 : 255;
         IndexColorModel indexColorModel = new IndexColorModel(8, 256, reds, greens, blues, 0);
 
         BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_INDEXED, indexColorModel);
-
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                int pixel = Byte.toUnsignedInt(imageBytes.get());
-                //if (pixel != 0 && numColors == 32) {
-                //    System.out.println(pixel);
-                //    pixel -= 255;
-                //    //System.out.println(indexColorModel.getRGB(pixel));
-                //};
-                //int rgb = ((reds[pixel]*8) << 16) | ((greens[pixel]*8) << 8) | (blues[pixel]*8);
-                bufferedImage.setRGB(x, y, indexColorModel.getRGB(pixel));
-            }
-        }
+        byte[] pixels = new byte[height*width];
+        imageBytes.get(pixels);
+        bufferedImage.getRaster().setDataElements(0, 0, width, height, pixels);
         return bufferedImage;
     }
 }

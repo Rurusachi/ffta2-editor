@@ -7,8 +7,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.ruru.ffta2editor.EquipmentController.ItemCell;
-import org.ruru.ffta2editor.model.item.ConsumableData;
-import org.ruru.ffta2editor.model.item.EquipmentData;
 import org.ruru.ffta2editor.model.item.ItemData;
 import org.ruru.ffta2editor.model.item.ItemTable;
 import org.ruru.ffta2editor.utility.AutoCompleteComboBox;
@@ -23,7 +21,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.util.StringConverter;
 
@@ -210,20 +207,20 @@ public class ItemTableController {
 
     public void saveItemTables() {
         if (App.archive != null) {
-        List<ItemTable> itemTable = itemTableList.getItems();
-        ByteBuffer newItemTableDatabytes = ByteBuffer.allocate(itemTable.size()*0x8).order(ByteOrder.LITTLE_ENDIAN);
-
-        logger.info("Saving Item Tables");
-        for (int i = 0; i < itemTable.size(); i++) {
-            try {
-                newItemTableDatabytes.put(itemTable.get(i).toBytes());
-            } catch (Exception e) {
-                logger.log(Level.SEVERE, String.format("Failed to save Item Table %d", i));
-                throw e;
+            List<ItemTable> itemTable = itemTableList.getItems();
+            ByteBuffer newItemTableDatabytes = ByteBuffer.allocate(itemTable.size()*0x8).order(ByteOrder.LITTLE_ENDIAN);
+            
+            logger.info("Saving Item Tables");
+            for (int i = 0; i < itemTable.size(); i++) {
+                try {
+                    newItemTableDatabytes.put(itemTable.get(i).toBytes());
+                } catch (Exception e) {
+                    logger.log(Level.SEVERE, String.format("Failed to save Item Table %d", i));
+                    throw e;
+                }
             }
-        }
-        newItemTableDatabytes.rewind();
-        App.sysdata.setFile(24, newItemTableDatabytes);
+            newItemTableDatabytes.rewind();
+            App.sysdata.setFile(24, newItemTableDatabytes);
         }
     }
 

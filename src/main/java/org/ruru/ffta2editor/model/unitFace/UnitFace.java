@@ -155,28 +155,14 @@ public class UnitFace {
 
         BufferedImage fullImage = new BufferedImage(fullWidth, fullHeight, BufferedImage.TYPE_BYTE_INDEXED, (IndexColorModel)sourceImage.getColorModel());
         
-        //Graphics2D graphics = fullImage.createGraphics();
-        //graphics.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_DISABLE);
         for (int j = 0; j < pieces.length; j++) {
             PieceMapping piece = pieces[j];
-            //System.out.println(String.format("x: %d, y: %d (%d, %d)", xPos, yPos, spriteMap.pieces()[j].width(), spriteMap.pieces()[j].height()));
-            //BufferedImage subImage = sourceImage.getSubimage(piece.sourceX, piece.sourceY, piece.sourceWidth, piece.sourceHeight);
-            //byte[] b = (byte[])sourceImage.getRaster().getDataElements(piece.sourceX, piece.sourceY, piece.sourceWidth, piece.sourceHeight, null);
-            //int[] pixels = IntStream.range(0, b.length).map(i -> Byte.toUnsignedInt(b[i])).toArray();
-            //fullImage.setRGB(targetX, targetY, (short)piece.sourceWidth, (short)piece.sourceHeight, pixels, 0, sourceImage.getWidth());
-            for (int y = 0; y < piece.sourceHeight; y++) {
-                int targetY = topMost.offsetY - piece.offsetY + y;
-                for (int x = 0; x < piece.sourceWidth; x++) {
-                    int targetX = piece.offsetX - leftMost.offsetX + x;
-                    int xPos = x + piece.sourceX;
-                    int yPos = y + piece.sourceY;
-                    byte[] pixel = (byte[])sourceImage.getRaster().getDataElements(xPos, yPos, null);
-                    fullImage.setRGB(targetX, targetY, ((IndexColorModel)sourceImage.getColorModel()).getRGB(pixel[0]));
-                }
-            }
-            //graphics.drawImage(sourceImage.getSubimage(piece.sourceX, piece.sourceY, piece.sourceWidth, piece.sourceHeight), targetX, targetY, null);
+            
+            byte[] pixels = (byte[])sourceImage.getRaster().getDataElements(piece.sourceX, piece.sourceY, piece.sourceWidth, piece.sourceHeight, null);
+            int targetY = topMost.offsetY - piece.offsetY;
+            int targetX = piece.offsetX - leftMost.offsetX;
+            fullImage.getRaster().setDataElements(targetX, targetY, piece.sourceWidth, piece.sourceHeight, pixels);
         }
-        //graphics.dispose();
         cachedImage = fullImage;
         return fullImage;
     }
@@ -448,9 +434,6 @@ public class UnitFace {
             int x1 = i % sourceImage.getWidth();
             int y1 = i / sourceImage.getWidth();
             while(i < sourceImage.getWidth()*sourceImage.getHeight()) {
-            //for (int i = 0; i < sourceImage.getWidth()*sourceImage.getHeight(); i+=8) {
-                //int x = i % sourceImage.getWidth();
-                //int y = i / sourceImage.getWidth();
                 for (int y2 = 0; y2 < 8; y2++) {
                     for (int x2 = 0; x2 < 8; x2++) {
                         if (((byte[])sourceImage.getRaster().getDataElements(x1+x2, y1+y2, null))[0] != 0) {
@@ -465,14 +448,11 @@ public class UnitFace {
             }
         }
         HashSet<Integer> elementsInSets = new HashSet<>();
-        //System.out.println(sourceImage.getWidth()*sourceImage.getHeight());
         {
             int i = 0;
             int x1 = i % sourceImage.getWidth();
             int y1 = i / sourceImage.getWidth();
-            //for (int i = 0; i < sourceImage.getWidth()*sourceImage.getHeight(); i+=8) {
             while(i < sourceImage.getWidth()*sourceImage.getHeight()) {
-                //System.out.println(i);
                 int currHeight = 8;
                 while (currHeight <= 32 && y1 + currHeight <= sourceImage.getHeight()) {
                     int currWidth = 8;
@@ -489,20 +469,6 @@ public class UnitFace {
                                 }
                             }
                         }
-                        //for (int j = 0; j < currWidth*currHeight; j+=8) {
-                        //    //int x2 = i + (j % currWidth);
-                        //    //int y2 = (j / currWidth);
-                        //
-                        //
-                        //    int index = i + (j % currWidth) + (j / currWidth) * sourceImage.getWidth();
-                        //    if (elements.contains(index)) {
-                        //        newSet.pixels.add(index);
-                        //        elementsInSets.add(index);
-                        //    } else {
-                        //        newSet.numEmpty++;
-                        //    }
-                        //    //newSet.weight = -newSet.pixels.size() * newSet.numEmpty;
-                        //}
                         newSet.weight = newSet.pixels.size();
                         if (newSet.numEmpty == 0) {
                             pixelSets.add(newSet);
@@ -519,8 +485,6 @@ public class UnitFace {
         }
         System.out.println(String.format("%d PixelSets", pixelSets.size()));
 
-        //HashSet<Integer> elementsInSets = new HashSet<>();
-        //pixelSets.forEach(x -> elementsInSets.addAll(x.pixels));
         if (!elementsInSets.containsAll(elements)) {
             System.err.println("Not covered:");
             elements.removeAll(elementsInSets);
@@ -528,20 +492,7 @@ public class UnitFace {
 
             return null;
         }
-        //pixelSets = pixelSets.stream()
-        //            .sorted(Comparator.comparingInt(x -> -x.width*x.height))
-        //            .sorted(Comparator.comparingInt(x -> -x.numEmpty))
-        //            .sorted(Comparator.comparingInt(x -> x.pixels.size())).toList();
-        //pixelSets.sort(Comparator.comparingInt(x -> -x.width*x.height));
-        //System.out.println("-x.width*x.height");
-        //pixelSets.sort(Comparator.comparingInt(x -> -x.numEmpty));
-        //System.out.println("-x.numEmpty");
-        //pixelSets.sort(Comparator.comparingInt(x -> x.pixels.size()));
-        //System.out.println("x.pixels.size()");
         pixelSets.sort(null);
-        ArrayList<PixelSet> optimalSets = new ArrayList<>();
-        //pixelSets.stream().filter(x -> x.numEmpty == 0).forEach(x -> optimalSets.add(x));
-        //optimalSets.sort(null);
         List<PixelSet> sets = pixelSets.stream().sorted().collect(Collectors.toList());
 
 
@@ -549,38 +500,12 @@ public class UnitFace {
         
         while (coveredElements.size() < elements.size()) {
             PixelSet bestSet;
-            //if (optimalSets.isEmpty()){
-            //    bestSet = pixelSets.getLast();
-            //    pixelSets.removeLast();
-            //} else {
-            //    System.out.println("Optimal");
-            //    bestSet = optimalSets.getLast();
-            //    optimalSets.removeLast();
-            //}
             bestSet = sets.getFirst();
-            //System.out.println(bestSet.pixels.size());
 
             chosenSets.add(bestSet);
             coveredElements.addAll(bestSet.pixels);
 
             sets = sets.stream().filter(x -> x.pixels.stream().allMatch(p -> !coveredElements.contains(p))).sorted().collect(Collectors.toList());
-
-            //pixelSets.parallelStream().forEach(x -> x.pixels.removeAll(bestSet.pixels));
-            //pixelSets.parallelStream().forEach(x -> {
-            //    x.pixels.removeAll(bestSet.pixels); 
-            //    x.weight = x.pixels.size();
-            //});
-            //pixelSets.forEach(x -> {
-            //    //x.pixels.removeAll(bestSet.pixels); 
-            //    x.weight = x.pixels.size();
-            //});
-            //optimalSets.forEach(x -> {
-            //    //x.pixels.removeAll(bestSet.pixels); 
-            //    x.weight = x.pixels.stream().filter(p -> !coveredElements.contains(p)).count();
-            //});
-            //pixelSets.sort(Comparator.comparingInt(x -> x.pixels.size()));
-            //pixelSets.sort(null);
-            //optimalSets.sort(null);
         }
         return chosenSets;
     }

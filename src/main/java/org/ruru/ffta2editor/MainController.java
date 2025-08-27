@@ -1,25 +1,31 @@
 package org.ruru.ffta2editor;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.ProcessBuilder.Redirect;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.BitSet;
 import java.util.Comparator;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import javax.imageio.ImageIO;
+
 import org.ruru.ffta2editor.model.stringTable.MessageId;
 import org.ruru.ffta2editor.model.stringTable.StringSingle;
 import org.ruru.ffta2editor.model.stringTable.StringTable;
+import org.ruru.ffta2editor.model.topSprite.TopSprite;
+import org.ruru.ffta2editor.model.unitFace.UnitFace;
 import org.ruru.ffta2editor.utility.Archive;
 import org.ruru.ffta2editor.utility.IdxAndPak;
 import org.ruru.ffta2editor.utility.LZSS;
+import org.ruru.ffta2editor.utility.UnitSprite;
 
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
@@ -32,6 +38,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.MenuItem;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.util.Pair;
 
@@ -84,6 +91,9 @@ public class MainController {
 
     @FXML AnchorPane itemTableTab;
     @FXML ItemTableController itemTableTabController;
+
+    @FXML AnchorPane lawBonusTab;
+    @FXML LawBonusController lawBonusTabController;
     
     @FXML MenuItem saveMenuItem;
 
@@ -93,9 +103,61 @@ public class MainController {
     
     private static Logger logger = Logger.getLogger("org.ruru.ffta2editor");
 
+    private class ExportImageFlags {
+        BitSet flags;
+
+        public ExportImageFlags setUnitSprites(boolean value) {
+            flags.set(0, value);
+            return this;
+        }
+        public ExportImageFlags setUnitSprites() {
+            return setUnitSprites(true);
+        }
+        public boolean getUnitSprites() {
+            return flags.get(0);
+        }
+
+        public ExportImageFlags setTopSprites(boolean value) {
+            flags.set(1, value);
+            return this;
+        }
+        public ExportImageFlags setTopSprites() {
+            return setTopSprites(true);
+        }
+        public boolean getTopSprites() {
+            return flags.get(1);
+        }
+
+        public ExportImageFlags setFaces(boolean value) {
+            flags.set(2, value);
+            return this;
+        }
+        public ExportImageFlags setFaces() {
+            return setFaces(true);
+        }
+        public boolean getFaces() {
+            return flags.get(2);
+        }
+
+        ExportImageFlags() {
+            flags = new BitSet(3);
+        }
+
+
+    } 
+
+    @FXML MenuItem exportAllImagesMenuItem;
+    @FXML MenuItem exportUnitSpritesMenuItem;
+    @FXML MenuItem exportTopSpritesMenuItem;
+    @FXML MenuItem exportFacesMenuItem;
+
     @FXML
     public void initialize() {
         saveMenuItem.disableProperty().bind(lastSavePath.isNull());
+        exportAllImagesMenuItem.setOnAction(e -> exportSpritesSelector(new ExportImageFlags().setUnitSprites().setTopSprites().setFaces()));
+        exportUnitSpritesMenuItem.setOnAction(e -> exportSpritesSelector(new ExportImageFlags().setUnitSprites()));
+        exportTopSpritesMenuItem.setOnAction(e -> exportSpritesSelector(new ExportImageFlags().setTopSprites()));
+        exportFacesMenuItem.setOnAction(e -> exportSpritesSelector(new ExportImageFlags().setFaces()));
     }
 
     public static class IdxPaks {
@@ -516,6 +578,8 @@ public class MainController {
         lootTabController.loadLoot();
         logger.info("Loading Item Tables");
         itemTableTabController.loadItemTables();
+        logger.info("Loading Law Bonus");
+        lawBonusTabController.loadLawBonus();
         logger.info("Loading Formations");
         formationTabController.loadFormations();
         logger.info("Loading Quests");
@@ -625,6 +689,8 @@ public class MainController {
         lootTabController.saveLoot();
         logger.info("Saving Item Tables");
         itemTableTabController.saveItemTables();
+        logger.info("Saving Law Bonus");
+        lawBonusTabController.saveLawBonus();
         logger.info("Saving Formations");
         formationTabController.saveFormations();
         logger.info("Saving Quests");
@@ -914,5 +980,89 @@ public class MainController {
         }
         System.out.println(String.format("Reset %d strings", numAffected));
         
+    }
+
+    private void exportSpritesSelector(ExportImageFlags exportFlags) {
+        if (romFile == null) return;
+        setDim(true);
+        DirectoryChooser chooser = new DirectoryChooser();
+        chooser.setTitle("Export to");
+        chooser.setInitialDirectory(App.getLastFile());
+        File savePath = chooser.showDialog(abilityTab.getScene().getWindow());
+        if (savePath == null) {
+            setDim(false);
+            return;
+        }
+        App.saveLastFile(savePath);
+
+
+        exportSprites(savePath.toPath(), exportFlags);
+    }
+
+    private void exportSprites(Path savePath, ExportImageFlags exportFlags) {
+
+        Alert saveAlert = new Alert(AlertType.NONE);
+        saveAlert.setTitle(String.format("Exporting to %s", savePath));
+        saveAlert.setHeaderText("Exporting. Please wait.");
+        saveAlert.show();
+        CompletableFuture.runAsync(() -> {
+            try {
+                if (exportFlags.getUnitSprites()) exportUnitSprites(savePath.resolve("Unit Sprites"));
+                if (exportFlags.getTopSprites()) exportTopSprites(savePath.resolve("Top Sprites"));
+                if (exportFlags.getFaces()) exportFaceSprites(savePath.resolve("Faces"));
+            } catch (Exception e) {
+                Platform.runLater(() -> {
+                    logger.log(Level.SEVERE, String.format("Failed to export"), e);
+                    setDim(false);
+                    saveAlert.setAlertType(AlertType.ERROR);
+                    saveAlert.setHeaderText("Failed to export");
+                    saveAlert.setContentText(e.getMessage());
+                    saveAlert.getDialogPane().getScene().getWindow().sizeToScene();
+                });
+                return;
+            }
+            Platform.runLater(() -> {
+                setDim(false);
+                saveAlert.setAlertType(AlertType.INFORMATION);
+                saveAlert.setHeaderText("Exported");
+            });
+        });
+    }
+
+    private void exportUnitSprites(Path savePath) throws IOException {
+        for (UnitSprite unitSprite : spritesTabController.unitList.getItems()) {
+            Path unitPath = savePath.resolve(Integer.toString(unitSprite.unitIndex));
+            for (int p = 0; p < unitSprite.spritePalettes.palettes.size(); p++) {
+                Path palettePath = unitPath.resolve(Integer.toString(p));
+                Files.createDirectories(palettePath);
+                for (int s = 0; s < unitSprite.spriteData.spriteMaps.size(); s++) {
+                    Path imagePath = palettePath.resolve(String.format("%d.png", s));
+                    BufferedImage image = unitSprite.getSprite(s, p);
+                    ImageIO.write(image, "png", imagePath.toFile());
+                }
+            }
+        }
+    }
+
+    private void exportTopSprites(Path savePath) throws IOException {
+        for (TopSprite topSprite : spritesTabController.topSpriteList.getItems()) {
+            if (topSprite.id == 0) continue;
+            Path unitPath = savePath.resolve(Integer.toString(topSprite.id));
+            Files.createDirectories(unitPath);
+            for (int s = 0; s < topSprite.sprites.size(); s++) {
+                Path imagePath = unitPath.resolve(String.format("%d.png", s));
+                BufferedImage image = topSprite.getSprite(s);
+                ImageIO.write(image, "png", imagePath.toFile());
+            }
+        }
+    }
+    public void exportFaceSprites(Path savePath) throws IOException {
+        Files.createDirectories(savePath);
+        for (UnitFace face : spritesTabController.faceList.getItems()) {
+            if (face.id == 0) continue;
+            Path imagePath = savePath.resolve(String.format("%d.png", face.id));
+            BufferedImage image = face.getImage();
+                ImageIO.write(image, "png", imagePath.toFile());
+        }
     }
 }

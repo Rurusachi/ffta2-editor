@@ -31,6 +31,7 @@ import org.ruru.ffta2editor.model.item.ConsumableData;
 import org.ruru.ffta2editor.model.item.EquipmentData;
 import org.ruru.ffta2editor.model.item.ItemData;
 import org.ruru.ffta2editor.model.item.ItemTable;
+import org.ruru.ffta2editor.model.item.LawBonus;
 import org.ruru.ffta2editor.model.item.LootData;
 import org.ruru.ffta2editor.model.job.AbilitySet;
 import org.ruru.ffta2editor.model.job.JobData;
@@ -97,6 +98,7 @@ public class App extends Application {
     public static ObservableList<AuctionPrizeTable> auctionPrizeTableList;
     public static ObservableList<AuctionPrizeTable> auctionGrandPrizeTableList;
     public static ObservableList<ItemTable> itemTableList;
+    public static ObservableList<LawBonus> lawBonusList;
 
     public static ObservableList<StringWithId> characterNames;
     public static ObservableList<StringWithId> jobNames;
@@ -146,8 +148,8 @@ public class App extends Application {
         }
     }
 
-    public static void saveLastFile(File romFile) {
-        config.setProperty("lastFilePath", romFile.getParent());
+    public static void saveLastFile(File file) {
+        config.setProperty("lastFilePath", !file.isDirectory() ? file.getParent() : file.getPath());
         App.saveConfig();
     }
 

@@ -57,6 +57,14 @@
             <MenuItem mnemonicParsing="false" onAction="#resetTextFileSelector" text="Fix pre-v1.3.2 text encoding bug" />
           </items>
         </Menu>
+        <Menu mnemonicParsing="false" text="Export">
+          <items>
+            <MenuItem fx:id="exportAllImagesMenuItem" mnemonicParsing="false" text="Export All Images" />
+            <MenuItem fx:id="exportUnitSpritesMenuItem" mnemonicParsing="false" text="Export Unit Sprites" />
+            <MenuItem fx:id="exportTopSpritesMenuItem" mnemonicParsing="false" text="Export Top Sprites" />
+            <MenuItem fx:id="exportFacesMenuItem" mnemonicParsing="false" text="Export Faces" />
+          </items>
+        </Menu>
       </menus>
     </MenuBar>
       <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
@@ -99,6 +107,11 @@
           <Tab closable="false" text="Item Tables">
                 <content>
                     <fx:include fx:id="itemTableTab" source="itemTable.fxml" />
+                </content>
+            </Tab>
+          <Tab closable="false" text="Law Bonuses">
+                <content>
+                    <fx:include fx:id="lawBonusTab" source="lawBonus.fxml" />
                 </content>
             </Tab>
           <Tab closable="false" text="Characters">

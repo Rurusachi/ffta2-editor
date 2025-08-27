@@ -48,9 +48,6 @@ public class TopSprite {
 
         palette = new byte[0];
 
-        int numSprites = 0;
-        //int numSprites = 5;
-
         ObservableList<byte[]> spriteList = FXCollections.observableArrayList();
         sprites.set(spriteList);
 
@@ -78,13 +75,13 @@ public class TopSprite {
         }
 
         BufferedImage fullImage = new BufferedImage(32, 40, BufferedImage.TYPE_BYTE_INDEXED, (IndexColorModel)imagePieces[0].getColorModel());
-        Graphics2D graphics = fullImage.createGraphics();
         for (int j = 0; j < imagePieces.length; j++) {
             int x = j % 4;
             int y = j / 4;
-            graphics.drawImage(imagePieces[j], x*8, y*8, null);
+            byte[] pixels = new byte[imagePieces[j].getWidth()*imagePieces[j].getHeight()];
+            imagePieces[j].getRaster().getDataElements(0, 0, imagePieces[j].getWidth(), imagePieces[j].getHeight(), pixels);
+            fullImage.getRaster().setDataElements(x*8, y*8, imagePieces[j].getWidth(), imagePieces[j].getHeight(), pixels);
         }
-        graphics.dispose();
         return fullImage;
     }
 
