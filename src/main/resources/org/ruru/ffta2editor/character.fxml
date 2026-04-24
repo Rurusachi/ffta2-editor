@@ -107,8 +107,8 @@
                                  <children>
                                     <VBox alignment="TOP_CENTER">
                                        <children>
-                                          <Label text="0x13" />
-                                          <TextField fx:id="_0x13" />
+                                          <Label text="Voice" />
+                                          <TextField fx:id="voice" />
                                        </children>
                                     </VBox>
                                     <VBox alignment="TOP_CENTER">

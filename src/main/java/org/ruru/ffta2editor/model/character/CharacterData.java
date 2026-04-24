@@ -34,7 +34,7 @@ public class CharacterData {
     public ObjectProperty<Byte> enemyPalette = new SimpleObjectProperty<>();
     public ObjectProperty<Short> name = new SimpleObjectProperty<>();
     public ObjectProperty<JobData> defaultJob = new SimpleObjectProperty<>();
-    public ObjectProperty<Byte> _0x13 = new SimpleObjectProperty<>();
+    public ObjectProperty<Byte> voice = new SimpleObjectProperty<>();
     public ObjectProperty<Short> jobName = new SimpleObjectProperty<>();
     public ObjectProperty<Short> jobDescription = new SimpleObjectProperty<>();
     public ObjectProperty<TopSprite> unitTopSprite = new SimpleObjectProperty<>();
@@ -73,7 +73,7 @@ public class CharacterData {
 
         name.set(bytes.getShort());
         defaultJob.set(App.jobDataList.get(Byte.toUnsignedInt(bytes.get())));
-        _0x13.set(bytes.get());
+        voice.set(bytes.get());
         jobName.set(bytes.getShort());
         jobDescription.set(bytes.getShort());
         
@@ -132,7 +132,7 @@ public class CharacterData {
 
         name.set((short)0);
         defaultJob.set(App.jobDataList.get(0));
-        _0x13.set((byte)0);
+        voice.set((byte)0);
         jobName.set((short)0);
         jobDescription.set((short)0);
         unitTopSprite.set(App.topSprites.get(0));
@@ -174,7 +174,7 @@ public class CharacterData {
         buffer.put(enemyPalette.getValue());
         buffer.putShort(name.getValue());
         buffer.put((byte)defaultJob.getValue().id);
-        buffer.put(_0x13.getValue());
+        buffer.put(voice.getValue());
         buffer.putShort(jobName.getValue());
         buffer.putShort(jobDescription.getValue());
         if (PatchesController.patchedExpandedTopSprites.getValue()) {
