@@ -14,6 +14,7 @@ import java.util.stream.Stream;
 
 import javax.imageio.ImageIO;
 
+import org.ruru.ffta2editor.model.map.MapData;
 import org.ruru.ffta2editor.model.topSprite.TopSprite;
 import org.ruru.ffta2editor.model.unitFace.UnitFace;
 import org.ruru.ffta2editor.model.unitSst.SpriteData;
@@ -150,6 +151,9 @@ public class SpritesController {
     @FXML ListView<TopSprite> topSpriteList;
     
     @FXML ListView<UnitFace> faceList;
+
+
+    ObservableList<MapData> mapList;
 
     @FXML Tab animationsTab;
     @FXML ImageView animatedSprite;
@@ -744,6 +748,43 @@ public class SpritesController {
         //System.out.println(String.format("Max width: %d", maxWidth));
         //System.out.println(String.format("Max width: %d", maxHeight));
         
+        logger.info("Loading Maps");
+        ObservableList<MapData> maps = FXCollections.observableArrayList();
+        // last file is empty??
+        for (int i = 0; i < App.mapData.numFiles(); i++) {
+            ByteBuffer mapDataBytes = App.mapData.getFile(i);
+            ByteBuffer texDataBytes = App.texData.getFile(i);
+            ByteBuffer plttDataBytes = App.plttData.getFile(i);
+            if (mapDataBytes == null) {
+                System.err.println(String.format("map %d bin is null", i));
+                continue;
+            }
+            if (texDataBytes == null) {
+                System.err.println(String.format("map %d tex is null", i));
+                continue;
+            }
+            if (plttDataBytes == null) {
+                System.err.println(String.format("map %d pltt is null", i));
+                continue;
+            }
+            try {
+                MapData map = new MapData(mapDataBytes, texDataBytes, plttDataBytes, i);
+                maps.add(map);
+            } catch (Exception e) {
+                logger.log(Level.SEVERE, String.format("Failed to load map %d", i));
+                throw e;
+            }
+
+            mapDataBytes.rewind();
+            texDataBytes.rewind();
+            plttDataBytes.rewind();
+        }
+        mapList = maps;
+        //mapList.setCellFactory(x -> new mapCell());
+        //mapList.setItems(maps);
+
+
+
 
 
         //var keySets = unitSstDataList.stream().limit(61).map(sst -> new HashSet<>(sst.asList().stream().map(node -> node.animationId).toList())).toList();

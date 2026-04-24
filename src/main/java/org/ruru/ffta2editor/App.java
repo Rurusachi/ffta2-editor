@@ -71,6 +71,9 @@ public class App extends Application {
     public static IdxAndPak entrydata;
     public static IdxAndPak atl;
     public static IdxAndPak face;
+    public static IdxAndPak mapData;
+    public static IdxAndPak texData;
+    public static IdxAndPak plttData;
     public static ByteBuffer arm9;
     public static ByteBuffer overlay8;
     public static ByteBuffer overlay11;

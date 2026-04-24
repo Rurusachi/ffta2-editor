@@ -17,6 +17,8 @@ import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
 
+import org.ruru.ffta2editor.MainController.IdxPaks.IdxPakPaths;
+import org.ruru.ffta2editor.model.map.MapData;
 import org.ruru.ffta2editor.model.stringTable.MessageId;
 import org.ruru.ffta2editor.model.stringTable.StringSingle;
 import org.ruru.ffta2editor.model.stringTable.StringTable;
@@ -139,8 +141,19 @@ public class MainController {
             return flags.get(2);
         }
 
+        public ExportImageFlags setMapTextures(boolean value) {
+            flags.set(3, value);
+            return this;
+        }
+        public ExportImageFlags setMapTextures() {
+            return setMapTextures(true);
+        }
+        public boolean getMapTextures() {
+            return flags.get(3);
+        }
+
         ExportImageFlags() {
-            flags = new BitSet(3);
+            flags = new BitSet(4);
         }
 
 
@@ -150,6 +163,7 @@ public class MainController {
     @FXML MenuItem exportUnitSpritesMenuItem;
     @FXML MenuItem exportTopSpritesMenuItem;
     @FXML MenuItem exportFacesMenuItem;
+    @FXML MenuItem exportMapTexturesMenuItem;
 
     @FXML
     public void initialize() {
@@ -158,6 +172,7 @@ public class MainController {
         exportUnitSpritesMenuItem.setOnAction(e -> exportSpritesSelector(new ExportImageFlags().setUnitSprites()));
         exportTopSpritesMenuItem.setOnAction(e -> exportSpritesSelector(new ExportImageFlags().setTopSprites()));
         exportFacesMenuItem.setOnAction(e -> exportSpritesSelector(new ExportImageFlags().setFaces()));
+        exportMapTexturesMenuItem.setOnAction(e -> exportSpritesSelector(new ExportImageFlags().setMapTextures()));
     }
 
     public static class IdxPaks {
@@ -173,6 +188,9 @@ public class MainController {
         public static IdxPakPaths entrydata = new IdxPakPaths("system/rom/entrydata_rom.idx", "system/rom/entrydata.pak");
         public static IdxPakPaths atl = new IdxPakPaths("menu/atl_rom/atl_rom.idx", "menu/atl_rom/atl.pak");
         public static IdxPakPaths face = new IdxPakPaths("menu/face_rom/face_rom.idx", "menu/face_rom/face.pak");
+        public static IdxPakPaths mapData = new IdxPakPaths("map/rom/MapData.idx", "map/rom/MapData.dat");
+        public static IdxPakPaths texData = new IdxPakPaths("map/rom/TexData.idx", "map/rom/TexData.dat");
+        public static IdxPakPaths plttData = new IdxPakPaths("map/rom/PlttData.idx", "map/rom/PlttData.dat");
     }
 
     private void compareIdxPaks(IdxAndPak original, IdxAndPak repacked, String name) throws Exception {
@@ -224,6 +242,12 @@ public class MainController {
         
         IdxAndPak face = new IdxAndPak("face", App.archive.getFile(IdxPaks.face.idx()), App.archive.getFile(IdxPaks.face.pak()));
 
+        IdxAndPak mapData = new IdxAndPak("mapData", App.archive.getFile(IdxPaks.mapData.idx()), App.archive.getFile(IdxPaks.mapData.pak()));
+
+        IdxAndPak texData = new IdxAndPak("texData", App.archive.getFile(IdxPaks.texData.idx()), App.archive.getFile(IdxPaks.texData.pak()));
+
+        IdxAndPak plttData = new IdxAndPak("plttData", App.archive.getFile(IdxPaks.plttData.idx()), App.archive.getFile(IdxPaks.plttData.pak()));
+
 
         Pair<ByteBuffer, ByteBuffer> repackedBytes = App.sysdata.repack();
         IdxAndPak repacked = new IdxAndPak("sysdata", repackedBytes.getKey(),repackedBytes.getValue());
@@ -268,6 +292,18 @@ public class MainController {
         repackedBytes = App.face.repack();
         repacked = new IdxAndPak("face", repackedBytes.getKey(),repackedBytes.getValue());
         compareIdxPaks(face, App.face, "face");
+        
+        repackedBytes = App.mapData.repack();
+        repacked = new IdxAndPak("mapData", repackedBytes.getKey(),repackedBytes.getValue());
+        compareIdxPaks(mapData, App.mapData, "mapData");
+        
+        repackedBytes = App.texData.repack();
+        repacked = new IdxAndPak("texData", repackedBytes.getKey(),repackedBytes.getValue());
+        compareIdxPaks(texData, App.texData, "texData");
+        
+        repackedBytes = App.plttData.repack();
+        repacked = new IdxAndPak("plttData", repackedBytes.getKey(),repackedBytes.getValue());
+        compareIdxPaks(plttData, App.plttData, "plttData");
 
         //App.sysdata.files.get(0).compareTo(null)
         //App.sysdata
@@ -546,6 +582,14 @@ public class MainController {
         logger.info("Parsing face");
         App.face = new IdxAndPak("face", App.archive.getFile(IdxPaks.face.idx()), App.archive.getFile(IdxPaks.face.pak()));
 
+        logger.info("Parsing mapData");
+        App.mapData = new IdxAndPak("mapData", App.archive.getFile(IdxPaks.mapData.idx()), App.archive.getFile(IdxPaks.mapData.pak()));
+
+        logger.info("Parsing texData");
+        App.texData = new IdxAndPak("texData", App.archive.getFile(IdxPaks.texData.idx()), App.archive.getFile(IdxPaks.texData.pak()));
+
+        logger.info("Parsing plttData");
+        App.plttData = new IdxAndPak("plttData", App.archive.getFile(IdxPaks.plttData.idx()), App.archive.getFile(IdxPaks.plttData.pak()));
 
         logger.info("Decoding NaUnitAnimTable");
         var animTable = App.archive.getFile("char/NaUnitAnimTable.bin");
@@ -758,6 +802,20 @@ public class MainController {
         App.archive.setFile(IdxPaks.face.idx(), faceIdxPak.getKey());
         App.archive.setFile(IdxPaks.face.pak(), faceIdxPak.getValue());
 
+        logger.info("Repacking mapData");
+        Pair<ByteBuffer, ByteBuffer> mapDataIdxPak = App.mapData.repack();
+        App.archive.setFile(IdxPaks.mapData.idx(), mapDataIdxPak.getKey());
+        App.archive.setFile(IdxPaks.mapData.pak(), mapDataIdxPak.getValue());
+
+        logger.info("Repacking texData");
+        Pair<ByteBuffer, ByteBuffer> texDataIdxPak = App.texData.repack();
+        App.archive.setFile(IdxPaks.texData.idx(), texDataIdxPak.getKey());
+        App.archive.setFile(IdxPaks.texData.pak(), texDataIdxPak.getValue());
+
+        logger.info("Repacking plttData");
+        Pair<ByteBuffer, ByteBuffer> plttDataIdxPak = App.plttData.repack();
+        App.archive.setFile(IdxPaks.plttData.idx(), plttDataIdxPak.getKey());
+        App.archive.setFile(IdxPaks.plttData.pak(), plttDataIdxPak.getValue());
         
         logger.info("Saving NaUnitAnimTable");
         ByteBuffer encodedTable = LZSS.encode(App.naUnitAnimTable.rewind());
@@ -1010,6 +1068,7 @@ public class MainController {
                 if (exportFlags.getUnitSprites()) exportUnitSprites(savePath.resolve("Unit Sprites"));
                 if (exportFlags.getTopSprites()) exportTopSprites(savePath.resolve("Top Sprites"));
                 if (exportFlags.getFaces()) exportFaceSprites(savePath.resolve("Faces"));
+                if (exportFlags.getMapTextures()) exportMapTextures(savePath.resolve("Map Textures"));
             } catch (Exception e) {
                 Platform.runLater(() -> {
                     logger.log(Level.SEVERE, String.format("Failed to export"), e);
@@ -1062,7 +1121,16 @@ public class MainController {
             if (face.id == 0) continue;
             Path imagePath = savePath.resolve(String.format("%d.png", face.id));
             BufferedImage image = face.getImage();
-                ImageIO.write(image, "png", imagePath.toFile());
+            ImageIO.write(image, "png", imagePath.toFile());
+        }
+    }
+    
+    public void exportMapTextures(Path savePath) throws IOException {
+        Files.createDirectories(savePath);
+        for (MapData map : spritesTabController.mapList) {
+            Path imagePath = savePath.resolve(String.format("%d.png", map.id));
+            BufferedImage image = map.getTexture();
+            ImageIO.write(image, "png", imagePath.toFile());
         }
     }
 }
