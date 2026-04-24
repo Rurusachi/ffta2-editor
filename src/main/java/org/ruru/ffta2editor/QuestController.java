@@ -100,7 +100,7 @@ public class QuestController {
     @FXML TextField unknownRequirementIndex;
     @FXML TextField battlefield;
     @FXML TextField gilReward;
-    @FXML TextField _0x58;
+    @FXML TextField itemReward4Flag;
 
     // Byte
     @FXML TextField type;
@@ -212,7 +212,7 @@ public class QuestController {
         unknownRequirementIndex.textProperty().addListener(new ShortChangeListener(unknownRequirementIndex));
         battlefield.textProperty().addListener(new ShortChangeListener(battlefield));
         gilReward.textProperty().addListener(new ShortChangeListener(gilReward));
-        _0x58.textProperty().addListener(new ShortChangeListener(_0x58));
+        itemReward4Flag.textProperty().addListener(new ShortChangeListener(itemReward4Flag));
 
         type.textProperty().addListener(new ByteChangeListener(type));
         questGroup.textProperty().addListener(new ByteChangeListener(questGroup));
@@ -317,7 +317,7 @@ public class QuestController {
         unknownRequirementIndex.textProperty().unbindBidirectional(questProperty.getValue().data.unknownRequirementIndex);
         battlefield.textProperty().unbindBidirectional(questProperty.getValue().data.battlefield);
         gilReward.textProperty().unbindBidirectional(questProperty.getValue().data.gilReward);
-        _0x58.textProperty().unbindBidirectional(questProperty.getValue().data._0x58);
+        itemReward4Flag.textProperty().unbindBidirectional(questProperty.getValue().data.itemReward4Flag);
 
         type.textProperty().unbindBidirectional(questProperty.getValue().data.type);
         questGroup.textProperty().unbindBidirectional(questProperty.getValue().data.questGroup);
@@ -443,7 +443,7 @@ public class QuestController {
         Bindings.bindBidirectional(unknownRequirementIndex.textProperty(), questProperty.getValue().data.unknownRequirementIndex, unsignedShortConverter);
         Bindings.bindBidirectional(battlefield.textProperty(), questProperty.getValue().data.battlefield, unsignedShortConverter);
         Bindings.bindBidirectional(gilReward.textProperty(), questProperty.getValue().data.gilReward, unsignedShortConverter);
-        Bindings.bindBidirectional(_0x58.textProperty(), questProperty.getValue().data._0x58, unsignedShortConverter);
+        Bindings.bindBidirectional(itemReward4Flag.textProperty(), questProperty.getValue().data.itemReward4Flag, unsignedShortConverter);
 
         StringConverter<Byte> unsignedByteConverter = new ByteStringConverter();
         Bindings.bindBidirectional(type.textProperty(), questProperty.getValue().data.type, unsignedByteConverter);

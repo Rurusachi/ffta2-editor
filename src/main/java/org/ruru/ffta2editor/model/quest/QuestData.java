@@ -110,7 +110,7 @@ public class QuestData {
     public ItemReward itemReward3; 
     public ItemReward itemReward4; 
 
-    public ObjectProperty<Short> _0x58 = new SimpleObjectProperty<>();
+    public ObjectProperty<Short> itemReward4Flag = new SimpleObjectProperty<>();
     public ObjectProperty<Byte> _0x5a = new SimpleObjectProperty<>();
     public ObjectProperty<Byte> _0x5b = new SimpleObjectProperty<>();
     public ObjectProperty<Byte> _0x5c = new SimpleObjectProperty<>();
@@ -287,7 +287,7 @@ public class QuestData {
         itemReward3 = new ItemReward(bytes.getShort());
         itemReward4 = new ItemReward(bytes.getShort());
 
-        _0x58.set(bytes.getShort());
+        itemReward4Flag.set(bytes.getShort());
         _0x5a.set(bytes.get());
         _0x5b.set(bytes.get());
         _0x5c.set(bytes.get());
@@ -403,7 +403,7 @@ public class QuestData {
         itemReward3 = new ItemReward(App.itemList.get(0), 0);
         itemReward4 = new ItemReward(App.itemList.get(0), 0);
 
-        _0x58.set((short)0);
+        itemReward4Flag.set((short)0);
         _0x5a.set((byte)0);
         _0x5b.set((byte)0);
         _0x5c.set((byte)0);
@@ -521,7 +521,7 @@ public class QuestData {
         buffer.putShort(itemReward3.toShort());
         buffer.putShort(itemReward4.toShort());
 
-        buffer.putShort(_0x58.getValue());
+        buffer.putShort(itemReward4Flag.getValue());
         buffer.put(_0x5a.getValue());
         buffer.put(_0x5b.getValue());
         buffer.put(_0x5c.getValue());

@@ -547,8 +547,8 @@
                                  <children>
                                     <VBox alignment="TOP_CENTER">
                                        <children>
-                                          <Label text="0x58" />
-                                          <TextField fx:id="_0x58" />
+                                          <Label text="Item Reward 4 Flag" />
+                                          <TextField fx:id="itemReward4Flag" />
                                        </children>
                                     </VBox>
                                     <VBox alignment="TOP_CENTER">
