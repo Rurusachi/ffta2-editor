@@ -75,7 +75,7 @@ public class JobData {
     
     public SimpleObjectProperty<Byte> unarmedBonus = new SimpleObjectProperty<>();
     public SimpleObjectProperty<Byte> raceSomethingMaybe = new SimpleObjectProperty<>();
-    public SimpleObjectProperty<Byte> _0x32 = new SimpleObjectProperty<>(); // Possibly a short along with raceSomethingMaybe?
+    public SimpleObjectProperty<Byte> _0x32 = new SimpleObjectProperty<>(); // Possibly a short along with raceSomethingMaybe?. Prevents "Controllable Monster" target type if value is 2. 2 == is giant unit
     public SimpleObjectProperty<JobGender> gender = new SimpleObjectProperty<>();
     public SimpleObjectProperty<Byte> _0x34 = new SimpleObjectProperty<>();
     public SimpleObjectProperty<Byte> _0x35 = new SimpleObjectProperty<>();
@@ -99,7 +99,7 @@ public class JobData {
         public SimpleBooleanProperty propertyBit1 = new SimpleBooleanProperty();
         public SimpleBooleanProperty canChangeJobs = new SimpleBooleanProperty();
         public SimpleBooleanProperty isUndead = new SimpleBooleanProperty();
-        public SimpleBooleanProperty propertyBit4 = new SimpleBooleanProperty();
+        public SimpleBooleanProperty propertyBit4 = new SimpleBooleanProperty(); // Can't be summoned from reserve if true?
         public SimpleBooleanProperty propertyBit5 = new SimpleBooleanProperty();
         public SimpleBooleanProperty canAlwaysUseItems = new SimpleBooleanProperty();
         public SimpleBooleanProperty cannotAttack = new SimpleBooleanProperty();
