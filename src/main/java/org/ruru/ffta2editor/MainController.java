@@ -481,7 +481,7 @@ public class MainController {
         //    for (int pal = 0; pal < testSprite.spritePalettes.palettes.size(); pal++) {
         //        for (int pose = 0; pose < testData.spriteMaps.size(); pose++) {
         //            BufferedImage fullImage = testSprite.getSprite(pose, pal);
-        //            Path filePath = Path.of(String.format("G:\\sprites\\unit%03d\\pal%d\\%d.png", i, pal, pose));
+        //            Path filePath = Path.of(String.format("G:/sprites/unit%03d/pal%d/%d.png", i, pal, pose));
         //            Files.createDirectories(filePath.getParent());
         //            ImageIO.write(fullImage, "png", filePath.toFile());
         //        }
@@ -512,7 +512,7 @@ public class MainController {
             }
         }));
         //Path dataPath = Path.of("data");
-        ProcessBuilder ndsTool = new ProcessBuilder("ndstool.exe", "-x", loadPath.toPath().toString(),
+        ProcessBuilder ndsTool = new ProcessBuilder("ndstool", "-x", loadPath.toPath().toString(),
                                                "-9", dataPath.resolve("arm9.bin").toString(),
                                                "-7", dataPath.resolve("arm7.bin").toString(),
                                                "-y9", dataPath.resolve("y9.bin").toString(),
@@ -535,15 +535,15 @@ public class MainController {
         //File file = chooser.showDialog(abilityTab.getScene().getWindow());
         //if (file == null) return;
         
-        //File file = Path.of("C:\\Users\\Ruru\\Documents\\GitHub\\ffta2-editor").toFile();
+        //File file = Path.of("C:/Users/Ruru/Documents/GitHub/ffta2-editor").toFile();
         logger.info("Parsing archive");
-        File pcIdx = dataPath.resolve("data\\master\\pc.idx").toFile();
-        File pcBin = dataPath.resolve("data\\master\\pc.bin").toFile();
+        File pcIdx = dataPath.resolve("data/master/pc.idx").toFile();
+        File pcBin = dataPath.resolve("data/master/pc.bin").toFile();
         
         App.archive = new Archive(pcIdx, pcBin);
         App.arm9 = loadAsBuffer(dataPath.resolve("arm9.bin"));
-        App.overlay11 = loadAsBuffer(dataPath.resolve("overlay\\overlay_0011.bin"));
-        App.overlay8 = loadAsBuffer(dataPath.resolve("overlay\\overlay_0008.bin"));
+        App.overlay11 = loadAsBuffer(dataPath.resolve("overlay/overlay_0011.bin"));
+        App.overlay8 = loadAsBuffer(dataPath.resolve("overlay/overlay_0008.bin"));
 
         
 
@@ -836,10 +836,10 @@ public class MainController {
         ByteBuffer newBin = archivePair.getValue();
         System.out.println("Archive successfully repacked");
 
-        Path pcIdx = dataPath.resolve("data\\master\\pc.idx");
-        Path pcBin = dataPath.resolve("data\\master\\pc.bin");
+        Path pcIdx = dataPath.resolve("data/master/pc.idx");
+        Path pcBin = dataPath.resolve("data/master/pc.bin");
         Path arm9 = dataPath.resolve("arm9.bin");
-        Path overlay11 = dataPath.resolve("overlay\\overlay_0011.bin");
+        Path overlay11 = dataPath.resolve("overlay/overlay_0011.bin");
 
         Files.write(pcIdx, newIdx.array());
         Files.write(pcBin, newBin.array());
@@ -847,7 +847,7 @@ public class MainController {
         Files.write(overlay11, App.overlay11.array());
 
         logger.info("Repacking rom with ndstool");
-        ProcessBuilder ndsTool = new ProcessBuilder("ndstool.exe", "-c", savePath.toPath().toString(),
+        ProcessBuilder ndsTool = new ProcessBuilder("ndstool", "-c", savePath.toPath().toString(),
                                             "-9", dataPath.resolve("arm9.bin").toString(),
                                             "-7", dataPath.resolve("arm7.bin").toString(),
                                             "-y9", dataPath.resolve("y9.bin").toString(),
@@ -919,7 +919,7 @@ public class MainController {
                 }
             }
         }));
-        ProcessBuilder ndsTool = new ProcessBuilder("ndstool.exe", "-x", loadPath.toPath().toString(),
+        ProcessBuilder ndsTool = new ProcessBuilder("ndstool", "-x", loadPath.toPath().toString(),
                                                "-9", vanillaDataPath.resolve("arm9.bin").toString(),
                                                "-7", vanillaDataPath.resolve("arm7.bin").toString(),
                                                "-y9", vanillaDataPath.resolve("y9.bin").toString(),
@@ -934,8 +934,8 @@ public class MainController {
         ndsTool.start().waitFor();
 
         logger.info("Parsing archive");
-        File pcIdx = vanillaDataPath.resolve("data\\master\\pc.idx").toFile();
-        File pcBin = vanillaDataPath.resolve("data\\master\\pc.bin").toFile();
+        File pcIdx = vanillaDataPath.resolve("data/master/pc.idx").toFile();
+        File pcBin = vanillaDataPath.resolve("data/master/pc.bin").toFile();
         
         Archive vanillaArchive = new Archive(pcIdx, pcBin);
 
