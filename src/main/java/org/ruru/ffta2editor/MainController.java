@@ -196,7 +196,7 @@ public class MainController {
     private void compareIdxPaks(IdxAndPak original, IdxAndPak repacked, String name) throws Exception {
 
         for (int i = 0; i < original.numFiles() && i < repacked.numFiles(); i++) {
-            if (name == "sysdata" && (i == 2 || i == 3)) continue;
+            if (name.equals("sysdata") && (i == 2 || i == 3)) continue;
             ByteBuffer oldFile = original.getFile(i);
             ByteBuffer newFile = repacked.getFile(i);
             if (oldFile == null || newFile == null) {
