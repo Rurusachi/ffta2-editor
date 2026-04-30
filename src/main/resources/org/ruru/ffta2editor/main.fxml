@@ -63,7 +63,7 @@
             <MenuItem fx:id="exportUnitSpritesMenuItem" mnemonicParsing="false" text="Export Unit Sprites" />
             <MenuItem fx:id="exportTopSpritesMenuItem" mnemonicParsing="false" text="Export Top Sprites" />
             <MenuItem fx:id="exportFacesMenuItem" mnemonicParsing="false" text="Export Faces" />
-            <MenuItem fx:id="exportMapTexturesMenuItem" mnemonicParsing="false" text="Export Map Textures" />
+            <MenuItem fx:id="exportMapsMenuItem" mnemonicParsing="false" text="Export Maps" />
           </items>
         </Menu>
       </menus>

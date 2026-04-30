@@ -5,8 +5,10 @@ import java.nio.ByteOrder;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.logging.Logger;
 
 public class MapData {
@@ -17,7 +19,7 @@ public class MapData {
     public int width;
     public int height;
     public byte[] texture;
-    public byte[] palette;
+    public byte[][] palettes;
 
     public class Part {
         public class Point {
@@ -69,42 +71,69 @@ public class MapData {
     }
     public Part[] parts;
 
-    BufferedImage cachedImage;
-    BufferedImage cachedTexture;
+    HashMap<Integer, BufferedImage> cachedImages = new HashMap<>();
+    HashMap<Integer, BufferedImage> cachedTextures = new HashMap<>();
 
     private static final byte[] PRTS = "PRTS".getBytes(StandardCharsets.UTF_8);
-    public MapData(ByteBuffer mapBytes, ByteBuffer textureBytes, ByteBuffer paletteBytes, int id) {
+    private static final byte[] PLTT = "PLTT".getBytes(StandardCharsets.UTF_8);
+    private static final byte[] ANIM = "ANIM".getBytes(StandardCharsets.UTF_8); // TODO: Reverse engineer section
+    private static final byte[] PANL = "PANL".getBytes(StandardCharsets.UTF_8); // TODO: Reverse engineer section
+    private static final byte[] TEX  = "TEX ".getBytes(StandardCharsets.UTF_8); // TODO: Reverse engineer section
+    public MapData(ByteBuffer mapBytes, ByteBuffer textureBytes, ByteBuffer mapCtrlBytes, int id) {
         this.id = id;
         texture = new byte[textureBytes.remaining()];
         textureBytes.get(texture);
         
-        palette = new byte[paletteBytes.remaining()];
-        paletteBytes.get(palette);
+
+        int mapCtrlBytesPos = mapCtrlBytes.position();
+        mapCtrlBytes.getShort(); // ??
+        int numTextures = mapCtrlBytes.get(); // Always 1?
+        int numPalettes = mapCtrlBytes.get();
+        mapCtrlBytes.position(mapCtrlBytesPos + 0x14);
+
+        palettes = new byte[numPalettes][512];
         
         width = 256;
         height = texture.length / 256;
 
+        readPRTS(mapBytes);
+        readPLTT(mapBytes);
+    }
+
+    private ByteBuffer getSection(ByteBuffer mapBytes, byte[] name) {
+        mapBytes.rewind();
+
         byte[] temp = new byte[4];
-        boolean foundPRTS = false;
+        boolean foundSection = false;
         while (mapBytes.remaining() >= 4) {
             mapBytes.get(temp);
-            if (Arrays.equals(temp, PRTS)) {
+            if (Arrays.equals(temp, name)) {
                 //logger.info(String.format("Map %d: PRTS at %d", id, mapBytes.position()-4));
-                foundPRTS = true;
+                foundSection = true;
                 break;
             }
             mapBytes.position(mapBytes.position()-3);
         }
-        if (foundPRTS) {
+        if (foundSection) {
+            int pos = mapBytes.position();
             int lenParts = mapBytes.getInt();
-            int numParts = mapBytes.getInt();
+            return mapBytes.slice(pos, lenParts-4).order(ByteOrder.LITTLE_ENDIAN);
+        }
+        return null;
+    }
+
+    private void readPRTS(ByteBuffer mapBytes) {
+        ByteBuffer PRTSBytes = getSection(mapBytes, PRTS);
+        if (PRTSBytes != null) {
+            int lenParts = PRTSBytes.getInt();
+            int numParts = PRTSBytes.getInt();
 
             //logger.info(String.format("Map %d: PRTS: length=%d num=%d", id, lenParts, numParts));
 
             parts = new Part[numParts];
 
             for (int i = 0; i < parts.length; i++) {
-                parts[i] = new Part(mapBytes);
+                parts[i] = new Part(PRTSBytes);
             }
             int curr = 0;
             Part[] orderedParts = new Part[numParts];
@@ -119,15 +148,32 @@ public class MapData {
         } else {
             logger.info(String.format("Map %d: PRTS not found", id));
         }
+    }
 
+    private void readPLTT(ByteBuffer mapBytes) {
+        ByteBuffer PLTTBytes = getSection(mapBytes, PLTT);
+        if (PLTTBytes != null) {
+            int lenParts = PLTTBytes.getInt();
+            int numParts = PLTTBytes.getInt();
+
+            // TODO: Figure out what this section does
+
+        } else {
+            logger.info(String.format("Map %d: PLTT not found", id));
+        }
 
     }
 
-    public BufferedImage getImage() {
+    public void loadPalette(ByteBuffer paletteBytes, int i) {
+        paletteBytes.get(palettes[i]);
+    }
+
+    public BufferedImage getImage(int paletteIndex) {
         if (texture.length == 0) return new BufferedImage(64, 96, BufferedImage.TYPE_BYTE_INDEXED, new IndexColorModel(8, 256, new byte[256], new byte[256], new byte[256], 0));
+        BufferedImage cachedImage = cachedImages.getOrDefault(paletteIndex, null);
         if (cachedImage != null) return cachedImage;
 
-        BufferedImage sourceImage = getTexture();
+        BufferedImage sourceImage = getTexture(paletteIndex);
 
         Part leftMost = Arrays.stream(parts).min(Comparator.comparingInt(x -> x.target[0].x)).get();
         Part rightMost = Arrays.stream(parts).max(Comparator.comparingInt(x -> x.target[2].x)).get();
@@ -136,19 +182,14 @@ public class MapData {
         int fullWidth = rightMost.target[2].x - leftMost.target[0].x;
         int fullHeight = bottomMost.target[2].y - topMost.target[0].y;
 
-        //fullWidth = 1024;
-        //fullHeight = 1024;
-
         logger.info(String.format("Map %d: (%d - %d = %d, %d - %d = %d)", id, rightMost.target[2].x, leftMost.target[0].x, fullWidth, bottomMost.target[2].y, topMost.target[0].y, fullHeight));
-
-        //logger.info(String.format("Map %d: (%d, %d)", id, fullWidth, fullHeight));
 
         BufferedImage fullImage = new BufferedImage(fullWidth, fullHeight, BufferedImage.TYPE_BYTE_INDEXED, (IndexColorModel)sourceImage.getColorModel());
 
         for (int j = 0; j < parts.length; j++) {
             Part piece = parts[j];
 
-            if (piece.isFX) continue;
+            if (piece.isFX) continue; // TODO: Figure out how these should be drawn
 
             byte[] pixels = (byte[])sourceImage.getRaster().getDataElements(piece.source[0].x, piece.source[0].y, piece.source[2].x - piece.source[0].x, piece.source[2].y - piece.source[0].y, null);
             int targetY = piece.target[0].y - topMost.target[0].y;
@@ -160,6 +201,7 @@ public class MapData {
             int width = piece.source[2].x - piece.source[0].x;
             int height = piece.source[2].y - piece.source[0].y;
 
+            // Manually copy in pixels one at a time to be able to skip transparent pixels
             BufferedImage subImage = fullImage.getSubimage(targetX, targetY, piece.target[2].x - piece.target[0].x, piece.target[2].y - piece.target[0].y);
             byte[] temp = new byte[1];
             for (int p = 0; p < pixels.length; p++) {
@@ -168,18 +210,18 @@ public class MapData {
                     subImage.getRaster().setDataElements(p % width, p / width, temp);
                 }
             }
-            //fullImage.getRaster().setDataElements(targetX, targetY, piece.target[2].x - piece.target[0].x, piece.target[2].y - piece.target[0].y, pixels);
         }
 
-        cachedImage = fullImage;
+        cachedImages.put(paletteIndex, fullImage);
         return fullImage;
     }
 
-    public BufferedImage getTexture() {
+    public BufferedImage getTexture(int paletteIndex) {
         if (texture.length == 0) return new BufferedImage(256, 256, BufferedImage.TYPE_BYTE_INDEXED, new IndexColorModel(8, 256, new byte[256], new byte[256], new byte[256], 0));
+        BufferedImage cachedTexture = cachedTextures.getOrDefault(paletteIndex, null);
         if (cachedTexture != null) return cachedTexture;
 
-        ByteBuffer paletteBytes = ByteBuffer.wrap(palette).order(ByteOrder.LITTLE_ENDIAN);
+        ByteBuffer paletteBytes = ByteBuffer.wrap(palettes[paletteIndex]).order(ByteOrder.LITTLE_ENDIAN);
         ByteBuffer imageBytes = ByteBuffer.wrap(texture).order(ByteOrder.LITTLE_ENDIAN);
 
         byte[] reds = new byte[256];
@@ -206,7 +248,8 @@ public class MapData {
             int pixel = Byte.toUnsignedInt(imageBytes.get());
             bufferedImage.setRGB(x, y, indexColorModel.getRGB(pixel));
         }
-        cachedTexture = bufferedImage;
+        
+        cachedTextures.put(paletteIndex, bufferedImage);
         return bufferedImage;
     }
 }

@@ -152,8 +152,19 @@ public class MainController {
             return flags.get(3);
         }
 
+        public ExportImageFlags setMaps(boolean value) {
+            flags.set(4, value);
+            return this;
+        }
+        public ExportImageFlags setMaps() {
+            return setMaps(true);
+        }
+        public boolean getMaps() {
+            return flags.get(4);
+        }
+
         ExportImageFlags() {
-            flags = new BitSet(4);
+            flags = new BitSet(5);
         }
 
 
@@ -163,7 +174,7 @@ public class MainController {
     @FXML MenuItem exportUnitSpritesMenuItem;
     @FXML MenuItem exportTopSpritesMenuItem;
     @FXML MenuItem exportFacesMenuItem;
-    @FXML MenuItem exportMapTexturesMenuItem;
+    @FXML MenuItem exportMapsMenuItem;
 
     @FXML
     public void initialize() {
@@ -172,7 +183,7 @@ public class MainController {
         exportUnitSpritesMenuItem.setOnAction(e -> exportSpritesSelector(new ExportImageFlags().setUnitSprites()));
         exportTopSpritesMenuItem.setOnAction(e -> exportSpritesSelector(new ExportImageFlags().setTopSprites()));
         exportFacesMenuItem.setOnAction(e -> exportSpritesSelector(new ExportImageFlags().setFaces()));
-        exportMapTexturesMenuItem.setOnAction(e -> exportSpritesSelector(new ExportImageFlags().setMapTextures()));
+        exportMapsMenuItem.setOnAction(e -> exportSpritesSelector(new ExportImageFlags().setMaps().setMapTextures()));
     }
 
     public static class IdxPaks {
@@ -1069,6 +1080,7 @@ public class MainController {
                 if (exportFlags.getTopSprites()) exportTopSprites(savePath.resolve("Top Sprites"));
                 if (exportFlags.getFaces()) exportFaceSprites(savePath.resolve("Faces"));
                 if (exportFlags.getMapTextures()) exportMapTextures(savePath.resolve("Map Textures"));
+                if (exportFlags.getMaps()) exportMaps(savePath.resolve("Maps"));
             } catch (Exception e) {
                 Platform.runLater(() -> {
                     logger.log(Level.SEVERE, String.format("Failed to export"), e);
@@ -1128,9 +1140,22 @@ public class MainController {
     public void exportMapTextures(Path savePath) throws IOException {
         Files.createDirectories(savePath);
         for (MapData map : spritesTabController.mapList) {
-            Path imagePath = savePath.resolve(String.format("%d.png", map.id));
-            BufferedImage image = map.getTexture();
-            ImageIO.write(image, "png", imagePath.toFile());
+            for (int i = 0; i < map.palettes.length; i++) {
+                Path imagePath = savePath.resolve(String.format("%d %d.png", map.id, i));
+                BufferedImage image = map.getTexture(i);
+                ImageIO.write(image, "png", imagePath.toFile());
+            }
+        }
+    }
+    
+    public void exportMaps(Path savePath) throws IOException {
+        Files.createDirectories(savePath);
+        for (MapData map : spritesTabController.mapList) {
+            for (int i = 0; i < map.palettes.length; i++) {
+                Path imagePath = savePath.resolve(String.format("%d %d.png", map.id, i));
+                BufferedImage image = map.getImage(i);
+                ImageIO.write(image, "png", imagePath.toFile());
+            }
         }
     }
 }

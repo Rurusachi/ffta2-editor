@@ -750,11 +750,16 @@ public class SpritesController {
         
         logger.info("Loading Maps");
         ObservableList<MapData> maps = FXCollections.observableArrayList();
+        ByteBuffer mapCtrlBytes = App.archive.getFile("map/rom/MapCtrl.bin");
+        mapCtrlBytes.getLong(); // MapCtrl
+        mapCtrlBytes.getInt(); // ???
+        mapCtrlBytes.getInt(); // Length
+        mapCtrlBytes.getInt(); // ???
         // last file is empty??
+        int currPalette = 0;
         for (int i = 0; i < App.mapData.numFiles(); i++) {
             ByteBuffer mapDataBytes = App.mapData.getFile(i);
             ByteBuffer texDataBytes = App.texData.getFile(i);
-            ByteBuffer plttDataBytes = App.plttData.getFile(i);
             if (mapDataBytes == null) {
                 System.err.println(String.format("map %d bin is null", i));
                 continue;
@@ -763,12 +768,18 @@ public class SpritesController {
                 System.err.println(String.format("map %d tex is null", i));
                 continue;
             }
-            if (plttDataBytes == null) {
-                System.err.println(String.format("map %d pltt is null", i));
-                continue;
-            }
             try {
-                MapData map = new MapData(mapDataBytes, texDataBytes, plttDataBytes, i);
+                MapData map = new MapData(mapDataBytes, texDataBytes, mapCtrlBytes, i);
+                for (int j = 0; j < map.palettes.length; j++) {
+                    ByteBuffer plttDataBytes = App.plttData.getFile(currPalette);
+                    if (plttDataBytes == null) {
+                        System.err.println(String.format("map %d pltt is null", i));
+                        continue;
+                    }
+                    map.loadPalette(plttDataBytes, j);
+                    plttDataBytes.rewind();
+                    currPalette++;
+                }
                 maps.add(map);
             } catch (Exception e) {
                 logger.log(Level.SEVERE, String.format("Failed to load map %d", i));
@@ -777,8 +788,8 @@ public class SpritesController {
 
             mapDataBytes.rewind();
             texDataBytes.rewind();
-            plttDataBytes.rewind();
         }
+        mapCtrlBytes.rewind();
         mapList = maps;
         //mapList.setCellFactory(x -> new mapCell());
         //mapList.setItems(maps);
