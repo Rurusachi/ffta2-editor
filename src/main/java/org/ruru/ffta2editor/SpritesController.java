@@ -195,7 +195,7 @@ public class SpritesController {
 
     private FileChooser getImageFileDialog(String title, String initialFilename) {
         FileChooser chooser = new FileChooser();
-        chooser.setTitle("Export Sprite");
+        chooser.setTitle(title);
         chooser.getExtensionFilters().add(new ExtensionFilter("Image", "*.png"));
         chooser.setInitialFileName(initialFilename);
         chooser.setInitialDirectory(App.getLastFile());
