@@ -106,7 +106,7 @@ public class IdxAndPak {
             if (file == null) c = 7;
             else c = 0;
 
-            newIdx.putInt((2*offset+c) & 0xFFFFFF);
+            newIdx.putInt((2*offset+c) & 0xFFFFFFFF);
             newIdx.putShort((short)0);
 
             if (file == null) continue;
@@ -117,7 +117,7 @@ public class IdxAndPak {
             newPak.put(zeroes, 0, align16(offset+size)-newPak.position());
             offset = align16(offset+size);
         }
-        newIdx.putInt((2*offset+7) & 0xFFFFFF);
+        newIdx.putInt((2*offset+7) & 0xFFFFFFFF);
         return new Pair<ByteBuffer,ByteBuffer>(newIdx.rewind(), newPak.rewind());
     }
 
