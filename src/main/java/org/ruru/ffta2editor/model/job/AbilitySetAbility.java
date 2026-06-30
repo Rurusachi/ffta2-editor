@@ -40,10 +40,10 @@ public class AbilitySetAbility {
         ability.setValue(App.activeAbilityList.get(0));
         castAnimation.setValue((short)0);
         ability_0x4.setValue((byte)0);
-        ability_0x5.setValue((byte)255);
+        ability_0x5.setValue((byte)0);
         ability_0x6.setValue((byte)255);
         ability_0x7.setValue((byte)255);
-        ability_0x8.setValue((byte)0);
+        ability_0x8.setValue((byte)255);
         maxAP.setValue((byte)0);
         ability_0xa.setValue((byte)0);
         ability_0xb.setValue((byte)0);
