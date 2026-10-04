@@ -5,6 +5,8 @@ import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.ruru.ffta2editor.utility.BinaryTree;
 import org.ruru.ffta2editor.utility.BinaryTreeNode;
@@ -14,6 +16,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 
 public class UnitSst extends BinaryTree<byte[]> {
+    private static Logger logger = Logger.getLogger("org.ruru.ffta2editor");
+    
     public UnitSst(ByteBuffer bytes) {
         super(bytes);
         // Populate nodes with values
@@ -27,12 +31,13 @@ public class UnitSst extends BinaryTree<byte[]> {
                 data.get(compressedValue);
                 node.value = compressedValue;
             } catch (Exception e) {
+                logger.log(Level.SEVERE, "", e);
+                System.err.println(e);
                 Alert alert = new Alert(AlertType.ERROR);
                 alert.setTitle("Error");
                 alert.setHeaderText(null);
                 alert.setContentText(e.getMessage());
                 alert.showAndWait();
-                System.err.println(e);
                 node.value = null;
             }
 
@@ -49,13 +54,14 @@ public class UnitSst extends BinaryTree<byte[]> {
             var anim = LZSS.decode(temp);
             return new UnitAnimation(anim.decodedData, animHeader, key);
         } catch (Exception e) {
+            logger.log(Level.SEVERE, String.format("Key: %d", key), e);
+            System.err.println(key);
+            System.err.println(e);
             Alert alert = new Alert(AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText(null);
             alert.setContentText(e.getMessage());
             alert.showAndWait();
-            System.err.println(key);
-            System.err.println(e);
             return null;
         }
     }
@@ -70,12 +76,13 @@ public class UnitSst extends BinaryTree<byte[]> {
             //return new SpritePalettes(palettes.decodedData, count);
             return palettes.decodedData;
         } catch (Exception e) {
+            logger.log(Level.SEVERE, "", e);
+            System.err.println(e);
             Alert alert = new Alert(AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText(null);
             alert.setContentText(e.getMessage());
             alert.showAndWait();
-            System.err.println(e);
             return null;
         }
         
@@ -89,12 +96,13 @@ public class UnitSst extends BinaryTree<byte[]> {
             var spriteMapBytes = LZSS.decode(data);
             return new SpriteData(spriteMapBytes.decodedData);
         } catch (Exception e) {
+            logger.log(Level.SEVERE, "", e);
+            System.err.println(e);
             Alert alert = new Alert(AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText(null);
             alert.setContentText(e.getMessage());
             alert.showAndWait();
-            System.err.println(e);
             return null;
         }
     }

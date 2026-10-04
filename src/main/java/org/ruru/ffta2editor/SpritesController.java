@@ -249,12 +249,13 @@ public class SpritesController {
                     try {
                         ImageIO.write(image, "png", savePath);
                     } catch (Exception e) {
+                        logger.log(Level.SEVERE, "", e);
+                        System.err.println(e);
                         Alert alert = new Alert(AlertType.ERROR);
                         alert.setTitle("Error");
                         alert.setHeaderText(null);
                         alert.setContentText(e.getMessage());
                         alert.showAndWait();
-                        System.err.println(e);
                     }
                 });
                 Button importSpriteButton = new Button("Import");
@@ -270,12 +271,13 @@ public class SpritesController {
                         refresh();
                         unitList.refresh();
                     } catch (Exception e) {
+                        logger.log(Level.SEVERE, "", e);
+                        System.err.println(e);
                         Alert alert = new Alert(AlertType.ERROR);
                         alert.setTitle("Error");
                         alert.setHeaderText(null);
                         alert.setContentText(e.getMessage());
                         alert.showAndWait();
-                        System.err.println(e);
                     }
                 });
                 VBox spriteBox = new VBox(spriteRecord.scaledImage(), exportSpriteButton, importSpriteButton);
@@ -297,12 +299,13 @@ public class SpritesController {
                     refresh();
                     unitList.refresh();
                 } catch (Exception e) {
+                    logger.log(Level.SEVERE, "", e);
+                    System.err.println(e);
                     Alert alert = new Alert(AlertType.ERROR);
                     alert.setTitle("Error");
                     alert.setHeaderText(null);
                     alert.setContentText(e.getMessage());
                     alert.showAndWait();
-                    System.err.println(e);
                 }
             });
             Button addPaletteButton = new Button("Add palette");
@@ -318,12 +321,13 @@ public class SpritesController {
                     refresh();
                     unitList.refresh();
                 } catch (Exception e) {
+                    logger.log(Level.SEVERE, "", e);
+                    System.err.println(e);
                     Alert alert = new Alert(AlertType.ERROR);
                     alert.setTitle("Error");
                     alert.setHeaderText(null);
                     alert.setContentText(e.getMessage());
                     alert.showAndWait();
-                    System.err.println(e);
                 }
             });
             Label label = new Label(String.format("Palette %d", p));
@@ -365,12 +369,13 @@ public class SpritesController {
                 try {
                     ImageIO.write(image, "png", savePath);
                 } catch (Exception e) {
+                    logger.log(Level.SEVERE, "", e);
+                    System.err.println(e);
                     Alert alert = new Alert(AlertType.ERROR);
                     alert.setTitle("Error");
                     alert.setHeaderText(null);
                     alert.setContentText(e.getMessage());
                     alert.showAndWait();
-                    System.err.println(e);
                 }
             });
             Button importSpriteButton = new Button("Import");
@@ -386,12 +391,13 @@ public class SpritesController {
                     refreshTopSprite();
                     topSpriteList.refresh();
                 } catch (Exception e) {
+                    logger.log(Level.SEVERE, "", e);
+                    System.err.println(e);
                     Alert alert = new Alert(AlertType.ERROR);
                     alert.setTitle("Error");
                     alert.setHeaderText(null);
                     alert.setContentText(e.getMessage());
                     alert.showAndWait();
-                    System.err.println(e);
                 }
             });
             VBox spriteBox = new VBox(topSpriteRecord.scaledImage(), exportSpriteButton, importSpriteButton);
@@ -411,12 +417,13 @@ public class SpritesController {
                 refreshTopSprite();
                 topSpriteList.refresh();
             } catch (Exception e) {
+                logger.log(Level.SEVERE, "", e);
+                System.err.println(e);
                 Alert alert = new Alert(AlertType.ERROR);
                 alert.setTitle("Error");
                 alert.setHeaderText(null);
                 alert.setContentText(e.getMessage());
                 alert.showAndWait();
-                System.err.println(e);
             }
         });
         HBox paletteBox = new HBox(replacePaletteButton);
@@ -449,12 +456,13 @@ public class SpritesController {
             try {
                 ImageIO.write(image, "png", savePath);
             } catch (Exception e) {
+                logger.log(Level.SEVERE, "", e);
+                System.err.println(e);
                 Alert alert = new Alert(AlertType.ERROR);
                 alert.setTitle("Error");
                 alert.setHeaderText(null);
                 alert.setContentText(e.getMessage());
                 alert.showAndWait();
-                System.err.println(e);
             }
         });
         Button exportTextureButton = new Button("Export Texture");
@@ -467,12 +475,13 @@ public class SpritesController {
             try {
                 ImageIO.write(image, "png", savePath);
             } catch (Exception e) {
+                logger.log(Level.SEVERE, "", e);
+                System.err.println(e);
                 Alert alert = new Alert(AlertType.ERROR);
                 alert.setTitle("Error");
                 alert.setHeaderText(null);
                 alert.setContentText(e.getMessage());
                 alert.showAndWait();
-                System.err.println(e);
             }
         });
         Button importSpriteButton = new Button("Import");
@@ -496,12 +505,13 @@ public class SpritesController {
                     alert.showAndWait();
                 }
             } catch (Exception e) {
+                logger.log(Level.SEVERE, "", e);
+                System.err.println(e);
                 Alert alert = new Alert(AlertType.ERROR);
                 alert.setTitle("Error");
                 alert.setHeaderText(null);
                 alert.setContentText(e.getMessage());
                 alert.showAndWait();
-                System.err.println(e);
             }
         });
         VBox faceBox = new VBox(new ImageView(SwingFXUtils.toFXImage(face.getImage(), null)));
@@ -523,12 +533,13 @@ public class SpritesController {
                 refreshFace();
                 faceList.refresh();
             } catch (Exception e) {
+                logger.log(Level.SEVERE, "", e);
+                System.err.println(e);
                 Alert alert = new Alert(AlertType.ERROR);
                 alert.setTitle("Error");
                 alert.setHeaderText(null);
                 alert.setContentText(e.getMessage());
                 alert.showAndWait();
-                System.err.println(e);
             }
         });
         HBox paletteBox = new HBox(replacePaletteButton);

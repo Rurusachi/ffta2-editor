@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.IntStream;
 
 import org.ruru.ffta2editor.model.unitSst.SpriteData;
@@ -22,6 +24,8 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.util.Pair;
 
 public class UnitSprite {
+    private static Logger logger = Logger.getLogger("org.ruru.ffta2editor");
+    
     public SpriteData spriteData;
     public SpritePalettes spritePalettes;
     public int unitIndex;
@@ -60,12 +64,13 @@ public class UnitSprite {
                 cachedImages.add(new HashMap<>());
             }
         } catch (Exception e) {
+            logger.log(Level.SEVERE, "", e);
+            System.err.println(e);
             Alert alert = new Alert(AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText(null);
             alert.setContentText(e.getMessage());
             alert.showAndWait();
-            System.err.println(e);
         }
     }
 
@@ -118,12 +123,13 @@ public class UnitSprite {
             cachedImages.get(paletteIndex).put(spriteIndex, fullImage);
             return fullImage;
         } catch (Exception e) {
+            logger.log(Level.SEVERE, "", e);
+            System.err.println(e);
             Alert alert = new Alert(AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText(null);
             alert.setContentText(e.getMessage());
             alert.show();
-            System.err.println(e);
             return null;
         }
     }

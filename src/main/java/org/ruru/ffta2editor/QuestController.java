@@ -599,7 +599,7 @@ public class QuestController {
                         x.info.formation.getValue().name.set(x.name.getValue());
                     }
                 } catch (Exception e) {
-                    logger.log(Level.SEVERE, String.format("Failed to set Event %d name from Quest %d name", x.id, x.info.startEvent));
+                    logger.log(Level.SEVERE, String.format("Failed to set Event %d name from Quest %d name", x.id, x.info.startEvent), e);
                     System.err.println(e);
                     throw e;
                 }

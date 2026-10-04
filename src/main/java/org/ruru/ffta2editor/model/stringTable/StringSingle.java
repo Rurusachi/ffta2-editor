@@ -43,7 +43,7 @@ public class StringSingle {
         try {
             text.set(FFTA2Charset.decode(bytes.slice(bytes.position(), stringLength.getValue())));
         } catch (Exception e) {
-            logger.log(Level.SEVERE, String.format("Failed to decode \"%s\"", name));
+            logger.log(Level.SEVERE, String.format("Failed to decode \"%s\"", name), e);
             System.err.println(e);
             throw e;
         }

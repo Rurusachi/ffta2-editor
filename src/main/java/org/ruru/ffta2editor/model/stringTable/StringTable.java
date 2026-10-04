@@ -50,7 +50,7 @@ public class StringTable {
                 String s = FFTA2Charset.decode(bytes.slice(offset, stringLength));
                 stringList.add(new StringWithId(i, new SimpleStringProperty(s)));
             } catch (Exception e) {
-                logger.log(Level.SEVERE, String.format("Failed to decode entry %d in table \"%s\"", i, name));
+                logger.log(Level.SEVERE, String.format("Failed to decode entry %d in table \"%s\"", i, name), e);
                 System.err.println(e);
                 throw e;
             }

@@ -8,6 +8,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
@@ -136,6 +137,7 @@ public class Archive {
             pcBinBuffer.order(ByteOrder.LITTLE_ENDIAN);
             pcBin.close();
         } catch (Exception e) {
+            logger.log(Level.SEVERE, "", e);
             System.err.println(e);
         }
 
@@ -259,6 +261,7 @@ public class Archive {
         try {
             id = filename_crc(name);
         } catch (Exception e) {
+            logger.log(Level.SEVERE, "", e);
             System.err.println(e);
             return null;
         }
@@ -297,6 +300,7 @@ public class Archive {
         try {
             id = filename_crc(name);
         } catch (Exception e) {
+            logger.log(Level.SEVERE, "", e);
             System.err.println(e);
             return;
         }
